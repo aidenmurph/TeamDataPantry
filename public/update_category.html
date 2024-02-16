@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+		
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Classical Music Exploration</title>
+
+    <link rel="icon" href="violinicon.png">
+
+</head>
+
+	<body>
+		<header>
+
+			<h1 class="site-title"><a href="index.html">Classical Composition and Recording Exploration</a></h1>
+	
+		</header>
+		<div class="form-container">
+            <form action="/update_category.php">
+                <label for="instruments">Update Instruments</label><br>
+                <div class="radio-container">  
+                    <input type="radio" name="instruments" id="instruments" class="add-input" value="Update">Update <br>
+                    <input type="radio" name="instruments" id="instruments" class="add-input" value="Add">Add <br>
+                    <input type="radio" name="instruments" id="instruments" class="add-input" value="Delete">Delete <br>
+                </div><br>
+                <label for="instruments">Instrument being updated:</label><br>
+                <p>If you are updating, separate the change like so: [original, updated] </p>
+                <input type="text" name="instruments" id="instruments" class="add-input" placeholder="Instrument"><br><br>
+
+                <label for="forms">Update Forms</label><br>
+                <div class="radio-container">  
+                    <input type="radio" name="forms" id="instruments" class="add-input" value="Update">Update <br>
+                    <input type="radio" name="forms" id="instruments" class="add-input" value="Add">Add <br>
+                    <input type="radio" name="forms" id="instruments" class="add-input" value="Delete">Delete <br>
+                </div><br>
+                <label for="forms">Forms being updated:</label><br>
+                <p>If you are updating, separate the change like so: [original, updated] </p>
+                <input type="text" name="forms" id="forms" class="add-input" placeholder="Forms"><br><br>
+
+                <!-- This is where we would prompt to update forms, but we are not sure if this is something that should be user-available -->
+
+                <input type="submit" value="Submit">
+              </form> 
+		</div>
+	</body>
+</html>
+
+
