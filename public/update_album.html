@@ -22,8 +22,18 @@
             <form action="/update_album.php">
                 <label for="name">Album being Updated</label><br>
                 <input type="text" name="name" id="name" class="update-input" placeholder="Album's Name"><br>
-                <label for="tracks">Album's Tracks</label><br>
-                <input type="radio" name="tracks" id="tracks" class="add-input" placeholder="Comma Separated,"><br>
+                <label for="tracks">Update Album Compositions</label><br>
+                <div class="radio-container">  
+                    <input type="radio" name="tracks" id="tracks" class="add-input" value="Update">Update <br>
+                    <input type="radio" name="tracks" id="tracks" class="add-input" value="Add">Add <br>
+                    <input type="radio" name="tracks" id="tracks" class="add-input" value="Delete">Delete <br>
+                </div>
+                <label for="tracks">Update Album Compositions</label><br>
+                <div class="radio-container">  
+                    <input type="radio" name="tracks" id="tracks" class="add-input" value="Update">Update <br>
+                    <input type="radio" name="tracks" id="tracks" class="add-input" value="Add">Add <br>
+                    <input type="radio" name="tracks" id="tracks" class="add-input" value="Delete">Delete <br>
+                </div>
                 <label for="compositions">Album's Compositions</label><br>
                 <input type="text" name="compositions" id="compositions" class="add-input" placeholder="Comma Separated,"><br>
                 <input type="submit" value="Submit">
