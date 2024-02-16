@@ -1,0 +1,26 @@
+{
+  "name": "teamdatapantry",
+  "version": "1.0.0",
+  "description": "Database for Classical Compositions and Recordings",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aidenmurph/TeamDataPantry.git"
+  },
+  "author": "Aiden Murphy, Jacob Barber, Matthew Tyler Menold",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/aidenmurph/TeamDataPantry/issues"
+  },
+  "homepage": "https://github.com/aidenmurph/TeamDataPantry#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "forever": "^0.14.2",
+    "fs": "^0.0.1-security",
+    "handlebars": "^4.7.8",
+    "http": "^0.0.1-security"
+  }
+}
