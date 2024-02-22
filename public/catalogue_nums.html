@@ -27,85 +27,51 @@
 
     <table class="table">
         <tr>
-            <th>ID</th>
+            <th>Catalogue ID</th>
             <th>Composer ID</th> <!-- Should we make this a composer name instead of ID? -->
-            <th>Title</th>
-            <th>Author First</th>
-            <th>Author Last</th>
-            <th>Symbol</th>
-            <th>Publication Year</th>
+            <th>Catalogue Number</th>
             <th>Edit</th>
             <th>Delete</th>
         </tr>
         <tr>
             <td>1</td>
-            <td>4</td>
-            <td>Maurice Ravel</td>
-            <td>Marcel</td>
-            <td>Marnat</td>
-            <td>M.</td>
-            <td>1986</td>
+            <td>2</td>
+            <td>82</td>
+            <td><button name="edit-button" value="edit">Edit</button></td>
+            <td><button name="delete-button" value="delete">Delete</button></td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>3</td>
+            <td>35</td>
             <td><button name="edit-button" value="edit">Edit</button></td>
             <td><button name="delete-button" value="delete">Delete</button></td>
         </tr>
         <tr>
             <td>2</td>
-            <td>11</td>
-            <td>Catalogue de l'œuvre de Claude Debussy</td>
-            <td>François</td>
-            <td>Lesure</td>
-            <td>L.</td>
-            <td>1977</td>
-            <td><button name="edit-button" value="edit">Edit</button></td>
-            <td><button name="delete-button" value="delete">Delete</button></td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>12</td>
-            <td>Antonín Dvořák, Complete Catalogue of Works</td>
-            <td>Peter J. F.</td>
-            <td>Herbert</td>
-            <td>H.</td>
-            <td>1988</td>
-            <td><button name="edit-button" value="edit">Edit</button></td>
-            <td><button name="delete-button" value="delete">Delete</button></td>
-        </tr>        
-        <tr>
-            <td>4</td>
-            <td>12</td>
-            <td>Antonín Dvořák: thematický katalog</td>
-            <td>Jarmil</td>
-            <td>Burghauser</td>
-            <td>B.</td>
-            <td>1996</td>
-            <td><button name="edit-button" value="edit">Edit</button></td>
-            <td><button name="delete-button" value="delete">Delete</button></td>
-        </tr>        
-        <tr>
             <td>5</td>
-            <td>12</td>
-            <td>Dvořákś Werke ... ein vollständiges Verzeichnis in chronologischer thematischer und systematischer Anordnung</td>
-            <td>Otakar</td>
-            <td>Šourek</td>
-            <td>S.</td>
-            <td>1917</td>
+            <td>91</td>
             <td><button name="edit-button" value="edit">Edit</button></td>
             <td><button name="delete-button" value="delete">Delete</button></td>
-        </tr>
+        </tr>        
         <tr>
+            <td>1</td>
             <td>6</td>
-            <td>12</td>
-            <td>Antonín Dvořák, Complete Catalogue of Works</td>
-            <td>Ian T.</td>
-            <td>Trufitt</td>
-            <td>T.</td>
-            <td>1974</td>
+            <td>83</td>
             <td><button name="edit-button" value="edit">Edit</button></td>
             <td><button name="delete-button" value="delete">Delete</button></td>
-        </tr>
+        </tr>        
         <form>
             <tr>
-                <td> </td>
+                <td><select name="catalogue" id="catalogue" class="add-input">
+                    <option value="0">--Choose Catalogue--</option>
+                    <option value="1">Maurice Ravel</option>
+                    <option value="2">Catalogue de l'œuvre de Claude Debussy</option>
+                    <option value="3">Antonín Dvořák, Complete Catalogue of Works</option>
+                    <option value="4">Antonín Dvořák: thematický katalog</option>
+                    <option value="5">Dvořákś Werke ...</option>
+                    <option value="6">Antonín Dvořák, Complete Catalogue of Works</option>
+                    </select>
                 <td><select name="composer" id="composer" class="add-input">
                     <option value="0">--Choose Composer--</option>
                     <option value="1">Maurice Ravel</option>
@@ -123,12 +89,9 @@
                     <option value="13">Gabriel Fauré</option>
                     <option value="14">Claude Debussy</option>
                     <option value="15">Antonín Dvořák</option>
+                    </select>
                 </td>
-                <td><input type="text" name="title" id="title" class="add-input" placeholder="Title"></td>
-                <td><input type="text" name="author-first" id="author-first" class="add-input" placeholder="First Name"></td>
-                <td><input type="text" name="author-last" id="author-last" class="add-input" placeholder="Last Name"></td>
-                <td><input type="text" name="symbol" id="symbol" class="add-input" placeholder="Symbol"></td>
-                <td><input type="text" name="publication-year" id="publication-year" class="add-input" placeholder="Year"></td>
+                <td><input type="text" name="catalogue_num" id="catalogue_num" class="add-input" placeholder="Catalogue Number"></td>
                 <td><input type="submit" value="Add"> </td>
                 <td><input type="reset" value="Reset"> </td>
             </tr>
