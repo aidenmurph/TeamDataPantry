@@ -1,0 +1,151 @@
+<head>
+		
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Classical Music Exploration</title>
+    <link rel="icon" href="violinicon.png">
+
+</head>
+
+<body>
+    <header>
+        <h1 class="site-title"><a href="index.html">Classical Composition and Recording Exploration</a></h1>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <nav>
+            <a href="composers.html">Composers</a> |
+            <a href="compositions.html">Compositions</a> |
+            <a href="catalogues.html">Catalogues</a> |
+            <a href="catalogue_nums.html">Catalogue Numbers</a> |
+            <a href="forms.html">Forms</a></li> |
+            <a href="instruments.html">Instruments</a> |
+            <a href="key_signatures.html">Key Signatures</a> |
+            <a href="movements.html">Movements</a> |
+            <a href="opus_nums.html">Opus Numbers</a> |
+        </nav>
+    </header>
+
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <th>Composer ID</th> <!-- Should we make this a composer name instead of ID? -->
+            <th>English Title</th>
+            <th>Native Title</th>
+            <th>Year</th>
+            <th>Form</th>
+            <th>Musical Key</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>5</td>
+            <td>Scheherazade</td>
+            <td>Shekherazada</td>
+            <td>1888</td>
+            <td>Suite</td>
+            <td>NULL</td>
+            <td><button name="edit-button" value="edit">Edit</button></td>
+            <td><button name="delete-button" value="delete">Delete</button></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>4</td>
+            <td>Concerto for the Left Hand</td>
+            <td>NULL</td>
+            <td>1930</td>
+            <td>Concerto</td>
+            <td>D major</td>
+            <td><button name="edit-button" value="edit">Edit</button></td>
+            <td><button name="delete-button" value="delete">Delete</button></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>4</td>
+            <td>String Quartet in F Major</td>
+            <td>NULL</td>
+            <td>1903</td>
+            <td>Quartet</td>
+            <td>F Major</td>
+            <td><button name="edit-button" value="edit">Edit</button></td>
+            <td><button name="delete-button" value="delete">Delete</button></td>
+        </tr>        
+        <tr>
+            <td>4</td>
+            <td>10</td>
+            <td>String Quartet in E Minor</td>
+            <td>NULL</td>
+            <td>1903</td>
+            <td>Quartet</td>
+            <td>E Minor</td>
+            <td><button name="edit-button" value="edit">Edit</button></td>
+            <td><button name="delete-button" value="delete">Delete</button></td>
+        </tr>        
+        <tr>
+            <td>5</td>
+            <td>11</td>
+            <td>String Quartet in G Minor</td>
+            <td>NULL</td>
+            <td>1893</td>
+            <td>Quartet</td>
+            <td>G Minor</td>
+            <td><button name="edit-button" value="edit">Edit</button></td>
+            <td><button name="delete-button" value="delete">Delete</button></td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>4</td>
+            <td>Piano Concerto in G major</td>
+            <td>NULL</td>
+            <td>1931</td>
+            <td>Concerto</td>
+            <td>G Major</td>
+            <td><button name="edit-button" value="edit">Edit</button></td>
+            <td><button name="delete-button" value="delete">Delete</button></td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>10</td>
+            <td>Ballade in F-sharp Major</td>
+            <td>NULL</td>
+            <td>1879</td>
+            <td>Ballade</td>
+            <td>F-sharp major</td>
+            <td><button name="edit-button" value="edit">Edit</button></td>
+            <td><button name="delete-button" value="delete">Delete</button></td>
+        </tr>
+        <form>
+            <tr>
+                <td> </td>
+                <td><select name="composer" id="composer" class="add-input">
+                    <option value="0">--Choose Composer--</option>
+                    <option value="1">Maurice Ravel</option>
+                    <option value="2">Nikolai Rimsky-Korsakov</option>
+                    <option value="3">Gabriel Fauré</option>
+                    <option value="4">Claude Debussy</option>
+                    <option value="5">Antonín Dvořák</option>
+                    <option value="6">Maurice Ravel</option>
+                    <option value="7">Nikolai Rimsky-Korsakov</option>
+                    <option value="8">Gabriel Fauré</option>
+                    <option value="9">Claude Debussy</option>
+                    <option value="10">Antonín Dvořák</option>
+                    <option value="11">Maurice Ravel</option>
+                    <option value="12">Nikolai Rimsky-Korsakov</option>
+                    <option value="13">Gabriel Fauré</option>
+                    <option value="14">Claude Debussy</option>
+                    <option value="15">Antonín Dvořák</option>
+                </td>
+                <td><input type="text" name="english-title" id="english-title" class="add-input" placeholder="English Title"></td>
+                <td><input type="text" name="native-title" id="native-title" class="add-input" placeholder="Native Title"></td>
+                <td><input type="text" name="year" id="year" class="add-input" placeholder="Year"></td>
+                <td><input type="text" name="form" id="form" class="add-input" placeholder="Form"></td>
+                <td><input type="text" name="musical-key" id="musical-key" class="add-input" placeholder="Musical Key"></td>
+
+                <td><input type="submit" value="Add"> </td>
+                <td><input type="reset" value="Reset"> </td>
+            </tr>
+        </form>
+        
+   
+    </table>
+</body>
