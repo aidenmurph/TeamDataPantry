@@ -1,0 +1,189 @@
+<head>
+		
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Classical Music Exploration</title>
+    <link rel="icon" href="violinicon.png">
+
+</head>
+
+<body>
+    <header>
+        <h1 class="site-title"><a href="index.html">Classical Composition and Recording Exploration</a></h1>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <nav>
+            <a href="composers.html">Composers</a> |
+            <a href="compositions.html">Compositions</a> |
+            <a href="movements.html">Movements</a> |
+            <a href="catalogues.html">Catalogues</a> |
+            <a href="forms.html">Forms</a></li> |
+            <a href="instruments.html">Instruments</a> |
+            <a href="key_signatures.html">Key Signatures</a>
+        </nav>
+    </header>
+
+    <table class="table">
+        <form>
+            <h2>Add a Composition</h2>
+            <legend>Fill out the fields below to add a composition to the database.</legend>
+            <tr>
+                <td colspan="9" style="text-align: center;"><p>Add Composition Info</p></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="english-title" id="english-title" class="add-input" size="50" placeholder="Title"></td>
+                <td><input type="text" name="opus-num" id="opus-num" class="add-input" size="5" placeholder="Op."></td>
+                <td><select name="composer" id="composer" class="add-input">
+                        <option value="0">--Select Composer--</option>
+                        <option value="1">Maurice Ravel</option>
+                        <option value="2">Nikolai Rimsky-Korsakov</option>
+                        <option value="3">Gabriel Fauré</option>
+                        <option value="4">Claude Debussy</option>
+                        <option value="5">Antonín Dvořák</option>
+                    </select>
+                </td>
+                <!-- This will auto-populate based on the selected composer -->
+                <td><select name="catalogue" id="catalogue" class="add-input">
+                    <option value="0">--Select Catalogue--</option>
+                </select>
+            </td>
+                <td><input type="text" name="cat-num" id="cat-num" class="add-input" size="5" placeholder="Cat."></td>
+                <td><select name="choose-form" id="choose-form" class="add-input">
+                        <option value="0">--Select Form--</option>
+                        <option value="21">Cantata</option>
+                        <option value="2">Concerto</option>
+                        <option value="25">Ballade</option>
+                        <option value="9">Ballet</option>
+                        <option value="11">Dance</option>
+                        <option value="22">Elegy</option>
+                        <option value="19">Fantasia</option>
+                        <option value="4">Fugue</option>
+                        <option value="24">Intermezzo</option>
+                        <option value="16">Minuet</option>
+                        <option value="15">Moderato</option>
+                        <option value="18">Nocturne</option>
+                        <option value="10">Overture</option>
+                        <option value="8">Opera</option>
+                        <option value="6">Pavane</option>
+                        <option value="20">Prelude</option>
+                        <option value="13">Quartet</option>
+                        <option value="23">Requium</option>
+                        <option value="5">Rhapsody</option>
+                        <option value="3">Sonata</option>
+                        <option value="7">Suite</option>
+                        <option value="17">Symphonic Poem</option>
+                        <option value="1">Symphony</option>
+                        <option value="12">Trio</option>
+                        <option value="14">Variations</option>
+                    </select>
+                </td>
+                <td><select name="choose-key" id="choose-key">
+                        <option value="0">--Select Key--</option>
+                        <option value="A major">A major</option>
+                        <option value="A minor">A minor</option>
+                        <option value="A-flat major">A-flat major</option>
+                        <option value="A-flat minor">A-flat minor</option>
+                        <option value="A-sharp minor">A-sharp minor</option>
+                        <option value="B major">B major</option>
+                        <option value="B minor">B minor</option>
+                        <option value="B-flat major">B-flat major</option>
+                        <option value="B-flat minor">B-flat minor</option>
+                        <option value="C major">C major</option>
+                        <option value="C minor">C minor</option>
+                        <option value="C-flat major">C-flat major</option>
+                        <option value="C-sharp major">C-sharp major</option>
+                        <option value="C-sharp minor">C-sharp minor</option>
+                        <option value="D major">D major</option>
+                        <option value="D minor">D minor</option>
+                        <option value="D-flat major">D-flat major</option>
+                        <option value="D-sharp minor">D-sharp minor</option>
+                        <option value="E major">E major</option>
+                        <option value="E minor">E minor</option>
+                        <option value="E-flat major">E-flat major</option>
+                        <option value="E-flat minor">E-flat minor</option>
+                        <option value="F major">F major</option>
+                        <option value="F minor">F minor</option>
+                        <option value="F-sharp major">F-sharp major</option>
+                        <option value="F-sharp minor">F-sharp minor</option>
+                        <option value="G major">G major</option>
+                        <option value="G minor">G minor</option>
+                        <option value="G-flat major">G-flat major</option>
+                        <option value="G-sharp minor">G-sharp minor</option>
+                    </select>
+                </td>
+                <td><input type="text" name="year" id="year" class="add-input" size="5" placeholder="Year"></td>
+                <td><input type="reset" value="Reset"> </td>
+            </tr>
+            <tr>
+                <td colspan="9">
+                    <select name="choose-instrument" id="choose-instrument" class="add-instrument">
+                        <option value="0">--Select Instrument--</option>
+                        <option value="34">Accordion</option>
+                        <option value="47">Alto</option>
+                        <option value="25">Alto Flute</option>
+                        <option value="18">Alto Saxophone</option>
+                        <option value="9">Alto Trombone</option>
+                        <option value="20">Baritone Saxophone</option>
+                        <option value="49">Bass</option>
+                        <option value="30">Bass Clarinet</option>
+                        <option value="26">Bass Flute</option>
+                        <option value="21">Bass Saxophone</option>
+                        <option value="11">Bass Trombone</option>
+                        <option value="8">Bass Trumpet</option>
+                        <option value="32">Bassoon</option>
+                        <option value="38">Celesta</option>
+                        <option value="45">Chorus</option>
+                        <option value="15">Cimbasso</option>
+                        <option value="29">Clarinet</option>
+                        <option value="23">Concert Flute</option>
+                        <option value="31">Contrabass Clarinet</option>
+                        <option value="22">Contrabass Saxophone</option>
+                        <option value="12">Contrabass Trombone</option>
+                        <option value="33">Contrabassoon</option>
+                        <option value="4">Double Bass</option>
+                        <option value="28">English Horn</option>
+                        <option value="16">Flugelhorn</option>
+                        <option value="5">French Horn</option>
+                        <option value="35">Guitar</option>
+                        <option value="36">Harp</option>
+                        <option value="39">Harpsichord</option>
+                        <option value="27">Oboe</option>
+                        <option value="42">Orchestra</option>
+                        <option value="37">Piano</option>
+                        <option value="43">Piano Trio</option>
+                        <option value="24">Piccolo</option>
+                        <option value="7">Piccolo Trumpet</option>
+                        <option value="46">Soprano</option>
+                        <option value="17">Soprano Saxophone</option>
+                        <option value="41">String Quartet</option>
+                        <option value="48">Tenor</option>
+                        <option value="19">Tenor Saxophone</option>
+                        <option value="10">Tenor Trombone</option>
+                        <option value="40">Timpani</option>
+                        <option value="6">Trumpet</option>
+                        <option value="13">Tuba</option>
+                        <option value="2">Viola</option>
+                        <option value="1">Violin</option>
+                        <option value="3">Violoncello</option>
+                        <option value="14">Wagner Tuba</option>
+                        <option value="44">Wind Band</option>
+                    </select>                      
+                <button name="add-instrument-button" value="add-instrument">Add Instrument</button></td>
+            </tr>
+            <tr>
+                <td colspan="9" style="text-align: center;"><p>Add Movements</p></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="movement-title" id="movement-title" class="add-input" size="50" placeholder="Movement Title"></td>
+                <td><input type="number" size="5" min="1" placeholder="1"></td>
+                <td colspan="7"><button name="add-movement-button" value="add-movement">Add Movement</button></td>
+            </tr>
+        </form>
+            <tr>
+            <!-- This is a placeholder for the JavaScript Nav Behavior -->
+                <form action="compositions.html" method="get">
+                <td colspan="9" style="text-align: center;"><button name="submit-button" type="submit">Submit</button></td>
+                </form>
+            </tr>
+    </table>
+</body>
