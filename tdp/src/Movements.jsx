@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './style.css'; // Make sure you have the CSS for styling
+import './style.css';
 
 function Movements() {
   const movementsData = [
