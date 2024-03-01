@@ -2,7 +2,7 @@
   "database": {
     "host": "classmysql.engr.oregonstate.edu",
     "user": "cs340_menoldm",
-    "password": "2563",
+    "password": "****",
     "database": "cs340_menoldm"
   }
 }
