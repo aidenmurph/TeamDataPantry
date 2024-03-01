@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import './style.css';
 
 function Composers() {
+  // State to track editing status
+  const [editingComposerId, setEditingComposerId] = useState(null);
   const [composers, setComposers] = useState([]);
   const [newComposer, setNewComposer] = useState({
     firstName: '',
@@ -57,9 +59,45 @@ function Composers() {
     }
   };
 
-  const handleEdit = (composerId) => {
-    // Implement edit functionality
-    console.log('Editing composer with ID:', composerId);
+  const startEdit = (composerId) => {
+    setEditingComposerId(composerId);
+    // Initialize the newComposer state with the values of the composer being edited
+    const composerToEdit = composers.find(c => c.composerID === composerId);
+    setNewComposer({
+      firstName: composerToEdit.firstName,
+      lastName: composerToEdit.lastName,
+      birthDate: composerToEdit.birthDate,
+      deathDate: composerToEdit.deathDate || '',
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingComposerId(null);
+    // Reset the newComposer state
+    setNewComposer({ firstName: '', lastName: '', birthDate: '', deathDate: '' });
+  };
+
+  const saveEdit = async () => {
+    try {
+      const response = await fetch(`http://localhost:3002/api/composers/${editingComposerId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newComposer),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      await response.json();
+  
+      // After saving, reset the editing state and refresh the composers list
+      setEditingComposerId(null);
+      setNewComposer({ firstName: '', lastName: '', birthDate: '', deathDate: '' });
+      fetchComposers();
+    } catch (error) {
+      console.error("Error saving composer: ", error);
+    }
   };
 
   const handleDelete = async (composerId) => {
@@ -83,19 +121,19 @@ function Composers() {
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
- return (
-    <div>
-      <h1>Classical Composition and Recording Exploration</h1>
-      <nav>
-        <Link to="/">Home</Link> |
-        <Link to="/compositions">Compositions</Link> |
-        <Link to="/movements">Movements</Link> |
-        <Link to="/catalogues">Catalogues</Link> |
-        <Link to="/forms">Forms</Link> |
-        <Link to="/instruments">Instruments</Link> |
-        <Link to="/key_signatures">Key Signatures</Link>
-     </nav>
-      <table>
+return (
+  <div>
+    <h1>Classical Composition and Recording Exploration</h1>
+    <nav>
+      <Link to="/">Home</Link> |
+      <Link to="/compositions">Compositions</Link> |
+      <Link to="/movements">Movements</Link> |
+      <Link to="/catalogues">Catalogues</Link> |
+      <Link to="/forms">Forms</Link> |
+      <Link to="/instruments">Instruments</Link> |
+      <Link to="/key_signatures">Key Signatures</Link>
+    </nav>
+    <table>
       <thead>
         <tr>
           <th>ID</th>
@@ -111,16 +149,27 @@ function Composers() {
         {composers.map((composer) => (
           <tr key={composer.composerID}>
             <td>{composer.composerID}</td>
-            <td>{composer.firstName}</td>
-            <td>{composer.lastName}</td>
-            <td>{composer.birthDate}</td>
-            <td>{composer.deathDate}</td>
-            <td>
-              <button onClick={() => handleEdit(composer.composerID)}>Edit</button>
-            </td>
-            <td>
-              <button onClick={() => handleDelete(composer.composerID)}>Delete</button>
-            </td>
+            {editingComposerId === composer.composerID ? (
+              // If editing this composer, show input fields
+              <>
+                <td><input type="text" name="firstName" value={newComposer.firstName} onChange={handleInputChange} /></td>
+                <td><input type="text" name="lastName" value={newComposer.lastName} onChange={handleInputChange} /></td>
+                <td><input type="date" name="birthDate" value={newComposer.birthDate} onChange={handleInputChange} /></td>
+                <td><input type="date" name="deathDate" value={newComposer.deathDate} onChange={handleInputChange} /></td>
+                <td><button onClick={saveEdit}>Save</button></td>
+                <td><button onClick={cancelEdit}>Cancel</button></td>
+              </>
+            ) : (
+              // If not editing, show regular row
+              <>
+                <td>{composer.firstName}</td>
+                <td>{composer.lastName}</td>
+                <td>{composer.birthDate}</td>
+                <td>{composer.deathDate}</td>
+                <td><button onClick={() => startEdit(composer.composerID)}>Edit</button></td>
+                <td><button onClick={() => handleDelete(composer.composerID)}>Delete</button></td>
+              </>
+            )}
           </tr>
         ))}
         {/* Row to add new composer */}
