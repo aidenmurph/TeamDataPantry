@@ -1,0 +1,9 @@
+{
+  "database": {
+    "host": "classmysql.engr.oregonstate.edu",
+    "user": "cs340_menoldm",
+    "password": "2563",
+    "database": "cs340_menoldm"
+  }
+}
+

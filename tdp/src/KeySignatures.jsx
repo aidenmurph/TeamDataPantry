@@ -26,6 +26,7 @@ function KeySignatures() {
     <div>
       <h1>Classical Composition and Recording Exploration</h1>
       <nav>
+	<Link to="/">Home</Link> |
         <Link to="/composers">Composers</Link> |
         <Link to="/compositions">Compositions</Link> |
         <Link to="/movements">Movements</Link> |
