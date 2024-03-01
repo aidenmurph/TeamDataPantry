@@ -83,7 +83,7 @@ function Composers() {
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
-  return (
+ return (
     <div>
       <h1>Classical Composition and Recording Exploration</h1>
       <nav>
@@ -94,41 +94,80 @@ function Composers() {
         <Link to="/forms">Forms</Link> |
         <Link to="/instruments">Instruments</Link> |
         <Link to="/key_signatures">Key Signatures</Link>
-      </nav>
-
+     </nav>
       <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Birth Date</th>
-            <th>Death Date</th>
-            <th>Edit</th>
-            <th>Delete</th>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Birth Date</th>
+          <th>Death Date</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {composers.map((composer) => (
+          <tr key={composer.composerID}>
+            <td>{composer.composerID}</td>
+            <td>{composer.firstName}</td>
+            <td>{composer.lastName}</td>
+            <td>{composer.birthDate}</td>
+            <td>{composer.deathDate}</td>
+            <td>
+              <button onClick={() => handleEdit(composer.composerID)}>Edit</button>
+            </td>
+            <td>
+              <button onClick={() => handleDelete(composer.composerID)}>Delete</button>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {composers.map((composer, index) => (
-            <tr key={index}>
-              <td>{composer.firstName} {composer.lastName}</td>
-              <td>{composer.birthDate}</td>
-              <td>{composer.deathDate}</td>
-              {/* ... Edit and Delete buttons ... */}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div>
-        <input type="text" name="firstName" value={newComposer.firstName} onChange={handleInputChange} placeholder="First Name" />
-        <input type="text" name="lastName" value={newComposer.lastName} onChange={handleInputChange} placeholder="Last Name" />
-        <input type="date" name="birthDate" value={newComposer.birthDate} onChange={handleInputChange} placeholder="Birth Date" />
-        <input type="date" name="deathDate" value={newComposer.deathDate} onChange={handleInputChange} placeholder="Death Date (optional)" />
-        <button onClick={handleAddComposer}>Add Composer</button>
-      </div>
-    </div>
-  );
-}
+        ))}
+        {/* Row to add new composer */}
+        <tr>
+          <td></td> {/* Empty cell for the ID which is auto-generated */}
+          <td>
+            <input
+              type="text"
+              name="firstName"
+              value={newComposer.firstName}
+              onChange={handleInputChange}
+              placeholder="First Name"
+            />
+          </td>
+          <td>
+            <input
+              type="text"
+              name="lastName"
+              value={newComposer.lastName}
+              onChange={handleInputChange}
+              placeholder="Last Name"
+            />
+          </td>
+          <td>
+            <input
+              type="date"
+              name="birthDate"
+              value={newComposer.birthDate}
+              onChange={handleInputChange}
+            />
+          </td>
+          <td>
+            <input
+              type="date"
+              name="deathDate"
+              value={newComposer.deathDate}
+              onChange={handleInputChange}
+              placeholder="Death Date (optional)"
+            />
+          </td>
+          <td colSpan="2">
+            <button onClick={handleAddComposer}>Add Composer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+);}
 
 export default Composers;
-
-
