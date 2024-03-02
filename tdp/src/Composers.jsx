@@ -19,7 +19,7 @@ function Composers() {
 
  const fetchComposers = async () => {
     try {
-      const response = await fetch('http://localhost:3002/api/composers');
+      const response = await fetch(`http://flip2.engr.oregonstate.edu:8134/api/composers`);
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
       }
@@ -41,7 +41,7 @@ function Composers() {
 
   const handleAddComposer = async () => {
     try {
-      const response = await fetch('http://localhost:3002/api/composers', {
+      const response = await fetch(`http://flip2.engr.oregonstate.edu:8134/api/composers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ function Composers() {
 
   const saveEdit = async () => {
     try {
-      const response = await fetch(`http://localhost:3002/api/composers/${editingComposerId}`, {
+      const response = await fetch(`http://flip2.engr.oregonstate.edu:8134/api/composers/${editingComposerId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ function Composers() {
 
   const handleDelete = async (composerId) => {
     try {
-      const response = await fetch(`http://localhost:3002/api/composers/${composerId}`, {
+      const response = await fetch(`http://flip2.engr.oregonstate.edu:8134/api/composers/${composerId}`, {
         method: 'DELETE',
       });
       if (response.ok) {
