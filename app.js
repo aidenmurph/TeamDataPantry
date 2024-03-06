@@ -14,4 +14,3 @@ const port = process.env.PORT || 8446;
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
 });
-
