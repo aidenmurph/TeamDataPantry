@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './HomePage';
-import Composers from './Composers';
-import Compositions from './Compositions';
-import Movements from './Movements';
-import Catalogues from './Catalogues';
-import Forms from './Forms';
-import Instruments from './Instruments';
-import KeySignatures from './KeySignatures';
+import Composers from './ComposersPage';
+import Compositions from './CompositionsPage';
+import Movements from './MovementsPage';
+import Catalogues from './CataloguesPage';
+import Forms from './FormsPage';
+import Instruments from './InstrumentsPage';
+import KeySignatures from './KeySignaturesPage';
 // Import other page components here
 
 function App() {
@@ -27,4 +27,3 @@ function App() {
 }
 
 export default App;
-

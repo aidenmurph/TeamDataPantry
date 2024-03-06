@@ -123,4 +123,3 @@ function Movements() {
 }
 
 export default Movements;
-
