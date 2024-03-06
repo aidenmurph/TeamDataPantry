@@ -1,10 +1,15 @@
 // Import dependencies
-import composers from '../models/composers-model';
+import {
+  createComposer,
+  retrieveComposers,
+  updateComposer,
+  deleteComposer
+} from '../models/composers-model.mjs';
 
 // CREATE Controller *******************************************
-async function createComposer(req, res) {
+async function createComposerController(req, res) {
   try {
-    const result = await composers.createComposer(req.body);
+    const result = await createComposer(req.body);
     res.json(result);
   } catch (err) {
     console.error(err);
@@ -13,9 +18,9 @@ async function createComposer(req, res) {
 }
 
 // RETRIEVE Controllers ****************************************
-async function getAllComposers(req, res) {
+async function retrieveComposersController(req, res) {
     try {
-      const rows = await composers.retrieveComposers();
+      const rows = await retrieveComposers();
       res.json(rows);
     } catch (err) {
       console.error(err);
@@ -24,9 +29,9 @@ async function getAllComposers(req, res) {
   }
 
 // UPDATE Controller *******************************************
-async function updateComposer(req, res) {
+async function updateComposerController(req, res) {
   try {
-    const result = await composers.updateComposer(req.params.id, req.body);
+    const result = await updateComposer(req.params.id, req.body);
     res.json(result);
   } catch (err) {
     console.error(err);
@@ -35,9 +40,9 @@ async function updateComposer(req, res) {
 }
 
 // DELETE Controller *******************************************
-async function deleteComposer(req, res) {
+async function deleteComposerController(req, res) {
   try {
-    const result = await composers.deleteComposer(req.params.id);
+    const result = await deleteComposer(req.params.id);
     res.json(result);
   } catch (err) {
     console.error(err);
@@ -46,8 +51,8 @@ async function deleteComposer(req, res) {
 }
 
 export {
-  getAllComposers,
-  createComposer,
-  updateComposer,
-  deleteComposer
+  createComposerController,
+  retrieveComposersController,
+  updateComposerController,
+  deleteComposerController
 };

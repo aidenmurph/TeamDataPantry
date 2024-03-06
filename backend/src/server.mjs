@@ -1,8 +1,11 @@
 // Import dependencies
 import express from 'express';
-import bodyParser from 'body-parser';
 import cors from 'cors';
-import { getAllComposers, createComposer, updateComposer, deleteComposer } from './controllers/composers-controller.mjs';
+import { 
+  createComposerController, 
+  retrieveComposersController, 
+  updateComposerController, 
+  deleteComposerController } from './controllers/composers-controller.mjs';
 import 'dotenv/config';
 
 // Configure Middleware
@@ -10,7 +13,7 @@ const app = express();
 const port = process.env.PORT || 8134;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Test endpoint
 app.get('/', (req, res) => {
@@ -19,10 +22,10 @@ app.get('/', (req, res) => {
 
 // ROUTE HANDLING **********************************************
 // Composers
-app.get('/api/composers', getAllComposers);
-app.post('/api/composers', createComposer);
-app.put('/api/composers/:id', updateComposer);
-app.delete('/api/composers/:id', deleteComposer);
+app.post('/api/composers', createComposerController);
+app.get('/api/composers', retrieveComposersController);
+app.put('/api/composers/:id', updateComposerController);
+app.delete('/api/composers/:id', deleteComposerController);
 
 // Start the server
 app.listen(port, () => {

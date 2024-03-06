@@ -1,7 +1,7 @@
 // Models for the Composers entity
 
 // Import database pool
-import pool from '../db';
+import pool from '../db.mjs';
 
 function createComposer(composer) {
   const query = `
