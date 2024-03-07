@@ -94,9 +94,10 @@ export const AddCataloguePage = () => {
                     name="composer" 
                     id="composer" 
                     className="add-input"
+                    defaultValue={"0"}
                     onChange={e => setComposerID(e.target.value)} >
                       {/* Query the composers in the database in order to populate the list */}
-                      <option value="0" selected>--Select Composer--</option>
+                      <option value="0">--Select Composer--</option>
                       {composerOptions.map((option, i) => (
                         <option key={i} value={option.composerID}>{option.firstName} {option.lastName}</option>
                       ))}

@@ -93,13 +93,13 @@ export const EditCataloguePage = ({ catalogueToEdit }) => {
                     name="composer" 
                     id="composer" 
                     className="add-input"
+                    value={composerID}
                     onChange={e => setComposerID(e.target.value)} >
                       {/* Query the composers in the database in order to populate the list */}
                       <option value="0">--Select Composer--</option>
                       {composerOptions.map((option, i) => (
                         <option key={i} 
                                 value={option.composerID}
-                                selected={option.composerID === composerID ? "selected" : undefined}
                           >{option.firstName} {option.lastName}</option>
                       ))}
                   </select>
