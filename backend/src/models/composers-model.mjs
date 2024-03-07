@@ -44,7 +44,7 @@ function retrieveComposers() {
 }
 
 function retrieveComposerID(composer) {
-  const query = `SELECT ComposerID FROM Composers WHERE firstName = ? AND lastName = ?`
+  const query = `SELECT composerID FROM Composers WHERE firstName = ? AND lastName = ?`
   const params = [
     composer.firstName,
     composer.lastName
