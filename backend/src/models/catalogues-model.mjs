@@ -28,7 +28,7 @@ function createCatalogue(catalogue) {
 }
 
 function retrieveCatalogues() {
-  const query = `SELECT * FROM Catalogues`
+  const query = `SELECT Catalogues.catalogueID, Catalogues.catalogueTitle, Catalogues.composerID, CONCAT(Composers.firstName, " ", Composers.lastName) AS composer, Catalogues.catalogueSymbol, Catalogues.authorFirst, Catalogues.authorLast, Catalogues.publicationYear FROM Catalogues INNER JOIN Composers ON Catalogues.composerID = Composers.composerID;`
 
   return pool.getConnection()
     .then(conn => {
@@ -44,7 +44,6 @@ function retrieveCatalogues() {
       throw err;
     });
 }
-
 
 function retrieveCatalogueByID(catalogueID) {
   const query = `SELECT * FROM Catalogues WHERE catalogueID = ?`;
