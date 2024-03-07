@@ -1,9 +1,0 @@
-{
-  "database": {
-    "host": "classmysql.engr.oregonstate.edu",
-    "user": "YOURUSER",
-    "password": "YOURPASS",
-    "database": "YOURDB"
-  }
-}
-
