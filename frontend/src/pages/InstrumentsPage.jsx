@@ -1,61 +1,55 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import InstrumentList from '../components/InstrumentList.mjs';
+import { server_url } from '../config';
 
-function Instruments() {
-  const [instruments, setInstruments] = useState([
-    'Accordion', 'Alto', 'Alto Flute', 'Alto Saxophone', 'Alto Trombone', 
-    'Baritone Saxophone', 'Bass', 'Bass Clarinet', 'Bass Flute', 'Bass Saxophone', 
-    'Bass Trombone', 'Bass Trumpet', 'Bassoon', 'Celesta', 'Chorus', 'Cimbasso', 
-    'Clarinet', 'Concert Flute', 'Contrabass Clarinet', 'Contrabass Saxophone', 
-    'Contrabass Trombone', 'Contrabassoon', 'Double Bass', 'English Horn', 'Flugelhorn', 
-    'French Horn', 'Guitar', 'Harp', 'Harpsichord', 'Oboe', 'Orchestra', 'Piano', 
-    'Piano Trio', 'Piccolo', 'Piccolo Trumpet', 'Soprano', 'Soprano Saxophone', 
-    'String Quartet', 'Tenor', 'Tenor Saxophone', 'Tenor Trombone', 'Timpani', 
-    'Trumpet', 'Tuba', 'Viola', 'Violin', 'Violoncello', 'Wagner Tuba', 'Wind Band'
-  ]);
+function InstrumentsPage() {
 
-  // Handler functions for edit and delete operations
-  const handleEdit = (instrumentName) => {
-    // Implement edit functionality
-  };
+  // Define state variable for displaying instruments
+  const [instruments, setInstruments] = useState([]);
 
-  const handleDelete = (instrumentName) => {
-    setInstruments(instruments.filter(instrument => instrument !== instrumentName));
-  };
-
-  const handleAdd = (newInstrumentName) => {
-    if (newInstrumentName && !instruments.includes(newInstrumentName)) {
-      setInstruments([...instruments, newInstrumentName]);
+  // RETRIEVE the entire list of instruments
+  const loadInstruments = useCallback(async () => {
+    try {
+      const response = await fetch(`${server_url}/api/instruments`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      const instruments = await response.json();
+      setInstruments(instruments);
+    } 
+    catch (error) {
+      console.error('Error fetching instruments:', error);
     }
-  };
+  }, [] );
+  
+    // DELETE a single instrument
+    const onDeleteInstrument = async id => {
+      const response = await fetch(`${server_url}/api/instruments/${id}`, { method: 'DELETE'});
+      if (response.ok) {
+        loadInstruments();
+      } else {
+          console.error(`Unable to delete Instrument with ID ${id}, status code = ${response.status}`)
+      }
+    }
+  
+    // LOAD all the instruments
+    useEffect(() => {
+      loadInstruments();
+    }, [loadInstruments]);
 
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>Instrument Names</th>
-            <th>Edit</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {instruments.map((instrument, index) => (
-            <tr key={index}>
-              <td>{instrument}</td>
-              <td><button onClick={() => handleEdit(instrument)}>Edit</button></td>
-              <td><button onClick={() => handleDelete(instrument)}>Delete</button></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div>
-        <input type="text" placeholder="Instrument Name" />
-        <button onClick={() => handleAdd()}>Add</button>
-        <button>Reset</button>
-      </div>
-    </div>
+    <>
+    <h2>Instruments</h2>
+    <p>See below a live list of the instrument in our database. Click the add button below to add a new instrument to the collection. Click the edit button to the right of a single instrument to modify that entry. Click the delete button to remove that entry.</p>
+    <InstrumentList 
+        instruments={instruments} 
+        onEdit={loadInstruments} 
+        onDelete={onDeleteInstrument}
+        onAdd={loadInstruments} 
+    />
+    </>
   );
 }
 
-export default Instruments;
+export default InstrumentsPage;
 

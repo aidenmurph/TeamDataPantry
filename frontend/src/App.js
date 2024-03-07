@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 
 // Import Components, styles, mdiea
-import Navigation from './components/Navigation';
+import Navigation from './components/Navigation.mjs';
 import './App.css';
 
 // Import main navigation pages
@@ -28,7 +28,6 @@ function App() {
   // Define state variables for collections
   const [composerToEdit, setComposerToEdit]   = useState([])
   const [catalogueToEdit, setCatalogueToEdit] = useState([])
-
 
   return (
     <>
