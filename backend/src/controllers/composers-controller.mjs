@@ -7,47 +7,57 @@ import {
 } from '../models/composers-model.mjs';
 
 // CREATE Controller *******************************************
-async function createComposerController(req, res) {
-  try {
-    const result = await createComposer(req.body);
-    res.json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error creating composer');
-  }
+function createComposerController(req, res) {
+  createComposer(req.body)
+    .then(result => {
+      console.log('Create result:', result);
+      res.json({ success: true, message: 'Composer created successfully' });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Error creating composer' });
+    });
 }
 
+
 // RETRIEVE Controllers ****************************************
-async function retrieveComposersController(req, res) {
-    try {
-      const rows = await retrieveComposers();
+function retrieveComposersController(req, res) {
+  retrieveComposers()
+    .then(rows => {
       res.json(rows);
-    } catch (err) {
+    })
+    .catch(err => {
       console.error(err);
       res.status(500).send('Error fetching composers');
-    }
-  }
+    });
+}
 
 // UPDATE Controller *******************************************
-async function updateComposerController(req, res) {
-  try {
-    const result = await updateComposer(req.params.id, req.body);
-    res.json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error updating composer');
-  }
+function updateComposerController(req, res) {
+  updateComposer(req.params.id, req.body)
+    .then(result => {
+      console.log('Update result:', result);
+      res.json({ success: true, message: 'Composer updated successfully' });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Error updating composer' });
+    });
 }
 
 // DELETE Controller *******************************************
-async function deleteComposerController(req, res) {
-  try {
-    const result = await deleteComposer(req.params.id);
-    res.json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error deleting composer');
-  }
+function deleteComposerController(req, res) {
+  console.log(`Attempting to delete composer with ID: ${req.params.id}`);
+  
+  deleteComposer(req.params.id)
+    .then(result => {
+      console.log('Delete result:', result);
+      res.json({ success: true, message: 'Composer deleted successfully' });
+    })
+    .catch(err => {
+      console.error('Error in deleteComposerController:', err);
+      res.status(500).json({ error: 'Error deleting composer' });
+    });
 }
 
 export {

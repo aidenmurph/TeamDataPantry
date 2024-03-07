@@ -24,7 +24,7 @@ import EditComposerPage from './pages/EditComposerPage';
 function App() {
 
   // Define state variables for collections
-  const [composer, setComposerToEdit] = useState([])
+  const [composerToEdit, setComposerToEdit] = useState([])
 
   return (
     <>
@@ -53,7 +53,7 @@ function App() {
 
             {/* Collection Editing Routes */}
             <Route path="/add-composer" element={<AddComposerPage />} />
-            <Route path="/edit-composer" element={<EditComposerPage composerToEdit={composer} />} />
+            <Route path="/edit-composer" element={<EditComposerPage composerToEdit={composerToEdit} />} />
           </Routes>
         </section>
       </main>

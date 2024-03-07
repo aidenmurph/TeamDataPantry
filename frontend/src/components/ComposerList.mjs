@@ -3,7 +3,7 @@ import ComposerRow from './ComposerRow.mjs';
 
 function ComposerList({ composers, onDelete, onEdit }) {
     return (
-        <table id="composers" class="composers">
+        <table id="composers" className="composers">
             <thead>
                 <tr>
                     <th>Name</th>

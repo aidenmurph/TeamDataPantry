@@ -13,6 +13,16 @@ export const AddComposerPage = () => {
   const redirect = useNavigate();
 
   const addComposer = async () => {
+    // Validate inputs
+    if (!firstName || !lastName || !birthDate) {
+      alert("First Name, Last Name, and Birth Date are required.");
+      return;
+    }
+    if (deathDate && new Date(deathDate) < new Date(birthDate)) {
+      alert("Death Date cannot occur before the Birth Date.");
+      return;
+    }
+
     const newComposer = {
       firstName,
       lastName,
@@ -26,7 +36,7 @@ export const AddComposerPage = () => {
       },
       body: JSON.stringify(newComposer),
     });
-    if(response.status === 201){
+    if(response.ok){
       console.log(`${firstName} ${lastName} was successfully added!`);
   } else {
       console.log(`Unable to add composer. Request returned status code ${response.status}`);
@@ -40,54 +50,56 @@ export const AddComposerPage = () => {
     <>
       <article>
         <h2>Add a Composer</h2>
-          <table class="table">
-                <legend>Fill out the fields below to add a composer to the database.</legend>
-                <tr>
-                  <td><label for="first-name">First Name: </label>
-                    <input 
-                      type="text" 
-                      name="first-name" 
-                      id="first-name" 
-                      class="add-input" 
-                      onChange={e => setFirstname(e.target.value)} 
-                      placeholder="First Name" />
-                  </td>
-                  <td><label for="last-name">Last Name: </label>
-                    <input 
-                      type="text" 
-                      name="last-name" 
-                      id="last-name" 
-                      class="add-input" 
-                      onChange={e => setLastName(e.target.value)} 
-                      placeholder="Last Name" />
-                  </td>
-                  <td><label for="birth-date">Birth Date: </label>
-                    <input
-                      type="date"
-                      max={formatDate(currentDate)}
-                      onChange={e => setBirthDate(e.target.value)} 
-                      id="birth-date" />
-                  </td>
-                  <td><label for="death-date">Death Date: </label>
-                    <input
-                      type="date"
-                      max={formatDate(currentDate)}
-                      onChange={e => setDeathDate(e.target.value)} 
-                      id="death-date" />
-                  </td>
-                  <td><input type="reset" value="Reset" /></td>
-                </tr>
+        <p>Fill out the fields below to add a composer to the database.</p>
+          <table className="table">
+            <tbody>
               <tr>
-                <td colspan="5" style={{ textAlign: "center" }}>
-                  <button 
-                    name="submit-button" 
-                    type="submit"
-                    onClick={addComposer}
-                    id="submit"
-                  >Submit</button>
+                <td><label htmlFor="first-name">First Name: </label>
+                  <input 
+                    type="text" 
+                    name="first-name" 
+                    id="first-name" 
+                    className="add-input" 
+                    onChange={e => setFirstname(e.target.value)} 
+                    placeholder="First Name" />
                 </td>
+                <td><label htmlFor="last-name">Last Name: </label>
+                  <input 
+                    type="text" 
+                    name="last-name" 
+                    id="last-name" 
+                    className="add-input" 
+                    onChange={e => setLastName(e.target.value)} 
+                    placeholder="Last Name" />
+                </td>
+                <td><label htmlFor="birth-date">Birth Date: </label>
+                  <input
+                    type="date"
+                    max={formatDate(currentDate)}
+                    onChange={e => setBirthDate(e.target.value)} 
+                    id="birth-date" />
+                </td>
+                <td><label htmlFor="death-date">Death Date: </label>
+                  <input
+                    type="date"
+                    max={formatDate(currentDate)}
+                    onChange={e => setDeathDate(e.target.value)} 
+                    id="death-date" />
+                </td>
+                <td><input type="reset" value="Reset" /></td>
               </tr>
-          </table>
+            <tr>
+              <td colSpan="5" style={{ textAlign: "center" }}>
+                <button 
+                  name="submit-button" 
+                  type="submit"
+                  onClick={addComposer}
+                  id="submit"
+                >Submit</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </article>
     </>
   )
