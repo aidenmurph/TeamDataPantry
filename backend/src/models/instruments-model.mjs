@@ -6,18 +6,25 @@ function createInstrument(instrument) {
   const params = [instrument.instrumentName];
 
   return pool.getConnection()
-  .then(conn => {
-    const resultPromise = conn.query(query, params);
-    resultPromise.finally(() => conn.release());
-    return resultPromise;
-  })
-  .then(result => {
-    return result;
-  })
-  .catch(err => {
-    console.error('Error in createInstrument:', err);
-    throw err;
-  });
+    .then(conn => {
+      return conn.query(query, params)
+        .then( () => {
+          conn.release();
+          return { success: true, message: 'Instrument created successfully.' };
+        })
+        .catch(err => {
+          conn.release();
+          console.error('Error in createInstrument:', err);
+          if (err.code === 'ER_DUP_ENTRY' || err.errno === 1062) {
+            return { error: true, message: 'Duplicate instrument name is not allowed.' };
+          }
+          throw err;
+        });
+    })
+    .catch(err => {
+      console.error('Error obtaining connection:', err);
+      throw err;
+    });
 }
 
 function retrieveInstruments() {
@@ -66,15 +73,22 @@ function updateInstrument(instrumentID, instrument) {
 
   return pool.getConnection()
     .then(conn => {
-      const resultPromise = conn.query(query, params);
-      resultPromise.finally(() => conn.release());
-      return resultPromise;
-    })
-    .then(result => {
-      return result;
+      return conn.query(query, params)
+        .then( () => {
+          conn.release();
+          return { success: true, message: 'Instrument updated successfully.' };
+        })
+        .catch(err => {
+          conn.release();
+          console.error('Error in updateInstrument:', err);
+          if (err.code === 'ER_DUP_ENTRY' || err.errno === 1062) {
+            return { error: true, message: 'Duplicate instrument name is not allowed.' };
+          }
+          throw err;
+        });
     })
     .catch(err => {
-      console.error('Error in updateInstrument:', err);
+      console.error('Error obtaining connection:', err);
       throw err;
     });
 }

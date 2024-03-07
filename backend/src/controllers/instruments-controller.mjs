@@ -5,12 +5,15 @@ import * as instruments from '../models/instruments-model.mjs';
 function createInstrumentController(req, res) {
   instruments.createInstrument(req.body)
     .then(result => {
-      console.log('Create result:', result);
-      res.json({ success: true, message: 'Instrument created successfully' });
+      if (result.error) {
+        res.status(400).json({ error: result.message });
+      } else {
+        res.json(result);
+      }
     })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({ error: 'Error creating instrument' });
+    .catch(error => {
+      console.error(`Unexpected error in createInstrumentController: ${error}`);
+      res.status(500).json({ error: 'An unexpected error occurred.' });
     });
 }
 
@@ -30,12 +33,15 @@ function retrieveInstrumentsController(req, res) {
 function updateInstrumentController(req, res) {
   instruments.updateInstrument(req.params.id, req.body)
     .then(result => {
-      console.log('Update result:', result);
-      res.json({ success: true, message: 'Instrument updated successfully' });
+      if (result.error) {
+        res.status(400).json({ error: result.message });
+      } else {
+        res.json(result);
+      }
     })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({ error: 'Error updating instrument' });
+    .catch(error => {
+      console.error(`Unexpected error in updateInstrumentController: ${error}`);
+      res.status(500).json({ error: 'An unexpected error occurred.' });
     });
 }
 

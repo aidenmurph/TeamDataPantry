@@ -23,11 +23,16 @@ function InstrumentList({ instruments, onDelete, onEdit, onAdd }) {
       },
       body: JSON.stringify(newInstrument)
     });
-    if(response.ok){
-      console.log(`"${instrumentName}" was successfully added!`);
-  } else {
-      console.log(`Unable to add instrument. Request returned status code ${response.status}`);
-  }
+    if(response.ok) {
+      console.log(`${instrumentName} has been successfully updated!`);
+    } else {
+      if (response.status === 400) {
+        alert("Duplicate instrument name is not allowed.");
+      } else {
+        console.error(`Unable to complete edit. Request returned status code ${response.status}`);
+      }
+      return;
+    }
   onAdd();
   };
 

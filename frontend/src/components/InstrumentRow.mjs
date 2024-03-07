@@ -25,7 +25,12 @@ function InstrumentRow({ instrument, onEdit, onDelete }) {
     if(response.ok) {
       console.log(`${instrumentName} has been successfully updated!`);
     } else {
-      console.error(`Unable to complete edit. Request returned status code ${response.status}`);
+      if (response.status === 400) {
+        alert("Duplicate instrument name is not allowed.");
+      } else {
+        console.error(`Unable to complete edit. Request returned status code ${response.status}`);
+      }
+      return;
     }
     toggleEdit();
     onEdit();
