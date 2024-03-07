@@ -4,6 +4,7 @@ import cors from 'cors';
 import * as composers from './controllers/composers-controller.mjs';
 import * as catalogues from './controllers/catalogues-controller.mjs';
 import * as instruments from './controllers/instruments-controller.mjs'
+import * as forms from './controllers/forms-controller.mjs'
 import 'dotenv/config';
 
 // Configure Middleware
@@ -39,6 +40,12 @@ app.post('/api/instruments', instruments.createInstrumentController);
 app.get('/api/instruments', instruments.retrieveInstrumentsController);
 app.put('/api/instruments/:id', instruments.updateInstrumentController);
 app.delete('/api/instruments/:id', instruments.deleteInstrumentController);
+
+// Forms
+app.post('/api/forms', forms.createFormController);
+app.get('/api/forms', forms.retrieveFormsController);
+app.put('/api/forms/:id', forms.updateFormController);
+app.delete('/api/forms/:id', forms.deleteFormController);
 
 // Start the server
 app.listen(port, () => {
