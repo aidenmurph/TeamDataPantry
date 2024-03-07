@@ -84,15 +84,14 @@ export const EditComposerPage = ({ composerToEdit }) => {
                 <td><label htmlFor="death-date">Death Date: </label>
                   <input
                     type="date"
-                    max={formatDate(currentDate)}
+                    max={formatDate(currentDate)}cher thematischer und systematischer Anordnung
                     onChange={e => setDeathDate(e.target.value)}
                     value={deathDate ? formatDate(deathDate) : ''} 
                     id="death-date" />
                 </td>
-                <td><input type="reset" value="Reset" /></td>
               </tr>
               <tr>
-                <td colSpan="5" style={{ textAlign: "center" }}>
+                <td colSpan="4" style={{ textAlign: "center" }}>
                   <button 
                     name="submit-button" 
                     type="submit"

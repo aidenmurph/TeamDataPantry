@@ -4,14 +4,15 @@
 -- Team Members: Jacob Barber, Aiden Murphy, Matthew Menold
 -- --------------------------------------------------------
 
-/* Read Queries */
+/* RETRIEVE Queries */
 
-/* Display Composers */
-SELECT 
-    CONCAT(firstName, " ", lastName) AS name, 
-    DATE_FORMAT(birthDate,'%M %e, %Y') AS birthDate, 
-    DATE_FORMAT(deathDate,'%M %e, %Y') As deathDate
-FROM Composers;
+/* Retrieve Composers */
+SELECT * FROM Composers;
+
+/* Retrieve Composer by ID */
+SELECT composerID FROM Composers 
+WHERE firstName = :firstName 
+AND lastName = :lastName
 
 /* Display Compositions */
 SELECT 
@@ -72,26 +73,25 @@ FROM (
     ORDER BY Compositions.compositionID, Movements.movementNum
 ) AS subquery;
 
-/* Display Catalogues */
+/* Retrieve Catalogues */
 SELECT 
     Catalogues.catalogueTitle AS title,
-    CONCAT(Composers.firstName, " ", Composers.lastName) AS composer, 
+    Composers.composerID,
+    Composers.firstName, " ", Composers.lastName) AS composer, 
     Catalogues.catalogueSymbol,
-    CONCAT(Catalogues.authorFirst, " ", Catalogues.authorLast) AS author,
+    Catalogues.authorFirst, 
+    Catalogues.authorLast,
     Catalogues.publicationYear
 FROM Catalogues
 INNER JOIN Composers ON Catalogues.composerID = Composers.composerID;
 
-/* Display Forms */
-SELECT formName FROM Forms;
+/* Retrieve Forms */
+SELECT * FROM Forms;
 
-/* Display Instruments */
-SELECT instrumentName FROM Instruments;
+/* Retrieve Instruments */
+SELECT * FROM Instruments;
 
-/* Display Key Signatures */
-SELECT * FROM KeySignatures;
-
-/* Create Queries */
+/* CREATE Queries */
 
 /* Add Composers */
 INSERT INTO Composers (

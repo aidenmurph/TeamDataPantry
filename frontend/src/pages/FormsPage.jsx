@@ -1,67 +1,55 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import FormList from '../components/FormList.mjs';
+import { server_url } from '../config';
 
-function Forms() {
-  const [forms, setForms] = useState([
-    'Ballade', 'Ballet', 'Cantata', 'Concerto', 'Dance', 'Elegy', 'Fantasia',
-    'Fugue', 'Intermezzo', 'Minuet', 'Moderato', 'Nocturne', 'Opera', 'Overture',
-    'Pavane', 'Prelude', 'Quartet', 'Requiem', 'Rhapsody', 'Sonata', 'Suite',
-    'Symphonic Poem', 'Symphony', 'Trio', 'Variations'
-  ]);
+function FormsPage() {
 
-  const [newFormName, setNewFormName] = useState('');
+  // Define state variable for displaying forms
+  const [forms, setForms] = useState([]);
 
-  const handleEdit = (formName) => {
-    // Implement edit functionality
-  };
-
-  const handleDelete = (formName) => {
-    setForms(forms.filter(form => form !== formName));
-  };
-
-  const handleAdd = () => {
-    if (newFormName && !forms.includes(newFormName)) {
-      setForms([...forms, newFormName]);
-      setNewFormName('');
+  // RETRIEVE the entire list of forms
+  const loadForms = useCallback(async () => {
+    try {
+      const response = await fetch(`${server_url}/api/forms`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      const forms = await response.json();
+      setForms(forms);
+    } 
+    catch (error) {
+      console.error('Error fetching forms:', error);
     }
-  };
-
-  const handleReset = () => {
-    setNewFormName('');
-  };
+  }, [] );
+  
+    // DELETE a single form
+    const onDeleteForm = async id => {
+      const response = await fetch(`${server_url}/api/forms/${id}`, { method: 'DELETE'});
+      if (response.ok) {
+        loadForms();
+      } else {
+          console.error(`Unable to delete Form with ID ${id}, status code = ${response.status}`)
+      }
+    }
+  
+    // LOAD all the forms
+    useEffect(() => {
+      loadForms();
+    }, [loadForms]);
 
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>Form Names</th>
-            <th>Edit</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {forms.map((form, index) => (
-            <tr key={index}>
-              <td>{form}</td>
-              <td><button onClick={() => handleEdit(form)}>Edit</button></td>
-              <td><button onClick={() => handleDelete(form)}>Delete</button></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div>
-        <input 
-          type="text" 
-          value={newFormName} 
-          onChange={(e) => setNewFormName(e.target.value)} 
-          placeholder="Form Name" 
-        />
-        <button onClick={handleAdd}>Add</button>
-        <button onClick={handleReset}>Reset</button>
-      </div>
-    </div>
+    <>
+    <h2>Forms</h2>
+    <p>See below a live list of the forms in our database. Click the add button below to add a new form to the collection. Click the edit button to the right of a single form to modify that entry. Click the delete button to remove that entry.</p>
+    <FormList 
+        forms={forms} 
+        onEdit={loadForms} 
+        onDelete={onDeleteForm}
+        onAdd={loadForms} 
+    />
+    </>
   );
 }
 
-export default Forms;
+export default FormsPage;
 
