@@ -6,6 +6,7 @@ function Navigation() {
     <nav className="global">
         <Link to="/">Home</Link>
         <Link to="/composers">Composers</Link>
+        <Link to="/catalogues">Catalogues</Link>
         <Link to="/compositions">Compositions</Link>
         <Link to="/movements">Movements</Link>
         <Link to="/forms">Forms</Link>
