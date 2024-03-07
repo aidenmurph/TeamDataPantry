@@ -78,6 +78,8 @@ function Movements() {
 
   return (
     <div>
+      <h2>Movements</h2>
+      <p>See a live list of the movements for each composition in our database. Click the edit button to the right of a single movement to modify that entry. Click the delete button to remove that entry.</p>
       <table>
         <thead>
           <tr>

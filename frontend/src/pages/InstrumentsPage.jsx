@@ -40,7 +40,7 @@ function InstrumentsPage() {
   return (
     <>
     <h2>Instruments</h2>
-    <p>See below a live list of the instrument in our database. Click the add button below to add a new instrument to the collection. Click the edit button to the right of a single instrument to modify that entry. Click the delete button to remove that entry.</p>
+    <p>See below a live list of the instruments in our database. Click the add button below to add a new instrument to the collection. Click the edit button to the right of a single instrument to modify that entry. Click the delete button to remove that entry.</p>
     <InstrumentList 
         instruments={instruments} 
         onEdit={loadInstruments} 

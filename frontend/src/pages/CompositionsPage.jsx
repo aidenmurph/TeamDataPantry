@@ -14,8 +14,8 @@ function Compositions() {
     },
     {
       title: 'Concerto for the Left Hand',
-      opus: 'M.82',
-      cat: '',
+      opus: '',
+      cat: 'M.82',
       composer: 'Maurice Ravel',
       form: 'Concerto',
       keySignature: 'D major',
@@ -24,8 +24,8 @@ function Compositions() {
     },
     {
       title: 'String Quartet in F Major',
-      opus: 'M.35',
-      cat: '',
+      opus: '',
+      cat: 'M.35',
       composer: 'Maurice Ravel',
       form: 'Quartet',
       keySignature: 'F major',
@@ -54,8 +54,8 @@ function Compositions() {
     },
     {
       title: 'Piano Concerto in G major',
-      opus: 'M.83',
-      cat: '',
+      opus: '',
+      cat: 'M.83',
       composer: 'Maurice Ravel',
       form: 'Concerto',
       keySignature: 'G major',
@@ -99,6 +99,8 @@ function Compositions() {
 
   return (
     <div>
+      <h2>Compositions</h2>
+      <p>See a live list of the compositions in our database. Click the add button below to add a new composition to the collection. Click the edit button to the right of a single composition to modify that entry. Click the delete button to remove that entry.</p>
       <div>
         <label htmlFor="composerFilter">Filter by Composer:</label>
         <select id="composerFilter" onChange={handleFilterChange}>
