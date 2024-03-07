@@ -1,14 +1,9 @@
 // Import dependencies
-import {
-  createComposer,
-  retrieveComposers,
-  updateComposer,
-  deleteComposer
-} from '../models/composers-model.mjs';
+import * as composers from '../models/composers-model.mjs';
 
 // CREATE Controller *******************************************
 function createComposerController(req, res) {
-  createComposer(req.body)
+  composers.createComposer(req.body)
     .then(result => {
       console.log('Create result:', result);
       res.json({ success: true, message: 'Composer created successfully' });
@@ -22,7 +17,7 @@ function createComposerController(req, res) {
 
 // RETRIEVE Controllers ****************************************
 function retrieveComposersController(req, res) {
-  retrieveComposers()
+  composers.retrieveComposers()
     .then(rows => {
       res.json(rows);
     })
@@ -34,7 +29,7 @@ function retrieveComposersController(req, res) {
 
 // UPDATE Controller *******************************************
 function updateComposerController(req, res) {
-  updateComposer(req.params.id, req.body)
+  composers.updateComposer(req.params.id, req.body)
     .then(result => {
       console.log('Update result:', result);
       res.json({ success: true, message: 'Composer updated successfully' });
@@ -49,7 +44,7 @@ function updateComposerController(req, res) {
 function deleteComposerController(req, res) {
   console.log(`Attempting to delete composer with ID: ${req.params.id}`);
   
-  deleteComposer(req.params.id)
+  composers.deleteComposer(req.params.id)
     .then(result => {
       console.log('Delete result:', result);
       res.json({ success: true, message: 'Composer deleted successfully' });
