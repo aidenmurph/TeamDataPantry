@@ -21,7 +21,7 @@ import KeySignaturesPage from './pages/KeySignaturesPage';
 import AddComposerPage from './pages/AddComposerPage';
 import EditComposerPage from './pages/EditComposerPage';
 import AddCataloguePage from './pages/AddCataloguePage';
-import EditCataloguerPage from './pages/EditCataloguePage';
+import EditCataloguePage from './pages/EditCataloguePage';
 
 function App() {
 
@@ -59,7 +59,7 @@ function App() {
             <Route path="/add-composer" element={<AddComposerPage />} />
             <Route path="/edit-composer" element={<EditComposerPage composerToEdit={composerToEdit} />} />
             <Route path="/add-catalogue" element={<AddCataloguePage />} />
-            <Route path="/edit-catalogue" element={<EditCataloguerPage catalogueToEdit={catalogueToEdit} />} />
+            <Route path="/edit-catalogue" element={<EditCataloguePage catalogueToEdit={catalogueToEdit} />} />
           </Routes>
         </section>
       </main>

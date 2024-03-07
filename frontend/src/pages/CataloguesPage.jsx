@@ -1,85 +1,71 @@
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import CatalogueList from '../components/CatalogueList.mjs';
+import { server_url } from '../config';
 
-function Catalogues() {
-  const catalogues = [
-    {
-      title: 'Catalogue de l\'oeuvre de Claude Debussy',
-      composer: 'Maurice Ravel',
-      symbol: 'M.',
-      author: 'Marcel Marnat',
-      publicationYear: '1986'
-    },
-    {
-      title: 'Antonín Dvořák, Complete Catalogue of Works',
-      composer: 'Antonín Dvořák',
-      symbol: 'H.',
-      author: 'Peter J. F. Herbert',
-      publicationYear: '1988'
-    },
-    {
-      title: 'Antonín Dvořák: thematický katalog',
-      composer: 'Antonín Dvořák',
-      symbol: 'B.',
-      author: 'Jarmil Burghauser',
-      publicationYear: '1996'
-    },
-    {
-      title: 'Dvořák\'s Werke ... ein vollständiges Verzeichnis in chronologischer thematischer und systematischer Anordnung',
-      composer: 'Antonín Dvořák',
-      symbol: 'S.',
-      author: 'Otakar Šourek',
-      publicationYear: '1917'
-    },
-    {
-      title: 'Antonín Dvořák, Complete Catalogue of Works',
-      composer: 'Antonín Dvořák',
-      symbol: 'T.',
-      author: 'Ian T. Trufitt',
-      publicationYear: '1974'
+function CataloguesPage({ setCatalogueToEdit }) {
+  
+  // Use the useNavigate module for redirection
+  const redirect = useNavigate();
+
+  // Define state variable for displaying catalogues
+  const [catalogues, setCatalogues] = useState([]);
+
+  // RETRIEVE the entire list of catalogues
+  const loadCatalogues = useCallback(() => {
+    fetch(`${server_url}/api/catalogues`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(catalogues => {
+        setCatalogues(catalogues);
+      })
+      .catch(error => {
+        console.error('Error fetching catalogues:', error);
+      });
+  }, []);
+
+  // UPDATE a single catalogue
+  const onEditCatalogue = async catalogue => {
+    setCatalogueToEdit(catalogue);
+    redirect('/edit-catalogue');
+  }
+
+  // DELETE a single catalogue
+  const onDeleteCatalogue = async id => {
+    const response = await fetch(`${server_url}/api/catalogues/${id}`, { method: 'DELETE'});
+    if (response.ok) {
+      loadCatalogues();
+    } else {
+        console.error(`Unable to delete Catalogue with ID ${id}, status code = ${response.status}`)
     }
-  ];
+  }
 
-  // Handlers for Edit and Delete actions - to be implemented
-  const handleEdit = (catalogueTitle) => {
-    // Implement edit functionality
-  };
-
-  const handleDelete = (catalogueTitle) => {
-    // Implement delete functionality
-  };
+  // LOAD all the catalogues
+  useEffect(() => {
+    loadCatalogues();
+  }, [loadCatalogues]);
 
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>Catalogue Title</th>
-            <th>Composer</th>
-            <th>Symbol</th>
-            <th>Author</th>
-            <th>Publication Year</th>
-            <th>Edit</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {catalogues.map((catalogue, index) => (
-            <tr key={index}>
-              <td>{catalogue.title}</td>
-              <td>{catalogue.composer}</td>
-              <td>{catalogue.symbol}</td>
-              <td>{catalogue.author}</td>
-              <td>{catalogue.publicationYear}</td>
-              <td><button onClick={() => handleEdit(catalogue.title)}>Edit</button></td>
-              <td><button onClick={() => handleDelete(catalogue.title)}>Delete</button></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <button onClick={() => { /* Implement add catalogue functionality */ }}>Add Catalogue</button>
-    </div>
+    <>
+      <h2>Catalogues</h2>
+      <p>See a live list of the catalogues in our database. Click the add button below to add a new catalogue to the collection. Click the edit button to the right of a single catalogue to modify that entry. Click the delete button to remove that entry.</p>
+      <CatalogueList 
+          catalogues={catalogues} 
+          onEdit={onEditCatalogue} 
+          onDelete={onDeleteCatalogue} 
+      />
+      <button
+          className="buttonGeneral addButton"
+          type="addCatalogue"
+          onClick={() => redirect("/add-catalogue")}
+          id="addCatalogue"
+          >Add New Catalogue</button>
+    </>
   );
 }
 
-export default Catalogues;
-
+export default CataloguesPage;
