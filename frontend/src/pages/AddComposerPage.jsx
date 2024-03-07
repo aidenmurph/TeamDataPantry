@@ -86,10 +86,9 @@ export const AddComposerPage = () => {
                     onChange={e => setDeathDate(e.target.value)} 
                     id="death-date" />
                 </td>
-                <td><input type="reset" value="Reset" /></td>
               </tr>
             <tr>
-              <td colSpan="5" style={{ textAlign: "center" }}>
+              <td colSpan="4" style={{ textAlign: "center" }}>
                 <button 
                   name="submit-button" 
                   type="submit"

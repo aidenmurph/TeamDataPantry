@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ComposerList from '../components/ComposerList.mjs';
 import { server_url } from '../config';
 
-function ComposersPage({ setComposer }) {
+function ComposersPage({ setComposerToEdit }) {
 
   // Use the useNavigate module for redirection
   const redirect = useNavigate();
@@ -28,7 +28,7 @@ function ComposersPage({ setComposer }) {
 
   // UPDATE a single composer
   const onEditComposer = async composer => {
-    setComposer(composer);
+    setComposerToEdit(composer);
     redirect('/edit-composer');
   }
 
