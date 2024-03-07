@@ -1,22 +1,13 @@
-// Models for the Composers entity
-
 // Import database pool
 import pool from '../db.mjs';
 
 function createComposer(composer) {
-  const query = `
-    INSERT INTO Composers (
-      firstName, 
-      lastName, 
-      birthDate, 
-      deathDate
-    ) 
-    VALUES (?, ?, ?, ?)`;
+  const query = `INSERT INTO Composers (firstName, lastName, birthDate, deathDate) VALUES (?, ?, ?, ?)`;
   const params = [
     composer.firstName,
     composer.lastName,
     composer.birthDate,
-    composer.deathDate
+    composer.deathDate === '' ? null : composer.deathDate
   ];
 
   return pool.getConnection()
@@ -53,10 +44,7 @@ function retrieveComposers() {
 }
 
 function retrieveComposerID(composer) {
-  const query = `
-    SELECT ComposerID FROM Composers
-    WHERE firstName = ?
-    AND lastName = ?`
+  const query = `SELECT ComposerID FROM Composers WHERE firstName = ? AND lastName = ?`
   const params = [
     composer.firstName,
     composer.lastName
@@ -64,7 +52,7 @@ function retrieveComposerID(composer) {
 
   return pool.getConnection()
     .then(conn => {
-      const resultPromise = conn.query(query);
+      const resultPromise = conn.query(query, params);
       resultPromise.finally(() => conn.release());
       return resultPromise;
     })
@@ -78,9 +66,7 @@ function retrieveComposerID(composer) {
 }
 
 function retrieveComposerByID(composerID) {
-  const query = `
-    SELECT * FROM Composers
-    WHERE composerID = ?`
+  const query = `SELECT * FROM Composers WHERE composerID = ?`;
   params = [composerID];
 
   return pool.getConnection()
@@ -99,14 +85,7 @@ function retrieveComposerByID(composerID) {
 }
 
 function updateComposer(composerID, composer) {
-  const query = `
-    UPDATE Composers 
-    SET 
-      firstName = ?, 
-      lastName = ?, 
-      birthDate = ?, 
-      deathDate = ? 
-    WHERE composerID = ?`;
+  const query = `UPDATE Composers SET firstName = ?, lastName = ?, birthDate = ?, deathDate = ? WHERE composerID = ?`;
   const params = [
     composer.firstName,
     composer.lastName,
@@ -131,9 +110,7 @@ function updateComposer(composerID, composer) {
 }
 
 function deleteComposer(composerId) {
-  const query = `
-    DELETE FROM Composers 
-    WHERE composerID = ?`
+  const query = `DELETE FROM Composers WHERE composerID = ?`
   const params = [composerId];
 
   return pool.getConnection()

@@ -10,9 +10,12 @@ import 'dotenv/config';
 
 // Configure Middleware
 const app = express();
-const port = process.env.PORT || 8134;
+const port = process.env.PORT_BACKEND;
+const frontend_url = `http://localhost:3000` //`${process.env.FRONTEND_URL_ROOT}:${process.env.PORT_FRONTEND}`
 
-app.use(cors());
+app.use(cors({
+  origin: frontend_url
+}));
 app.use(express.json());
 
 // Test endpoint
