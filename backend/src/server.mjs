@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import * as composers from './controllers/composers-controller.mjs';
 import * as catalogues from './controllers/catalogues-controller.mjs';
+import * as instruments from './controllers/instruments-controller.mjs'
 import 'dotenv/config';
 
 // Configure Middleware
@@ -32,6 +33,12 @@ app.post('/api/catalogues', catalogues.createCatalogueController);
 app.get('/api/catalogues', catalogues.retrieveCataloguesController);
 app.put('/api/catalogues/:id', catalogues.updateCatalogueController);
 app.delete('/api/catalogues/:id', catalogues.deleteCatalogueController);
+
+// Instruments
+app.post('/api/instruments', instruments.createInstrumentController);
+app.get('/api/instruments', instruments.retrieveInstrumentsController);
+app.put('/api/instruments/:id', instruments.updateInstrumentController);
+app.delete('/api/instruments/:id', instruments.deleteInstrumentController);
 
 // Start the server
 app.listen(port, () => {
