@@ -124,7 +124,7 @@ export const EditCataloguePage = ({ catalogueToEdit }) => {
                     type="text" 
                     name="author-first" 
                     id="author-first" 
-                    class="add-input" 
+                    className="add-input" 
                     placeholder="First Name" 
                     value={authorFirst}
                     onChange={e => setAuthorFirst(e.target.value)} />
@@ -136,7 +136,7 @@ export const EditCataloguePage = ({ catalogueToEdit }) => {
                   type="text" 
                   name="author-last" 
                   id="author-last" 
-                  class="add-input" 
+                  className="add-input" 
                   placeholder="Last Name" 
                   value={authorLast}
                   onChange={e => setAuthorLast(e.target.value)} />

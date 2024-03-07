@@ -133,7 +133,7 @@ export const AddCataloguePage = () => {
                   type="text" 
                   name="author-last" 
                   id="author-last" 
-                  class="add-input" 
+                  className="add-input" 
                   placeholder="Last Name" 
                   onChange={e => setAuthorLast(e.target.value)} />
                 </td>

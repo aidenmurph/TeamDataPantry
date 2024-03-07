@@ -9,7 +9,7 @@ function CatalogueRow({ catalogue, onEdit, onDelete }) {
       <td>{catalogue.authorFirst} {catalogue.authorLast}</td>
       <td>{catalogue.publicationYear}</td>
       <td><button onClick={() => onEdit(catalogue)}>Edit</button></td>
-      <td><button onClick={() => onDelete(catalogue.composerID)}>Delete</button></td>
+      <td><button onClick={() => onDelete(catalogue.catalogueID)}>Delete</button></td>
     </tr>
   );
 }
