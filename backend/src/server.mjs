@@ -6,6 +6,7 @@ import {
   retrieveComposersController, 
   updateComposerController, 
   deleteComposerController } from './controllers/composers-controller.mjs';
+import * as catalogues from './controllers/catalogues-controller.mjs';
 import 'dotenv/config';
 
 // Configure Middleware
@@ -29,6 +30,12 @@ app.post('/api/composers', createComposerController);
 app.get('/api/composers', retrieveComposersController);
 app.put('/api/composers/:id', updateComposerController);
 app.delete('/api/composers/:id', deleteComposerController);
+
+// Catalogues
+app.post('/api/catalogues', catalogues.createCatalogueController);
+app.get('/api/catalogues', catalogues.retrieveCataloguesController);
+app.put('/api/catalogues/:id', catalogues.updateCatalogueController);
+app.delete('/api/catalogues/:id', catalogues.deleteCatalogueController);
 
 // Start the server
 app.listen(port, () => {

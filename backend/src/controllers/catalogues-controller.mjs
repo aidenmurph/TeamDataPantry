@@ -1,68 +1,62 @@
 // Import dependencies
-import {
-  createComposer,
-  retrieveComposers,
-  updateComposer,
-  deleteComposer
-} from '../models/composers-model.mjs';
+import * as catalogues from '../models/catalogues-model.mjs';
 
 // CREATE Controller *******************************************
-function createComposerController(req, res) {
-  createComposer(req.body)
+function createCatalogueController(req, res) {
+  catalogues.createCatalogue(req.body)
     .then(result => {
       console.log('Create result:', result);
-      res.json({ success: true, message: 'Composer created successfully' });
+      res.json({ success: true, message: 'Catalogue created successfully' });
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: 'Error creating composer' });
+      res.status(500).json({ error: 'Error creating catalogue' });
     });
 }
 
-
 // RETRIEVE Controllers ****************************************
-function retrieveComposersController(req, res) {
-  retrieveComposers()
+function retrieveCataloguesController(req, res) {
+  catalogues.retrieveCatalogues()
     .then(rows => {
       res.json(rows);
     })
     .catch(err => {
       console.error(err);
-      res.status(500).send('Error fetching composers');
+      res.status(500).send('Error fetching catalogues');
     });
 }
 
 // UPDATE Controller *******************************************
-function updateComposerController(req, res) {
-  updateComposer(req.params.id, req.body)
+function updateCatalogueController(req, res) {
+  catalogues.updateCatalogue(req.params.id, req.body)
     .then(result => {
       console.log('Update result:', result);
-      res.json({ success: true, message: 'Composer updated successfully' });
+      res.json({ success: true, message: 'Catalogue updated successfully' });
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: 'Error updating composer' });
+      res.status(500).json({ error: 'Error updating catalogue' });
     });
 }
 
 // DELETE Controller *******************************************
-function deleteComposerController(req, res) {
-  console.log(`Attempting to delete composer with ID: ${req.params.id}`);
+function deleteCatalogueController(req, res) {
+  console.log(`Attempting to delete catalogue with ID: ${req.params.id}`);
   
-  deleteComposer(req.params.id)
+  catalogues.deleteCatalogue(req.params.id)
     .then(result => {
       console.log('Delete result:', result);
-      res.json({ success: true, message: 'Composer deleted successfully' });
+      res.json({ success: true, message: 'Catalogue deleted successfully' });
     })
     .catch(err => {
-      console.error('Error in deleteComposerController:', err);
-      res.status(500).json({ error: 'Error deleting composer' });
+      console.error('Error in deleteCatalogueController:', err);
+      res.status(500).json({ error: 'Error deleting catalogue' });
     });
 }
 
 export {
-  createComposerController,
-  retrieveComposersController,
-  updateComposerController,
-  deleteComposerController
+  createCatalogueController,
+  retrieveCataloguesController,
+  updateCatalogueController,
+  deleteCatalogueController
 };

@@ -1,13 +1,15 @@
 // Import database pool
 import pool from '../db.mjs';
 
-function createComposer(composer) {
-  const query = `INSERT INTO Composers (firstName, lastName, birthDate, deathDate) VALUES (?, ?, ?, ?)`;
+function createCatalogue(catalogue) {
+  const query = `INSERT INTO Catalogues (composerID, catalogueTitle, catalogueSymbol, authorFirst, authorLast, publicationYear) VALUES (?, ?, ?, ?, ?, ?)`;
   const params = [
-    composer.firstName,
-    composer.lastName,
-    composer.birthDate,
-    composer.deathDate === '' ? null : composer.deathDate
+    catalogue.composerID,
+    catalogue.catalogueTitle,
+    catalogue.catalogueSymbol,
+    catalogue.authorFirst,
+    catalogue.authorLast,
+    catalogue.publicationYear
   ];
 
   return pool.getConnection()
@@ -20,13 +22,13 @@ function createComposer(composer) {
     return result;
   })
   .catch(err => {
-    console.error('Error in createComposer:', err);
+    console.error('Error in createCatalogue:', err);
     throw err;
   });
 }
 
-function retrieveComposers() {
-  const query = `SELECT * FROM Composers`
+function retrieveCatalogues() {
+  const query = `SELECT * FROM Catalogues`
 
   return pool.getConnection()
     .then(conn => {
@@ -38,17 +40,15 @@ function retrieveComposers() {
       return rows;
     })
     .catch(err => {
-      console.error('Error in retrieveComposers:', err);
+      console.error('Error in retrieveCatalogues:', err);
       throw err;
     });
 }
 
-function retrieveComposerID(composer) {
-  const query = `SELECT ComposerID FROM Composers WHERE firstName = ? AND lastName = ?`
-  const params = [
-    composer.firstName,
-    composer.lastName
-  ]
+
+function retrieveCatalogueByID(catalogueID) {
+  const query = `SELECT * FROM Catalogues WHERE catalogueID = ?`;
+  params = [catalogueID];
 
   return pool.getConnection()
     .then(conn => {
@@ -60,38 +60,21 @@ function retrieveComposerID(composer) {
       return rows;
     })
     .catch(err => {
-      console.error('Error in retrieveComposerID:', err);
+      console.error('Error in retrieveCatalogueByID:', err);
       throw err;
     });
 }
 
-function retrieveComposerByID(composerID) {
-  const query = `SELECT * FROM Composers WHERE composerID = ?`;
-  params = [composerID];
-
-  return pool.getConnection()
-    .then(conn => {
-      const resultPromise = conn.query(query, params);
-      resultPromise.finally(() => conn.release());
-      return resultPromise;
-    })
-    .then(rows => {
-      return rows;
-    })
-    .catch(err => {
-      console.error('Error in retrieveComposerByID:', err);
-      throw err;
-    });
-}
-
-function updateComposer(composerID, composer) {
-  const query = `UPDATE Composers SET firstName = ?, lastName = ?, birthDate = ?, deathDate = ? WHERE composerID = ?`;
+function updateCatalogue(catalogueID, catalogue) {
+  const query = `UPDATE Catalogues SET composerID = ?, catalogueTitle = ?, catalogueSymbol = ?, authorFirst = ?, authorLast = ?, publicationYear = ? WHERE catalogueID = ?;`;
   const params = [
-    composer.firstName,
-    composer.lastName,
-    composer.birthDate,
-    composer.deathDate,
-    composerID
+    catalogue.composerID,
+    catalogue.catalogueTitle,
+    catalogue.catalogueSymbol,
+    catalogue.authorFirst,
+    catalogue.authorLast,
+    catalogue.publicationYear,
+    catalogueID
   ];
 
   return pool.getConnection()
@@ -104,14 +87,14 @@ function updateComposer(composerID, composer) {
       return result;
     })
     .catch(err => {
-      console.error('Error in updateComposer:', err);
+      console.error('Error in updateCatalogue:', err);
       throw err;
     });
 }
 
-function deleteComposer(composerId) {
-  const query = `DELETE FROM Composers WHERE composerID = ?`
-  const params = [composerId];
+function deleteCatalogue(catalogueID) {
+  const query = `DELETE FROM Catalogues WHERE catalogueID = ?`
+  const params = [catalogueID];
 
   return pool.getConnection()
     .then(conn => {
@@ -123,16 +106,15 @@ function deleteComposer(composerId) {
       return result;
     })
     .catch(err => {
-    console.error('Error in deleteComposer:', err);
+    console.error('Error in deleteCatalogue:', err);
     throw err;
     });
 }
 
 export {
-  createComposer,
-  retrieveComposers,
-  retrieveComposerID,
-  retrieveComposerByID,
-  updateComposer,
-  deleteComposer
+  createCatalogue,
+  retrieveCatalogues,
+  retrieveCatalogueByID,
+  updateCatalogue,
+  deleteCatalogue
 };
