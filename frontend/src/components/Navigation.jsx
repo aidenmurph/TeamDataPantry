@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function Navigation() {
   return (
-    <nav class="global">
+    <nav className="global">
         <Link to="/">Home</Link>
         <Link to="/composers">Composers</Link>
         <Link to="/compositions">Compositions</Link>
