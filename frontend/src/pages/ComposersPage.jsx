@@ -35,10 +35,8 @@ function ComposersPage({ setComposer }) {
   // DELETE a single composer
   const onDeleteComposer = async id => {
     const response = await fetch(`${server_url}/api/composers/${id}`, { method: 'DELETE'});
-    if (response.status === 200) {
-        const getResponse = await fetch('/api/composers');
-        const composers = await getResponse.json();
-        setComposers(composers);
+    if (response.ok) {
+      loadComposers();
     } else {
         console.error(`Unable to delete Composer with ID ${id}, status code = ${response.status}`)
     }
@@ -60,7 +58,7 @@ function ComposersPage({ setComposer }) {
           onDelete={onDeleteComposer} 
       />
       <button
-          class="buttonGeneral addButton"
+          className="buttonGeneral addButton"
           type="addComposer"
           onClick={() => redirect("/add-composer")}
           id="addComposer"

@@ -11,7 +11,7 @@ function ComposerRow({ composer, onEdit, onDelete }) {
   const deathDate = composer.deathDate ? toLongDate(composer.deathDate) : '';
 
   return (
-    <tr class="composer">
+    <tr className="composer">
       <td>{composer.firstName} {composer.lastName}</td>
       <td>{birthDate}</td>
       <td>{deathDate}</td>    
