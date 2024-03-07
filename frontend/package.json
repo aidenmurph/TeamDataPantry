@@ -2,7 +2,6 @@
   "name": "classical-compositions-database",
   "version": "1.0.0",
   "description": "Database for Classical Compositions",
-  "proxy": "http://localhost:3000",
   "main": "index.js",
   "repository": {
     "type": "git",
