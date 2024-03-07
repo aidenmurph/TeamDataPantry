@@ -13,6 +13,16 @@ export const EditComposerPage = ({ composerToEdit }) => {
   const redirect = useNavigate();
 
   const editComposer = async () => {
+    // Validate inputs
+    if (!firstName || !lastName || !birthDate) {
+      alert("First Name, Last Name, and Birth Date are required.");
+      return;
+    }
+    if (deathDate && new Date(deathDate) < new Date(birthDate)) {
+      alert("Death Date cannot occur before the Birth Date.");
+      return;
+    }
+
     const response = await fetch(`${server_url}/api/composers/${composerToEdit.composerID}`, {
       method: 'PUT',
       body: JSON.stringify({ 
@@ -23,7 +33,7 @@ export const EditComposerPage = ({ composerToEdit }) => {
       }),
       headers: {'Content-Type': 'application/json',},
   });
-    if(response.status === 201){
+    if(response.ok){
       console.log(`${firstName} ${lastName} has been successfully updated!`);
   } else {
       console.error(`Unable to complete edit. Request returned status code ${response.status}`);

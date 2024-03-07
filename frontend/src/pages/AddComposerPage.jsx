@@ -13,6 +13,16 @@ export const AddComposerPage = () => {
   const redirect = useNavigate();
 
   const addComposer = async () => {
+    // Validate inputs
+    if (!firstName || !lastName || !birthDate) {
+      alert("First Name, Last Name, and Birth Date are required.");
+      return;
+    }
+    if (deathDate && new Date(deathDate) < new Date(birthDate)) {
+      alert("Death Date cannot occur before the Birth Date.");
+      return;
+    }
+
     const newComposer = {
       firstName,
       lastName,
