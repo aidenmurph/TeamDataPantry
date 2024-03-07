@@ -15,7 +15,6 @@ import MovementsPage from './pages/MovementsPage';
 import CataloguesPage from './pages/CataloguesPage';
 import FormsPage from './pages/FormsPage';
 import InstrumentsPage from './pages/InstrumentsPage';
-import KeySignaturesPage from './pages/KeySignaturesPage';
 
 // Import collection editing pages
 import AddComposerPage from './pages/AddComposerPage';
@@ -52,7 +51,6 @@ function App() {
             <Route path="/catalogues" element={<CataloguesPage setCatalogueToEdit={setCatalogueToEdit} />} />
             <Route path="/forms" element={<FormsPage />} />
             <Route path="/instruments" element={<InstrumentsPage />} />
-            <Route path="/key-signatures" element={<KeySignaturesPage />} />
 
             {/* Collection Editing Routes */}
             <Route path="/add-composer" element={<AddComposerPage />} />

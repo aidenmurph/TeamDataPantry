@@ -10,8 +10,7 @@ function Navigation() {
         <Link to="/compositions"> Compositions</Link> | 
         <Link to="/movements"> Movements </Link> | 
         <Link to="/forms"> Forms </Link> | 
-        <Link to="/instruments"> Instruments</Link> | 
-        <Link to="/key-signatures"> Key Signatures</Link>
+        <Link to="/instruments"> Instruments</Link>
     </nav>
   );
 }
