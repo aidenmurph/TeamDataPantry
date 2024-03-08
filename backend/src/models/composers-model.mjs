@@ -90,7 +90,7 @@ function updateComposer(composerID, composer) {
     composer.firstName,
     composer.lastName,
     composer.birthDate,
-    composer.deathDate,
+    composer.deathDate === '' ? null : composer.deathDate,
     composerID
   ];
 
