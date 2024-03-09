@@ -36,8 +36,9 @@ app.put('/api/catalogues/:id', catalogues.updateCatalogueController);
 app.delete('/api/catalogues/:id', catalogues.deleteCatalogueController);
 
 // Instruments
-app.post('/api/instruments', instruments.createInstrumentController);
-app.get('/api/instruments', instruments.retrieveInstrumentsController);
+app.post('/api/instruments/:familyid', instruments.createInstrumentController);
+app.get('/api/instrument-families', instruments.retrieveInstrumentFamiliesController);
+app.get('/api/instruments/by-family/:id', instruments.retrieveInstrumentsByFamilyController);
 app.put('/api/instruments/:id', instruments.updateInstrumentController);
 app.delete('/api/instruments/:id', instruments.deleteInstrumentController);
 

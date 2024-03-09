@@ -1,9 +1,12 @@
 // Import database pool
 import pool from '../db.mjs';
 
-function createInstrument(instrument) {
-  const query = `INSERT INTO Instruments (instrumentName) VALUES (?)`;
-  const params = [instrument.instrumentName];
+function createInstrument(familyID, instrument) {
+  const query = `INSERT INTO Instruments (instrumentName, familyID) VALUES (?, ?)`;
+  const params = [
+    instrument.instrumentName,
+    familyID
+  ];
 
   return pool.getConnection()
     .then(conn => {
@@ -27,12 +30,31 @@ function createInstrument(instrument) {
     });
 }
 
-function retrieveInstruments() {
-  const query = `SELECT * FROM Instruments`
+function retrieveInstrumentFamilies() {
+  const query = `SELECT * FROM InstrumentFamilies`
 
   return pool.getConnection()
     .then(conn => {
       const resultPromise = conn.query(query);
+      resultPromise.finally(() => conn.release());
+      return resultPromise;
+    })
+    .then(rows => {
+      return rows;
+    })
+    .catch(err => {
+      console.error('Error in retrieveInstruments:', err);
+      throw err;
+    });
+}
+
+function retrieveInstrumentsByFamily(familyID) {
+  const query = `SELECT * FROM Instruments WHERE familyID = ?`
+  const params = [familyID];
+
+  return pool.getConnection()
+    .then(conn => {
+      const resultPromise = conn.query(query, params);
       resultPromise.finally(() => conn.release());
       return resultPromise;
     })
@@ -114,7 +136,8 @@ function deleteInstrument(instrumentId) {
 
 export {
   createInstrument,
-  retrieveInstruments,
+  retrieveInstrumentFamilies,
+  retrieveInstrumentsByFamily,
   retrieveInstrumentByID,
   updateInstrument,
   deleteInstrument

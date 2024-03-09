@@ -3,7 +3,7 @@ import * as instruments from '../models/instruments-model.mjs';
 
 // CREATE Controller *******************************************
 function createInstrumentController(req, res) {
-  instruments.createInstrument(req.body)
+  instruments.createInstrument(req.params.familyid, req.body)
     .then(result => {
       if (result.error) {
         res.status(400).json({ error: result.message });
@@ -18,8 +18,19 @@ function createInstrumentController(req, res) {
 }
 
 // RETRIEVE Controllers ****************************************
-function retrieveInstrumentsController(req, res) {
-  instruments.retrieveInstruments()
+function retrieveInstrumentFamiliesController(req, res) {
+  instruments.retrieveInstrumentFamilies()
+    .then(rows => {
+      res.json(rows);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Error fetching instruments');
+    });
+}
+
+function retrieveInstrumentsByFamilyController(req, res) {
+  instruments.retrieveInstrumentsByFamily(req.params.id)
     .then(rows => {
       res.json(rows);
     })
@@ -62,7 +73,8 @@ function deleteInstrumentController(req, res) {
 
 export {
   createInstrumentController,
-  retrieveInstrumentsController,
+  retrieveInstrumentFamiliesController,
+  retrieveInstrumentsByFamilyController,
   updateInstrumentController,
   deleteInstrumentController
 };
