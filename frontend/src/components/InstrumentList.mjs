@@ -40,7 +40,7 @@ function InstrumentList({ family, instruments, onDelete, onEdit, onAdd }) {
     <table id="instruments" className="instruments">
       <thead>
         <tr>
-          <th colSpan="3">{family.familyName}{[1, 3, 4, 8].includes(family.familyID) ? 's' : ''}</th>
+          <th colSpan="3">{family.familyName}{[1, 3, 4, 7].includes(family.familyID) ? 's' : ''}</th>
         </tr>
       </thead>
       <tbody>
