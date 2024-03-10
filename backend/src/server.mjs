@@ -39,6 +39,8 @@ app.delete('/api/catalogues/:id', catalogues.deleteCatalogueController);
 // Compositions
 app.post('/api/compositions', compositions.createCompositionController);
 app.get('/api/compositions', compositions.retrieveCompositionsController);
+app.get('/api/composition/:id', compositions.retrieveCompositionByIDController);
+app.get('/api/movements/:id', compositions.retrieveMovementsController);
 app.put('/api/compositions/:id', compositions.updateCompositionController);
 app.delete('/api/compositions/:id', compositions.deleteCompositionController);
 
@@ -46,6 +48,8 @@ app.delete('/api/compositions/:id', compositions.deleteCompositionController);
 app.post('/api/instruments/:familyid', instruments.createInstrumentController);
 app.get('/api/instrument-families', instruments.retrieveInstrumentFamiliesController);
 app.get('/api/instruments/by-family/:id', instruments.retrieveInstrumentsByFamilyController);
+app.get('/api/instruments/featured/:id', instruments.retrieveFeaturedInstrumentsController);
+app.get('/api/instruments/instrumentation/:id', instruments.retrieveInstrumentationController);
 app.put('/api/instruments/:id', instruments.updateInstrumentController);
 app.delete('/api/instruments/:id', instruments.deleteInstrumentController);
 

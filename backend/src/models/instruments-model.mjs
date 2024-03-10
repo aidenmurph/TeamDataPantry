@@ -7,7 +7,7 @@ function createInstrument(familyID, instrument) {
     INSERT INTO Instruments (
       instrumentName, 
       familyID
-    ) VALUES (?, ?)`);
+    ) VALUES (?, ?);`);
   const params = [
     instrument.instrumentName,
     familyID
@@ -36,7 +36,7 @@ function createInstrument(familyID, instrument) {
 }
 
 function retrieveInstrumentFamilies() {
-  const query = `SELECT * FROM InstrumentFamilies`
+  const query = `SELECT * FROM InstrumentFamilies;`
 
   return pool.getConnection()
     .then(conn => {
@@ -54,7 +54,7 @@ function retrieveInstrumentFamilies() {
 }
 
 function retrieveInstrumentsByFamily(familyID) {
-  const query = `SELECT * FROM Instruments WHERE familyID = ?`
+  const query = `SELECT * FROM Instruments WHERE familyID = ?;`
   const params = [familyID];
 
   return pool.getConnection()
@@ -72,9 +72,41 @@ function retrieveInstrumentsByFamily(familyID) {
     });
 }
 
-function retrieveInstrumentByID(instrumentID) {
-  const query = `SELECT * FROM Instruments WHERE instrumentID = ?`;
-  params = [instrumentID];
+function retrieveFeaturedInstruments(compositionID) {
+  const query = formatSQL(`
+    SELECT Instruments.instrumentName, Instruments.familyID 
+    FROM FeaturedInstrumentation
+    INNER JOIN Instruments ON FeaturedInstrumentation.instrumentID = Instruments.instrumentID
+    WHERE FeaturedInstrumentation.compositionID = ?`);
+  const params = [compositionID];
+
+  return pool.getConnection()
+    .then(conn => {
+      const resultPromise = conn.query(query, params);
+      resultPromise.finally(() => conn.release());
+      return resultPromise;
+    })
+    .then(rows => {
+      return rows;
+    })
+    .catch(err => {
+      console.error('Error in retrieveInstrumentByID:', err);
+      throw err;
+    });
+}
+
+function retrieveInstrumentation(compositionID) {
+  const query = formatSQL(`
+    SELECT 
+      Instruments.instrumentName, 
+      Instruments.familyID,
+      InstrumentationGroups.instrumentKey,
+      InstrumentationGroups.numInstruments,
+      InstrumentationGroups,isSection 
+    FROM InstrumentationGroups
+    INNER JOIN Instruments ON InstrumentationGroups.instrumentID = Instruments.instrumentID
+    WHERE InstrumentationGroups.compositionID = ?`);
+  const params = [compositionID];
 
   return pool.getConnection()
     .then(conn => {
@@ -143,7 +175,8 @@ export {
   createInstrument,
   retrieveInstrumentFamilies,
   retrieveInstrumentsByFamily,
-  retrieveInstrumentByID,
+  retrieveFeaturedInstruments,
+  retrieveInstrumentation,
   updateInstrument,
   deleteInstrument
 };

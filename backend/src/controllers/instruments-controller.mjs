@@ -40,6 +40,28 @@ function retrieveInstrumentsByFamilyController(req, res) {
     });
 }
 
+function retrieveFeaturedInstrumentsController(req, res) {
+  instruments.retrieveFeaturedInstruments(req.params.id)
+    .then(rows => {
+      res.json(rows);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Error fetching instruments');
+    });
+}
+
+function retrieveInstrumentationController(req, res) {
+  instruments.retrieveInstrumentation(req.params.id)
+    .then(rows => {
+      res.json(rows);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Error fetching instruments');
+    });
+}
+
 // UPDATE Controller *******************************************
 function updateInstrumentController(req, res) {
   instruments.updateInstrument(req.params.id, req.body)
@@ -75,6 +97,8 @@ export {
   createInstrumentController,
   retrieveInstrumentFamiliesController,
   retrieveInstrumentsByFamilyController,
+  retrieveFeaturedInstrumentsController,
+  retrieveInstrumentationController,
   updateInstrumentController,
   deleteInstrumentController
 };
