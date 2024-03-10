@@ -1,8 +1,13 @@
 // Import database pool
 import pool from '../db.mjs';
+import { formatSQL } from '../modules/utilities.mjs'
 
 function createInstrument(familyID, instrument) {
-  const query = `INSERT INTO Instruments (instrumentName, familyID) VALUES (?, ?)`;
+  const query = formatSQL(`
+    INSERT INTO Instruments (
+      instrumentName, 
+      familyID
+    ) VALUES (?, ?)`);
   const params = [
     instrument.instrumentName,
     familyID

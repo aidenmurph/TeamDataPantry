@@ -1,8 +1,17 @@
 // Import database pool
 import pool from '../db.mjs';
+import { formatSQL } from '../modules/utilities.mjs'
 
 function createCatalogue(catalogue) {
-  const query = `INSERT INTO Catalogues (composerID, catalogueTitle, catalogueSymbol, authorFirst, authorLast, publicationYear) VALUES (?, ?, ?, ?, ?, ?)`;
+  const query = formatSQL(`
+    INSERT INTO Catalogues (
+      composerID, 
+      catalogueTitle, 
+      catalogueSymbol, 
+      authorFirst, 
+      authorLast, 
+      publicationYear
+    ) VALUES (?, ?, ?, ?, ?, ?)`);
   const params = [
     catalogue.composerID,
     catalogue.catalogueTitle,
@@ -28,7 +37,18 @@ function createCatalogue(catalogue) {
 }
 
 function retrieveCatalogues() {
-  const query = `SELECT Catalogues.catalogueID, Catalogues.catalogueTitle, Catalogues.composerID, CONCAT(Composers.firstName, " ", Composers.lastName) AS composer, Catalogues.catalogueSymbol, Catalogues.authorFirst, Catalogues.authorLast, Catalogues.publicationYear FROM Catalogues INNER JOIN Composers ON Catalogues.composerID = Composers.composerID;`
+  const query = formatSQL(`
+    SELECT 
+      Catalogues.catalogueID, 
+      Catalogues.catalogueTitle, 
+      Catalogues.composerID, 
+      CONCAT(Composers.firstName, " ", Composers.lastName) AS composer, 
+      Catalogues.catalogueSymbol, 
+      Catalogues.authorFirst, 
+      Catalogues.authorLast, 
+      Catalogues.publicationYear 
+    FROM Catalogues 
+    INNER JOIN Composers ON Catalogues.composerID = Composers.composerID;`);
 
   return pool.getConnection()
     .then(conn => {
@@ -65,7 +85,16 @@ function retrieveCatalogueByID(catalogueID) {
 }
 
 function updateCatalogue(catalogueID, catalogue) {
-  const query = `UPDATE Catalogues SET composerID = ?, catalogueTitle = ?, catalogueSymbol = ?, authorFirst = ?, authorLast = ?, publicationYear = ? WHERE catalogueID = ?;`;
+  const query = formatSQL(`
+  UPDATE Catalogues 
+  SET 
+    composerID = ?, 
+    catalogueTitle = ?, 
+    catalogueSymbol = ?, 
+    authorFirst = ?, 
+    authorLast = ?, 
+    publicationYear = ? 
+  WHERE catalogueID = ?;`);
   const params = [
     catalogue.composerID,
     catalogue.catalogueTitle,
