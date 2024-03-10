@@ -7,6 +7,7 @@ function Navigation() {
         <Link to="/">Home</Link> | 
         <Link to="/composers"> Composers</Link> | 
         <Link to="/catalogues"> Catalogues</Link> |
+        <Link to="/compositions"> Compositions</Link> |
         <Link to="/forms"> Forms </Link> | 
         <Link to="/instruments"> Instruments</Link>
     </nav>
