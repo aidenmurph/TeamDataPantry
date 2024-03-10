@@ -21,12 +21,15 @@ import AddComposerPage from './pages/AddComposerPage';
 import EditComposerPage from './pages/EditComposerPage';
 import AddCataloguePage from './pages/AddCataloguePage';
 import EditCataloguePage from './pages/EditCataloguePage';
+import AddCompositionPage from './pages/AddCompositionPage';
+import EditCompositionPage from './pages/EditCompositionPage';
 
 function App() {
 
-  // Define state variables for collections
+  // Define state variables for modifying collections
   const [composerToEdit, setComposerToEdit]   = useState([])
   const [catalogueToEdit, setCatalogueToEdit] = useState([])
+  const [compositionToEdit, setCompositionToEdit] = useState([])
 
   return (
     <>
@@ -46,9 +49,9 @@ function App() {
             {/* Main Navigation Routes */}
             <Route path="/" element={<HomePage />} />
             <Route path="/composers" element={<ComposersPage setComposerToEdit={setComposerToEdit} />} />
-            <Route path="/compositions" element={<CompositionsPage />} />
-            <Route path="/movements" element={<MovementsPage />} />
             <Route path="/catalogues" element={<CataloguesPage setCatalogueToEdit={setCatalogueToEdit} />} />
+            <Route path="/compositions" element={<CompositionsPage setCompositionToEdit={setCompositionToEdit} />} />
+            <Route path="/movements" element={<MovementsPage />} />
             <Route path="/forms" element={<FormsPage />} />
             <Route path="/instruments" element={<InstrumentsPage />} />
 
@@ -57,6 +60,8 @@ function App() {
             <Route path="/edit-composer" element={<EditComposerPage composerToEdit={composerToEdit} />} />
             <Route path="/add-catalogue" element={<AddCataloguePage />} />
             <Route path="/edit-catalogue" element={<EditCataloguePage catalogueToEdit={catalogueToEdit} />} />
+            <Route path="/add-composition" element={<AddCompositionPage />} />
+            <Route path="/edit-composition" element={<EditCompositionPage compositionToEdit={compositionToEdit} />} />
           </Routes>
         </section>
       </main>
