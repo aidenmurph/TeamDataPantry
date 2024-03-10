@@ -11,7 +11,6 @@ import './App.css';
 import HomePage from './pages/HomePage';
 import ComposersPage from './pages/ComposersPage';
 import CompositionsPage from './pages/CompositionsPage';
-import MovementsPage from './pages/MovementsPage';
 import CataloguesPage from './pages/CataloguesPage';
 import FormsPage from './pages/FormsPage';
 import InstrumentsPage from './pages/InstrumentsPage';
@@ -54,7 +53,6 @@ function App() {
             <Route path="/composers" element={<ComposersPage setComposerToEdit={setComposerToEdit} />} />
             <Route path="/catalogues" element={<CataloguesPage setCatalogueToEdit={setCatalogueToEdit} />} />
             <Route path="/compositions" element={<CompositionsPage setCompositionToEdit={setCompositionToEdit} />} />
-            <Route path="/movements" element={<MovementsPage />} />
             <Route path="/forms" element={<FormsPage />} />
             <Route path="/instruments" element={<InstrumentsPage />} />
 
