@@ -102,7 +102,7 @@ function retrieveInstrumentation(compositionID) {
       Instruments.familyID,
       InstrumentationGroups.instrumentKey,
       InstrumentationGroups.numInstruments,
-      InstrumentationGroups,isSection 
+      InstrumentationGroups.isSection 
     FROM InstrumentationGroups
     INNER JOIN Instruments ON InstrumentationGroups.instrumentID = Instruments.instrumentID
     WHERE InstrumentationGroups.compositionID = ?`);
