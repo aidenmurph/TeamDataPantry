@@ -16,6 +16,9 @@ import CataloguesPage from './pages/CataloguesPage';
 import FormsPage from './pages/FormsPage';
 import InstrumentsPage from './pages/InstrumentsPage';
 
+// Import detailed display pages
+import DisplayCompositionPage from './pages/DisplayCompositionPage';
+
 // Import collection editing pages
 import AddComposerPage from './pages/AddComposerPage';
 import EditComposerPage from './pages/EditComposerPage';
@@ -54,6 +57,9 @@ function App() {
             <Route path="/movements" element={<MovementsPage />} />
             <Route path="/forms" element={<FormsPage />} />
             <Route path="/instruments" element={<InstrumentsPage />} />
+
+            {/* Detailed Display Routes */}
+            <Route path="/composition/:compositionID" element={<DisplayCompositionPage />} />
 
             {/* Collection Editing Routes */}
             <Route path="/add-composer" element={<AddComposerPage />} />
