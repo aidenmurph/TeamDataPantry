@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ComposerList from '../components/ComposerList.mjs';
 import { server_url } from '../config';
+import * as fetchers from '../modules/fetchService.mjs'
 
 function ComposersPage({ setComposerToEdit }) {
 
@@ -12,19 +13,9 @@ function ComposersPage({ setComposerToEdit }) {
   const [composers, setComposers] = useState([]);
 
   // RETRIEVE the entire list of composers
-  const loadComposers = useCallback(async () => {
-    try {
-      const response = await fetch(`${server_url}/api/composers`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok ' + response.statusText);
-      }
-      const composers = await response.json();
-      setComposers(composers);
-    } 
-    catch (error) {
-      console.error('Error fetching composers:', error);
-    }
-  }, [] );
+  const loadComposers = useCallback(() => {
+    fetchers.fetchComposers(setComposers);
+  }, []);
 
   // UPDATE a single composer
   const onEditComposer = async composer => {

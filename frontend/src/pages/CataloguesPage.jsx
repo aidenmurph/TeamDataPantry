@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CatalogueList from '../components/CatalogueList.mjs';
 import { server_url } from '../config';
+import * as fetchers from '../modules/fetchService.mjs'
 
 function CataloguesPage({ setCatalogueToEdit }) {
   
@@ -13,19 +14,7 @@ function CataloguesPage({ setCatalogueToEdit }) {
 
   // RETRIEVE the entire list of catalogues
   const loadCatalogues = useCallback(() => {
-    fetch(`${server_url}/api/catalogues`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-      })
-      .then(catalogues => {
-        setCatalogues(catalogues);
-      })
-      .catch(error => {
-        console.error('Error fetching catalogues:', error);
-      });
+    fetchers.fetchCatalogues(setCatalogues);
   }, []);
 
   // UPDATE a single catalogue

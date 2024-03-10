@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import InstrumentList from '../components/InstrumentList.mjs';
 import { server_url } from '../config';
+import * as fetchers from '../modules/fetchService.mjs'
 
 function InstrumentsPage() {
 
@@ -9,82 +10,44 @@ function InstrumentsPage() {
   const [instruments, setInstruments] = useState([]);
 
   // RETRIEVE the list of instrument families
-  const loadFamilyList = useCallback(async () => {
-    try {
-      const response = await fetch(`${server_url}/api/instrument-families`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok ' + response.statusText);
-      }
-      const families = await response.json();
-      setFamilyList(families);
-    } 
-    catch (error) {
-      console.error('Error fetching list of instrument familiess:', error);
-    }
-  }, [] );
+  const loadFamilyList = useCallback(() => {
+    fetchers.fetchFamilyList(setFamilyList);
+  }, []);
 
   // RETRIEVE the entire list of instruments
-  const loadAllInstruments = useCallback(async () => {
-    try {
-      // Map each family to a fetch promise that retrieves the instruments for that family
-      const fetchPromises = familyList.map(family =>
-        fetch(`${server_url}/api/instruments/by-family/${family.familyID}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok ' + response.statusText);
-            }
-            return response.json();
-          })
-      );
-  
-      // Wait for all promises to resolve and update the instruments array
-      const allInstruments = await Promise.all(fetchPromises);
-      setInstruments(allInstruments);
-    } catch (error) {
-      console.error('Error fetching instruments:', error);
+  const loadAllInstruments = useCallback(() => {
+    if (familyList.length) {
+      fetchers.fetchAllInstruments(familyList, setInstruments);
     }
   }, [familyList]);
-  
 
   // RETRIEVE a single family's list of instruments and update the instruments array
   const loadInstrumentFamily = async (familyID) => {
-    try {
-      const response = await fetch(`${server_url}/api/instruments/by-family/${familyID}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok ' + response.statusText);
-      }
-      const instrumentFamily = await response.json();
-      let allInstruments = [...instruments];
-      allInstruments[familyID - 1] = instrumentFamily;
-      setInstruments(allInstruments);
-    } 
-    catch (error) {
-      console.error('Error fetching instruments:', error);
-    }
+    await fetchers.fetchInstrumentFamily(familyID, instruments, setInstruments);
   };
   
-    // DELETE a single instrument
-    const onDeleteInstrument = async (instrument) => {
-      const response = await fetch(`${server_url}/api/instruments/${instrument.instrumentID}`, { method: 'DELETE'});
-      if (response.ok) {
-        loadInstrumentFamily(instrument.familyID);
-      } else {
-          console.error(`Unable to delete Instrument with ID ${instrument.instrumentID}, status code = ${response.status}`)
-      }
+  // DELETE a single instrument
+  const onDeleteInstrument = async (instrument) => {
+    const response = await fetch(`${server_url}/api/instruments/${instrument.instrumentID}`, { method: 'DELETE'});
+    if (response.ok) {
+      loadInstrumentFamily(instrument.familyID);
+    } else {
+        console.error(`Unable to delete Instrument with ID ${instrument.instrumentID}, status code = ${response.status}`)
     }
-  
-    // LOAD the list of instrument families
-    useEffect(() => {
-      loadFamilyList();
-    }, [loadFamilyList]);
+  }
 
-    // LOAD all the instruments
-    useEffect(() => {
-      if (familyList.length > 0) {
-        loadAllInstruments();
-      }
-    }, [loadAllInstruments, familyList]);
-    
+  // LOAD the list of instrument families
+  useEffect(() => {
+    loadFamilyList();
+  }, [loadFamilyList]);
+
+  // LOAD all the instruments
+  useEffect(() => {
+    if (familyList.length > 0) {
+      loadAllInstruments();
+    }
+  }, [loadAllInstruments, familyList]);
+  
 
   return (
     <>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import FormList from '../components/FormList.mjs';
 import { server_url } from '../config';
+import * as fetchers from '../modules/fetchService.mjs'
 
 function FormsPage() {
 
@@ -8,19 +9,9 @@ function FormsPage() {
   const [forms, setForms] = useState([]);
 
   // RETRIEVE the entire list of forms
-  const loadForms = useCallback(async () => {
-    try {
-      const response = await fetch(`${server_url}/api/forms`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok ' + response.statusText);
-      }
-      const forms = await response.json();
-      setForms(forms);
-    } 
-    catch (error) {
-      console.error('Error fetching forms:', error);
-    }
-  }, [] );
+  const loadForms = useCallback(() => {
+    fetchers.fetchForms(setForms);
+  }, []);
   
     // DELETE a single form
     const onDeleteForm = async id => {
