@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function CompositionRow({ composition, onEdit, onDelete }) {
   return (
     <tr className="composition">
-      <td>{composition.titleEnglish}</td>
+      <td><Link to={`/composition/${composition.compositionID}`}>{composition.titleEnglish}</Link></td>
       <td>{composition.opusNum ? `Op. ${composition.opusNum}` : ''}</td>
       <td>{composition.catalogueNum}</td>
       <td>{composition.composer}</td>
