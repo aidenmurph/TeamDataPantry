@@ -147,21 +147,40 @@ const fetchComposition = (compositionID, setComposition) => {
     });
 };
 
+// Fetch all instruments for display as a list
+const fetchFullInstrumentation = async (compositionID, familyList, setInstrumentation) => {
+  try {
+    const fetchPromises = familyList.map(family =>
+      fetch(`${server_url}/api/instruments/instrumentation/composition-${compositionID}/family-${family.familyID}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response returned status: ' + response.statusText);
+          }
+          return response.json();
+        })
+    );
+    const fullInstrumentation = await Promise.all(fetchPromises);
+    setInstrumentation(fullInstrumentation);
+  } catch (error) {
+    console.error(`Error fetching full instrumentation for composition with ID ${compositionID}: `, error);
+  }
+};
+
 // Fetch the instrumentation for a single composition from the database
-const fetchInstrumentation = (compositionID, setInstrumentation) => {
-  fetch(`${server_url}/api/instruments/instrumentation/${compositionID}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response returned status: ' + response.statusText);
-      }
-      return response.json();
-    })
-    .then(instrumentation => {
-      setInstrumentation(instrumentation);
-    })
-    .catch(error => {
-      console.error(`Error fetching instrumentation for composition with ID ${compositionID}:`, error);
-    });
+const fetchInstrumentationFamily = async (compositionID, familyID, instrumentation, setInstrumentation) => {
+  try {
+    const response = await fetch(`${server_url}/api/instruments/instrumentation/composition-${compositionID}/family-${familyID}`);
+    if (!response.ok) {
+      throw new Error('Network response returned status: ' + response.statusText);
+    }
+    const instrumentationFamily = await response.json();
+    let fullInstrumentation = [...instrumentation];
+    fullInstrumentation[familyID - 1] = instrumentationFamily;
+    setInstrumentation(fullInstrumentation);
+  } 
+  catch (error) {
+    console.error(`Error fetching family of instruments with ID ${familyID} for composition ${compositionID} : `, error);
+  }
 };
 
 // Fetch the movements for a single composition from the database
@@ -190,6 +209,7 @@ export {
   fetchInstrumentFamily,
   fetchCompositions, 
   fetchComposition,
-  fetchInstrumentation,
+  fetchFullInstrumentation,
+  fetchInstrumentationFamily,
   fetchMovements
 };

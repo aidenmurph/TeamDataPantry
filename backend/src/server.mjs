@@ -8,6 +8,11 @@ import * as instruments from './controllers/instruments-controller.mjs'
 import * as forms from './controllers/forms-controller.mjs'
 import 'dotenv/config';
 
+// Apply BigInt serialization patch
+BigInt.prototype.toJSON = function () {
+  return parseInt(this);
+};
+
 // Configure Middleware
 const app = express();
 const port = process.env.PORT_BACKEND;
@@ -49,7 +54,7 @@ app.post('/api/instruments/:familyid', instruments.createInstrumentController);
 app.get('/api/instrument-families', instruments.retrieveInstrumentFamiliesController);
 app.get('/api/instruments/by-family/:id', instruments.retrieveInstrumentsByFamilyController);
 app.get('/api/instruments/featured/:id', instruments.retrieveFeaturedInstrumentsController);
-app.get('/api/instruments/instrumentation/:id', instruments.retrieveInstrumentationController);
+app.get('/api/instruments/instrumentation/composition-:id/family-:familyid', instruments.retrieveInstrumentationByFamilyController);
 app.put('/api/instruments/:id', instruments.updateInstrumentController);
 app.delete('/api/instruments/:id', instruments.deleteInstrumentController);
 

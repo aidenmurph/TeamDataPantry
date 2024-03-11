@@ -2,6 +2,8 @@
 import pool from '../db.mjs';
 import { formatSQL } from '../modules/utilities.mjs'
 
+// CREATE Queries **********************************************
+// Create a single instrument
 function createInstrument(familyID, instrument) {
   const query = formatSQL(`
     INSERT INTO Instruments (
@@ -35,6 +37,8 @@ function createInstrument(familyID, instrument) {
     });
 }
 
+// RETRIEVE Queries ********************************************
+// Retrieve the list of instrument families
 function retrieveInstrumentFamilies() {
   const query = `SELECT * FROM InstrumentFamilies;`
 
@@ -53,6 +57,7 @@ function retrieveInstrumentFamilies() {
     });
 }
 
+// Retrieve all instruments in a single family
 function retrieveInstrumentsByFamily(familyID) {
   const query = `SELECT * FROM Instruments WHERE familyID = ?;`
   const params = [familyID];
@@ -72,6 +77,7 @@ function retrieveInstrumentsByFamily(familyID) {
     });
 }
 
+// Retrieve the featured instruments for a single composition
 function retrieveFeaturedInstruments(compositionID) {
   const query = formatSQL(`
     SELECT Instruments.instrumentName, Instruments.familyID 
@@ -95,18 +101,54 @@ function retrieveFeaturedInstruments(compositionID) {
     });
 }
 
-function retrieveInstrumentation(compositionID) {
+// Retrieve the detailed instrumentation for a single composition by instrument family
+function retrieveInstrumentationByFamily(compositionID, familyID) {
   const query = formatSQL(`
-    SELECT 
-      Instruments.instrumentName, 
-      Instruments.familyID,
-      InstrumentationGroups.instrumentKey,
-      InstrumentationGroups.numInstruments,
-      InstrumentationGroups.isSection 
-    FROM InstrumentationGroups
-    INNER JOIN Instruments ON InstrumentationGroups.instrumentID = Instruments.instrumentID
-    WHERE InstrumentationGroups.compositionID = ?`);
-  const params = [compositionID];
+  SELECT 
+    Instruments.familyID,
+    CompositionPlayers.isSection,
+    COUNT(DISTINCT CompositionPlayers.playerID) AS numInstruments,
+    Instruments.instrumentName,
+    CompositionPlayers.instrumentKey,
+    COUNT(DISTINCT DoubledInstruments.playerID) AS numDoubling,
+    GROUP_CONCAT(DISTINCT 
+                 IF(DoubledInstruments.instrumentKey IS NOT NULL, 
+                    CONCAT(doubled.instrumentName, ' in ', DoubledInstruments.instrumentKey),
+                    doubled.instrumentName) 
+                 SEPARATOR ', ') AS doubles,
+    GROUP_CONCAT(DISTINCT 
+                 IF(DoubledInstruments.instrumentID IS NOT NULL, CompositionPlayers.chairNum, NULL) 
+                 SEPARATOR ', ') AS chairsDoubling
+  FROM CompositionPlayers
+  INNER JOIN Instruments ON CompositionPlayers.instrumentID = Instruments.instrumentID
+  LEFT JOIN DoubledInstruments ON DoubledInstruments.playerID = CompositionPlayers.playerID
+  LEFT JOIN Instruments AS doubled ON DoubledInstruments.instrumentID = doubled.instrumentID
+  WHERE CompositionPlayers.compositionID = ?
+  AND Instruments.familyID = ?
+  AND CompositionPlayers.isSection = FALSE
+  GROUP BY 
+      Instruments.instrumentID
+  UNION
+  SELECT 
+    Instruments.familyID,
+    CompositionPlayers.isSection,
+    COUNT(DISTINCT CompositionPlayers.playerID) AS numInstruments,
+    CONCAT(Instruments.instrumentName, 
+          ' ', 
+          IF(CompositionPlayers.chairNum != 0, CompositionPlayers.chairNum, '')) AS instrumentName, 
+    CompositionPlayers.instrumentKey,
+    NULL AS doubles,
+    NULL AS numDoubling,
+    NULL AS chairsDoubling
+  FROM CompositionPlayers
+  INNER JOIN Instruments ON CompositionPlayers.instrumentID = Instruments.instrumentID
+  WHERE CompositionPlayers.compositionID = ?
+  AND Instruments.familyID = ?
+  AND CompositionPlayers.isSection = TRUE
+  GROUP BY 
+    CompositionPlayers.playerID
+  ORDER BY familyID`);
+  const params = [compositionID, familyID, compositionID, familyID];
 
   return pool.getConnection()
     .then(conn => {
@@ -123,6 +165,8 @@ function retrieveInstrumentation(compositionID) {
     });
 }
 
+// UPDATE Queries **********************************************
+// Update the name of a single instrument
 function updateInstrument(instrumentID, instrument) {
   const query = `UPDATE Instruments SET instrumentName = ? WHERE instrumentID = ?`;
   const params = [
@@ -152,6 +196,8 @@ function updateInstrument(instrumentID, instrument) {
     });
 }
 
+// DELETE Queries **********************************************
+// Delete a single instrument
 function deleteInstrument(instrumentId) {
   const query = `DELETE FROM Instruments WHERE instrumentID = ?`
   const params = [instrumentId];
@@ -176,7 +222,7 @@ export {
   retrieveInstrumentFamilies,
   retrieveInstrumentsByFamily,
   retrieveFeaturedInstruments,
-  retrieveInstrumentation,
+  retrieveInstrumentationByFamily,
   updateInstrument,
   deleteInstrument
 };
