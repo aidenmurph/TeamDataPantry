@@ -52,7 +52,7 @@ function retrieveInstrumentFamilies() {
       return rows;
     })
     .catch(err => {
-      console.error('Error in retrieveInstruments:', err);
+      console.error('Error in retrieveInstruments: ', err);
       throw err;
     });
 }
@@ -72,7 +72,7 @@ function retrieveInstrumentsByFamily(familyID) {
       return rows;
     })
     .catch(err => {
-      console.error('Error in retrieveInstruments:', err);
+      console.error('Error in retrieveInstruments: ', err);
       throw err;
     });
 }
@@ -96,7 +96,7 @@ function retrieveFeaturedInstruments(compositionID) {
       return rows;
     })
     .catch(err => {
-      console.error('Error in retrieveInstrumentByID:', err);
+      console.error('Error in retrieveInstrumentByID: ', err);
       throw err;
     });
 }
@@ -108,6 +108,7 @@ function retrieveInstrumentationByFamily(compositionID, familyID) {
     Instruments.familyID,
     CompositionPlayers.isSection,
     COUNT(DISTINCT CompositionPlayers.playerID) AS numInstruments,
+    Instruments.instrumentID,
     Instruments.instrumentName,
     CompositionPlayers.instrumentKey,
     COUNT(DISTINCT DoubledInstruments.playerID) AS numDoubling,
@@ -126,15 +127,17 @@ function retrieveInstrumentationByFamily(compositionID, familyID) {
   WHERE CompositionPlayers.compositionID = ?
   AND Instruments.familyID = ?
   AND CompositionPlayers.isSection = FALSE
-  GROUP BY 
+  GROUP BY
+      CompositionPlayers.instrumentKey, 
       Instruments.instrumentID
   UNION
   SELECT 
     Instruments.familyID,
     CompositionPlayers.isSection,
     COUNT(DISTINCT CompositionPlayers.playerID) AS numInstruments,
-    CONCAT(Instruments.instrumentName, 
-          ' ', 
+    Instruments.instrumentID,
+    CONCAT(Instruments.instrumentName,
+          IF(Instruments.instrumentName = "Double Bass", 'es ', 's '), 
           IF(CompositionPlayers.chairNum != 0, CompositionPlayers.chairNum, '')) AS instrumentName, 
     CompositionPlayers.instrumentKey,
     NULL AS doubles,
@@ -145,9 +148,10 @@ function retrieveInstrumentationByFamily(compositionID, familyID) {
   WHERE CompositionPlayers.compositionID = ?
   AND Instruments.familyID = ?
   AND CompositionPlayers.isSection = TRUE
-  GROUP BY 
+  GROUP BY
+    CompositionPlayers.instrumentKey, 
     CompositionPlayers.playerID
-  ORDER BY familyID`);
+  ORDER BY familyID, instrumentID`);
   const params = [compositionID, familyID, compositionID, familyID];
 
   return pool.getConnection()
@@ -160,7 +164,7 @@ function retrieveInstrumentationByFamily(compositionID, familyID) {
       return rows;
     })
     .catch(err => {
-      console.error('Error in retrieveInstrumentByID:', err);
+      console.error('Error in retrieveInstrumentationByFamily: ', err);
       throw err;
     });
 }
