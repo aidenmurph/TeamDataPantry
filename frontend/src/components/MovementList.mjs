@@ -8,7 +8,6 @@ function MovementList({ movements }) {
                 <tr>
                     <th>Title</th>
                     <th>Key</th>
-                    <th>Tempo</th>
                 </tr>
             </thead>
             <tbody>
