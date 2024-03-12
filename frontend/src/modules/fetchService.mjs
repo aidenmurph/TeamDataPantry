@@ -40,6 +40,23 @@ const fetchCatalogues = (setCatalogues) => {
     });
 };
 
+// Fetch all catalogues for display as a list
+const fetchCataloguesForComposer = (composerID, setCatalogues) => {
+  fetch(`${server_url}/api/catalogues/for-composer-${composerID}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response returned status: ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then(catalogues => {
+      setCatalogues(catalogues);
+    })
+    .catch(error => {
+      console.error('Error fetching catalogues:', error);
+    });
+};
+
 // Form Fetchers
 
 // Fetch all forms for display as a list

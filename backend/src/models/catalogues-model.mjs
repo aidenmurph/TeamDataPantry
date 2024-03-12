@@ -84,6 +84,25 @@ function retrieveCatalogueByID(catalogueID) {
     });
 }
 
+function retrieveCataloguesForComposer(composerID) {
+  const query = `SELECT * FROM Catalogues WHERE composerID = ?`;
+  params = [composerID];
+
+  return pool.getConnection()
+    .then(conn => {
+      const resultPromise = conn.query(query, params);
+      resultPromise.finally(() => conn.release());
+      return resultPromise;
+    })
+    .then(rows => {
+      return rows;
+    })
+    .catch(err => {
+      console.error('Error in retrieveCataloguesForComposer:', err);
+      throw err;
+    });
+}
+
 function updateCatalogue(catalogueID, catalogue) {
   const query = formatSQL(`
   UPDATE Catalogues 
@@ -143,6 +162,7 @@ export {
   createCatalogue,
   retrieveCatalogues,
   retrieveCatalogueByID,
+  retrieveCataloguesForComposer,
   updateCatalogue,
   deleteCatalogue
 };

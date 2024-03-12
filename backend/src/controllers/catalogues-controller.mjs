@@ -26,6 +26,17 @@ function retrieveCataloguesController(req, res) {
     });
 }
 
+function retrieveCataloguesForComposerController(req, res) {
+  catalogues.retrieveCataloguesForComposer(req.params.id)
+    .then(rows => {
+      res.json(rows);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send(`Error fetching catalogues for composer with ID ${req.params.id}`);
+    });
+}
+
 // UPDATE Controller *******************************************
 function updateCatalogueController(req, res) {
   catalogues.updateCatalogue(req.params.id, req.body)
@@ -57,6 +68,7 @@ function deleteCatalogueController(req, res) {
 export {
   createCatalogueController,
   retrieveCataloguesController,
+  retrieveCataloguesForComposerController,
   updateCatalogueController,
   deleteCatalogueController
 };

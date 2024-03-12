@@ -38,6 +38,7 @@ app.delete('/api/composers/:id', composers.deleteComposerController);
 // Catalogues
 app.post('/api/catalogues', catalogues.createCatalogueController);
 app.get('/api/catalogues', catalogues.retrieveCataloguesController);
+app.get('/api/catalogues/for-composer-:id', catalogues.retrieveCataloguesController);
 app.put('/api/catalogues/:id', catalogues.updateCatalogueController);
 app.delete('/api/catalogues/:id', catalogues.deleteCatalogueController);
 
