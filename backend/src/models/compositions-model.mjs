@@ -1,33 +1,8 @@
-// Import database pool
+// Import dependencies
 import pool from '../db.mjs';
 import { formatSQL } from '../modules/utilities.mjs'
 
-function createComposition(composition) {
-  const query = `INSERT INTO Compositions (composerID, compositionTitle, compositionSymbol, authorFirst, authorLast, publicationYear) VALUES (?, ?, ?, ?, ?, ?)`;
-  const params = [
-    composition.composerID,
-    composition.compositionTitle,
-    composition.compositionSymbol,
-    composition.authorFirst,
-    composition.authorLast,
-    composition.publicationYear
-  ];
-
-  return pool.getConnection()
-  .then(conn => {
-    const resultPromise = conn.query(query, params);
-    resultPromise.finally(() => conn.release());
-    return resultPromise;
-  })
-  .then(result => {
-    return result;
-  })
-  .catch(err => {
-    console.error('Error in createComposition:', err);
-    throw err;
-  });
-}
-
+// Retreive composition info for displaying in the composition list
 function retrieveCompositions() {
   const query = formatSQL(`
     SELECT 
@@ -50,13 +25,13 @@ function retrieveCompositions() {
         Forms.formName
         FROM Forms
         WHERE Forms.formID = Compositions.formID) AS form,
-      IFNULL(Compositions.musicalKey, "") AS keySignature,
+      IFNULL(Compositions.keySignature, "") AS keySignature,
       (SELECT 
         GROUP_CONCAT(Instruments.instrumentName SEPARATOR ', ')
-        FROM CompositionInstruments
-        INNER JOIN Instruments ON CompositionInstruments.instrumentID = Instruments.instrumentID
-        WHERE CompositionInstruments.compositionID = Compositions.compositionID
-        GROUP BY CompositionInstruments.compositionID) AS instrumentation,
+        FROM FeaturedInstrumentation
+        INNER JOIN Instruments ON FeaturedInstrumentation.instrumentID = Instruments.instrumentID
+        WHERE FeaturedInstrumentation.compositionID = Compositions.compositionID
+        GROUP BY FeaturedInstrumentation.compositionID) AS instrumentation,
       Compositions.compositionYear 
     FROM Compositions 
     INNER JOIN Composers ON Compositions.composerID = Composers.composerID;`);
@@ -76,9 +51,62 @@ function retrieveCompositions() {
     });
 }
 
+// Retrieve composition info for displaying on a composition page 
 function retrieveCompositionByID(compositionID) {
-  const query = `SELECT * FROM Compositions WHERE compositionID = ?`;
-  params = [compositionID];
+  const query = formatSQL(`
+    SELECT
+      Compositions.titleEnglish,
+      Compositions.titleNative,
+      Compositions.subtitle,
+      IFNULL((SELECT 
+        GROUP_CONCAT(OpusNums.opNum SEPARATOR ', ')
+        FROM OpusNums
+        WHERE OpusNums.compositionID = Compositions.compositionID
+        GROUP BY OpusNums.compositionID), "") AS opusNum, 
+      Compositions.composerID, 
+      Composers.firstName AS composerFirst, 
+      Composers.lastName AS composerLast, 
+      (SELECT 
+        Forms.formName
+        FROM Forms
+        WHERE Forms.formID = Compositions.formID) AS form,
+      IFNULL(Compositions.keySignature, "") AS keySignature,
+      (SELECT 
+        GROUP_CONCAT(Instruments.instrumentName SEPARATOR ', ')
+        FROM FeaturedInstrumentation
+        INNER JOIN Instruments ON FeaturedInstrumentation.instrumentID = Instruments.instrumentID
+        WHERE FeaturedInstrumentation.compositionID = Compositions.compositionID
+        GROUP BY FeaturedInstrumentation.compositionID) AS featuredInstrumentation,
+      Compositions.compositionYear,
+      Compositions.infoText 
+    FROM Compositions 
+    INNER JOIN Composers ON Compositions.composerID = Composers.composerID
+    WHERE Compositions.compositionID = ?`);
+  const params = [compositionID];
+
+  return pool.getConnection()
+    .then(conn => {
+      const resultPromise = conn.query(query, params);
+      resultPromise.finally(() => conn.release());
+      return resultPromise;
+    })
+    .then(entity => {
+      return entity[0];
+    })
+    .catch(err => {
+      console.error('Error in retrieveCompositions:', err);
+      throw err;
+    });
+}
+
+function retrieveMovements(compositionID) {
+  const query = formatSQL(`
+    SELECT 
+      movementNum,
+      title
+    FROM Movements 
+    WHERE compositionID = ?;`);
+  const params = [compositionID];
 
   return pool.getConnection()
     .then(conn => {
@@ -90,34 +118,7 @@ function retrieveCompositionByID(compositionID) {
       return rows;
     })
     .catch(err => {
-      console.error('Error in retrieveCompositionByID:', err);
-      throw err;
-    });
-}
-
-function updateComposition(compositionID, composition) {
-  const query = `UPDATE Compositions SET composerID = ?, compositionTitle = ?, compositionSymbol = ?, authorFirst = ?, authorLast = ?, publicationYear = ? WHERE compositionID = ?;`;
-  const params = [
-    composition.composerID,
-    composition.compositionTitle,
-    composition.compositionSymbol,
-    composition.authorFirst,
-    composition.authorLast,
-    composition.publicationYear,
-    compositionID
-  ];
-
-  return pool.getConnection()
-    .then(conn => {
-      const resultPromise = conn.query(query, params);
-      resultPromise.finally(() => conn.release());
-      return resultPromise;
-    })
-    .then(result => {
-      return result;
-    })
-    .catch(err => {
-      console.error('Error in updateComposition:', err);
+      console.error('Error in retrieveCompositions:', err);
       throw err;
     });
 }
@@ -142,9 +143,8 @@ function deleteComposition(compositionID) {
 }
 
 export {
-  createComposition,
   retrieveCompositions,
   retrieveCompositionByID,
-  updateComposition,
+  retrieveMovements,
   deleteComposition
 };
