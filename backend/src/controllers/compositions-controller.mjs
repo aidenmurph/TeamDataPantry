@@ -6,7 +6,19 @@ function createCompositionController(req, res) {
   compositions.createComposition(req.body)
     .then(result => {
       console.log('Create result:', result);
-      res.json({ success: true, message: 'Composition created successfully' });
+      res.json({ success: true, message: 'Composition created successfully', compositionID: `${result.insertId}` });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Error creating composition' });
+    });
+}
+
+function createOpusNumsController(req, res) {
+  compositions.createOpusNums(req.body)
+    .then(result => {
+      console.log('Create result:', result);
+      res.json({ success: true, message: 'Opus number(s) created successfully' });
     })
     .catch(err => {
       console.error(err);
@@ -89,6 +101,7 @@ function deleteCompositionController(req, res) {
 
 export {
   createCompositionController,
+  createOpusNumsController,
   retrieveCompositionsController,
   retrieveCompositionByIDController,
   retrieveMovementsController,

@@ -2,6 +2,72 @@
 import pool from '../db.mjs';
 import { formatSQL } from '../modules/utilities.mjs'
 
+// Create a composition 
+function createComposition(composition) {
+  const query = formatSQL(`
+    INSERT INTO Compositions (
+      titleEnglish,
+      titleNative,
+      subtitle,
+      composerID,
+      dedication,
+      compositionYear,
+      formID,
+      keySignature
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
+  const params = [
+    composition.englishTitle === '' ? null : composition.englishTitle,
+    composition.nativeTitle === '' ? null : composition.nativeTitle,
+    composition.subtitle === '' ? null : composition.subtitle,
+    composition.composerID,
+    composition.dedication === '' ? null : composition.dedication,
+    composition.compositionYear,
+    composition.formID,
+    composition.keySignature === '' || composition.keySignature === '0' ? null : composition.keySignature
+  ];
+
+  return pool.getConnection()
+  .then(conn => {
+    const resultPromise = conn.query(query, params);
+    resultPromise.finally(() => conn.release());
+    return resultPromise;
+  })
+  .then(result => {
+    return result;
+  })
+  .catch(err => {
+    console.error('Error in createComposition:', err);
+    throw err;
+  });
+}
+
+// Create a composition 
+function createOpusNums(opusNums) {
+  let placeholders = opusNums.map(() => '(?, ?)').join(', ');
+  let params = opusNums.reduce((acc, { compositionID, opNum }) => 
+    acc.concat(compositionID, opNum), 
+    []);
+  const query = formatSQL(`
+  INSERT INTO OpusNums (
+    compositionID,
+    opNum
+  ) VALUES ${placeholders}`);
+
+  return pool.getConnection()
+  .then(conn => {
+    const resultPromise = conn.query(query, params);
+    resultPromise.finally(() => conn.release());
+    return resultPromise;
+  })
+  .then(result => {
+    return result;
+  })
+  .catch(err => {
+    console.error('Error in createOpusNums:', err);
+    throw err;
+  });
+}
+
 // Retreive composition info for displaying in the composition list
 function retrieveCompositions() {
   const query = formatSQL(`
@@ -166,6 +232,8 @@ function deleteComposition(compositionID) {
 }
 
 export {
+  createComposition,
+  createOpusNums,
   retrieveCompositions,
   retrieveCompositionByID,
   retrieveMovements,
