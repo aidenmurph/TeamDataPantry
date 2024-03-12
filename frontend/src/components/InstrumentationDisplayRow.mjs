@@ -1,5 +1,5 @@
 import React from 'react';
-import { appendOrdinalIndicator } from '../modules/utilities.mjs';
+import { appendOrdinalIndicator, convertFlatSharp } from '../modules/utilities.mjs';
 
 function InstrumentationDisplayRow({ instruments }) {
 
@@ -8,10 +8,10 @@ function InstrumentationDisplayRow({ instruments }) {
       <td>
         {`${instruments.numInstruments > 1 ? instruments.numInstruments : ''} `}
         {instruments.instrumentName}{instruments.numInstruments > 1 ? 's' : ''}
-        {instruments.instrumentKey ? ` in ${instruments.instrumentKey}` : ''}
+        {instruments.instrumentKey ? ` in ${convertFlatSharp(instruments.instrumentKey)}` : ''}
         {instruments.numDoubling ? 
           ` (${instruments.numDoubling === instruments.numInstruments ? 
-                'each' : appendOrdinalIndicator(instruments.chairsDoubling)} doubling ${instruments.doubles})`
+                'each' : appendOrdinalIndicator(instruments.chairsDoubling)} doubling ${convertFlatSharp(instruments.doubles)})`
         : ''}
       </td>
     </tr>

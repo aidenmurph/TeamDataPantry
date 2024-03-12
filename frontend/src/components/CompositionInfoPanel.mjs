@@ -1,4 +1,5 @@
 import React from 'react';
+import { convertFlatSharp } from '../modules/utilities.mjs';
 
 function CompositionInfoPanel({ composition, movements }) {
   return (
@@ -20,6 +21,10 @@ function CompositionInfoPanel({ composition, movements }) {
               <td>{composition.opusNum}</td>
             </tr> 
           : ''}
+          <tr>
+            <td><strong>Key</strong></td>
+            <td>{convertFlatSharp(composition.keySignature)}</td>
+          </tr>
           <tr>
             <td><strong>Composed</strong></td>
             <td>{composition.compositionYear}</td>
