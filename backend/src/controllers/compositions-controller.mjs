@@ -26,6 +26,28 @@ function retrieveCompositionsController(req, res) {
     });
 }
 
+function retrieveCompositionByIDController(req, res) {
+  compositions.retrieveCompositionByID(req.params.id)
+    .then(entity => {
+      res.json(entity);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send(`Error fetching composition with ID ${req.params.id}`);
+    });
+}
+
+function retrieveMovementsController(req, res) {
+  compositions.retrieveMovements(req.params.id)
+    .then(rows => {
+      res.json(rows);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send(`Error fetching movements for composition with ID ${req.params.id}`);
+    });
+}
+
 // UPDATE Controller *******************************************
 function updateCompositionController(req, res) {
   compositions.updateComposition(req.params.id, req.body)
@@ -57,6 +79,8 @@ function deleteCompositionController(req, res) {
 export {
   createCompositionController,
   retrieveCompositionsController,
+  retrieveCompositionByIDController,
+  retrieveMovementsController,
   updateCompositionController,
   deleteCompositionController
 };
