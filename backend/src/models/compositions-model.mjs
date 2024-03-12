@@ -46,7 +46,7 @@ function retrieveCompositions() {
       return rows;
     })
     .catch(err => {
-      console.error('Error in retrieveCompositions:', err);
+      console.error('Error in retrieveCompositions: ', err);
       throw err;
     });
 }
@@ -103,7 +103,8 @@ function retrieveMovements(compositionID) {
   const query = formatSQL(`
     SELECT 
       movementNum,
-      title
+      title,
+      keySignature
     FROM Movements 
     WHERE compositionID = ?;`);
   const params = [compositionID];
