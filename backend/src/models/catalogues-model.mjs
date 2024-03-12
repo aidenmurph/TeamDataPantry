@@ -67,7 +67,7 @@ function retrieveCatalogues() {
 
 function retrieveCatalogueByID(catalogueID) {
   const query = `SELECT * FROM Catalogues WHERE catalogueID = ?`;
-  params = [catalogueID];
+  const params = [catalogueID];
 
   return pool.getConnection()
     .then(conn => {
@@ -86,7 +86,7 @@ function retrieveCatalogueByID(catalogueID) {
 
 function retrieveCataloguesForComposer(composerID) {
   const query = `SELECT * FROM Catalogues WHERE composerID = ?`;
-  params = [composerID];
+  const params = [composerID];
 
   return pool.getConnection()
     .then(conn => {
