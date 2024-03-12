@@ -27,4 +27,9 @@ function appendOrdinalIndicator(inputNumber)
   return numStr;
 }
 
-export { formatDate, appendOrdinalIndicator };
+// Converts occurences of " flat" and " sharp" in key signatures to their notaional symbol
+function convertFlatSharp(inputString) {
+  return inputString.replace(/ flat/g, "♭").replace(/ sharp/g, "♯");
+}
+
+export { formatDate, appendOrdinalIndicator, convertFlatSharp };
