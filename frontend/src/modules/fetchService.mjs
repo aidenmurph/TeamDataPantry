@@ -147,7 +147,7 @@ const fetchComposition = (compositionID, setComposition) => {
     });
 };
 
-// Fetch all instruments for display as a list
+// Fetch the detailed instrumentation for a single composition for display as a list
 const fetchFullInstrumentation = async (compositionID, familyList, setInstrumentation) => {
   try {
     const fetchPromises = familyList.map(family =>
@@ -166,7 +166,7 @@ const fetchFullInstrumentation = async (compositionID, familyList, setInstrument
   }
 };
 
-// Fetch the instrumentation for a single composition from the database
+// Fetch the a single instrumentation family for a single composition from the database
 const fetchInstrumentationFamily = async (compositionID, familyID, instrumentation, setInstrumentation) => {
   try {
     const response = await fetch(`${server_url}/api/instruments/instrumentation/composition-${compositionID}/family-${familyID}`);
@@ -200,6 +200,20 @@ const fetchMovements = (compositionID, setMovements) => {
     });
 };
 
+// Fetch all key signatures for use in dropdown menus
+const fetchKeySignatures = async (setKeySignatures) => {
+  try {
+    const response = await fetch(`${server_url}/api/key-signatures`);
+    if (!response.ok) {
+      throw new Error('Network response returned status: ' + response.statusText);
+    }
+    const keySignatures = await response.json();
+    setKeySignatures(keySignatures);
+  } catch (error) {
+    console.error('Error fetching key signatures:', error);
+  }
+};
+
 export {
   fetchComposers,
   fetchCatalogues,
@@ -211,5 +225,6 @@ export {
   fetchComposition,
   fetchFullInstrumentation,
   fetchInstrumentationFamily,
+  fetchKeySignatures,
   fetchMovements
 };

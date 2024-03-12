@@ -100,6 +100,7 @@ function retrieveCompositionByID(compositionID) {
     });
 }
 
+// Retreive the list of movements for a single composition for display
 function retrieveMovements(compositionID) {
   const query = formatSQL(`
     SELECT 
@@ -120,11 +121,31 @@ function retrieveMovements(compositionID) {
       return rows;
     })
     .catch(err => {
-      console.error('Error in retrieveCompositions:', err);
+      console.error('Error in retrieveMovements:', err);
       throw err;
     });
 }
 
+// Retreive keySignatures info for use in adding/editing compositions & instrumentation
+function retrieveKeySignatures() {
+  const query = `SELECT * FROM KeySignatures;`
+
+  return pool.getConnection()
+    .then(conn => {
+      const resultPromise = conn.query(query);
+      resultPromise.finally(() => conn.release());
+      return resultPromise;
+    })
+    .then(rows => {
+      return rows;
+    })
+    .catch(err => {
+      console.error('Error in retrieveKeySignatures:', err);
+      throw err;
+    });
+}
+
+// Delete a single composition
 function deleteComposition(compositionID) {
   const query = `DELETE FROM Compositions WHERE compositionID = ?`
   const params = [compositionID];
@@ -148,5 +169,6 @@ export {
   retrieveCompositions,
   retrieveCompositionByID,
   retrieveMovements,
+  retrieveKeySignatures,
   deleteComposition
 };

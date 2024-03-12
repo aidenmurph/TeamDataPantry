@@ -48,6 +48,17 @@ function retrieveMovementsController(req, res) {
     });
 }
 
+function retrieveKeySignaturesController(req, res) {
+  compositions.retrieveKeySignatures()
+    .then(rows => {
+      res.json(rows);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send(`Error fetching key signatures`);
+    });
+}
+
 // UPDATE Controller *******************************************
 function updateCompositionController(req, res) {
   compositions.updateComposition(req.params.id, req.body)
@@ -81,6 +92,7 @@ export {
   retrieveCompositionsController,
   retrieveCompositionByIDController,
   retrieveMovementsController,
+  retrieveKeySignaturesController,
   updateCompositionController,
   deleteCompositionController
 };

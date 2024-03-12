@@ -42,6 +42,7 @@ app.put('/api/catalogues/:id', catalogues.updateCatalogueController);
 app.delete('/api/catalogues/:id', catalogues.deleteCatalogueController);
 
 // Compositions
+app.get('/api/key-signatures', compositions.retrieveKeySignaturesController);
 app.post('/api/compositions', compositions.createCompositionController);
 app.get('/api/compositions', compositions.retrieveCompositionsController);
 app.get('/api/composition/:id', compositions.retrieveCompositionByIDController);
