@@ -21,14 +21,22 @@ function CompositionInfoPanel({ composition, movements }) {
               <td>{composition.opusNum}</td>
             </tr> 
           : ''}
-          <tr>
-            <td><strong>Key</strong></td>
-            <td>{convertFlatSharp(composition.keySignature)}</td>
-          </tr>
+          {composition.keySignature ?
+            <tr>
+              <td><strong>Key</strong></td>
+              <td>{convertFlatSharp(composition.keySignature)}</td>
+            </tr>
+          : ''}
           <tr>
             <td><strong>Composed</strong></td>
             <td>{composition.compositionYear}</td>
           </tr>
+          {composition.dedication ?
+            <tr>
+              <td><strong>Dedication</strong></td>
+              <td>{composition.dedication}</td>
+            </tr>
+          : ''}
           {movements.length > 1 ? 
             <tr>
               <td><strong>Movements</strong></td>

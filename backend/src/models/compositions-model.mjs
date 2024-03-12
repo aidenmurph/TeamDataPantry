@@ -58,6 +58,7 @@ function retrieveCompositionByID(compositionID) {
       Compositions.titleEnglish,
       Compositions.titleNative,
       Compositions.subtitle,
+      Compositions.dedication,
       IFNULL((SELECT 
         GROUP_CONCAT(OpusNums.opNum SEPARATOR ', ')
         FROM OpusNums
