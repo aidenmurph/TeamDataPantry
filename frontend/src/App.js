@@ -31,15 +31,15 @@ function App() {
   return (
     <>
       <header>
-        <h1 className="site-title">
-          <img src="violinicon.png" alt="violin icon" width="64px" height="64px" style={{position: 'static'}} />
-          <Link to="#">Classical Compositions Database</Link>
-        </h1>
-        <h3> A project by Jacob Barber, Aiden Murphy, and Matthew Menold</h3>
+        <div className="header-contents">
+          <h1 className="site-title">
+            <img src="violinicon.png" alt="violin icon" width="64px" height="64px" style={{position: 'static'}} />
+            <Link to="#">Classical Compositions Database</Link>
+          </h1>
+          <p>A project by Jacob Barber, Aiden Murphy, and Matthew Menold</p>
+        </div>
+        <Navigation />
       </header>
-
-      <Navigation />
-
       <main>
         <section>
           <Routes>
@@ -69,3 +69,4 @@ function App() {
 }
 
 export default App;
+

@@ -30,3 +30,11 @@ td{
     border: 1px solid black;
     padding: 10px;
 }
+
+.header .project-by {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-weight: thin;
+    
+}

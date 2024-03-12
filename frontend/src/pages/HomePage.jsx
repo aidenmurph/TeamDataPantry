@@ -5,7 +5,9 @@ import React from 'react';
 function HomePage() {
   return (
     <>
-      <h2>Home Page</h2>
+      <div>
+        <h2>Welcome to the Classical Compositions Database!</h2>
+      </div>
     </>
   );
 }

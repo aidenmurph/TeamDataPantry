@@ -1,17 +1,48 @@
-.header nav{
-  list-style: none;
-  display: inline-block;
-  margin: 30px; /* add spacing between items */
+header {
+  background-color: #000000;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  position: relative;
 }
 
-.header a {
-  padding: 10px;
-  margin: 10px;
+header nav{
+  list-style: none;
+  font-weight: bold; /* make the text bold */
+  display: flex;
+  justify-content: space-between; /* evenly space out items */
+  margin: 10px; /* add spacing between items */
+  color: white;
 }
+
+header a {
+  color: white;
+}
+
+.site-title img{
+  height: 36px;
+  width: 36px;
+  padding-right: 10px;
+}
+
+.header-contents {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-contents p{
+  font-style: italic;
+  font-weight: normal;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 
 a {
   text-decoration: none;
-  color: black;
+  color:#000000
 }
 
 .table{
@@ -30,3 +61,4 @@ td{
   border: 1px solid black;
   padding: 10px;
 }
+
