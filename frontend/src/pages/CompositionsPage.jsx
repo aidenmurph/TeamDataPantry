@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CompositionList from '../components/CompositionList.mjs';
 import { server_url } from '../config';
+import * as fetchers from '../modules/fetchService.mjs'
 
 function CompositionsPage({ setCompositionToEdit }) {
   
@@ -13,20 +14,9 @@ function CompositionsPage({ setCompositionToEdit }) {
 
   // RETRIEVE the entire list of compositions
   const loadCompositions = useCallback(() => {
-    fetch(`${server_url}/api/compositions`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-      })
-      .then(compositions => {
-        setCompositions(compositions);
-      })
-      .catch(error => {
-        console.error('Error fetching compositions:', error);
-      });
+    fetchers.fetchCompositions(setCompositions);
   }, []);
+
 
   // UPDATE a single composition
   const onEditComposition = async composition => {
