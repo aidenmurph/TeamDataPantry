@@ -10,4 +10,21 @@ function formatDate(inputDate)
   return `${year}-${month}-${day}`;
 }
 
-export { formatDate };
+// Appends an ordinal indicator to a number based on the last digit
+function appendOrdinalIndicator(inputNumber)
+{
+  let numStr = inputNumber;
+  switch(parseInt(numStr[numStr.length - 1])) {
+    case 1:
+      numStr += 'st'; break;
+    case 2:
+      numStr += 'nd'; break;
+    case 3:
+      numStr += 'rd'; break;
+    default:
+      numStr += 'th';
+  }
+  return numStr;
+}
+
+export { formatDate, appendOrdinalIndicator };

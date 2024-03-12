@@ -1,20 +1,7 @@
 import React from 'react';
+import { appendOrdinalIndicator } from '../modules/utilities.mjs';
 
 function InstrumentationDisplayRow({ instruments }) {
-  const appendIndicator = (number) => {
-    let numStr = number;
-    switch(parseInt(numStr[numStr.length - 1])) {
-      case 1:
-        numStr += 'st'; break;
-      case 2:
-        numStr += 'nd'; break;
-      case 3:
-        numStr += 'rd'; break;
-      default:
-        numStr += 'th';
-    }
-    return numStr;
-  }
 
   return (
     <tr className="instrumentation">
@@ -24,7 +11,7 @@ function InstrumentationDisplayRow({ instruments }) {
         {instruments.instrumentKey ? ` in ${instruments.instrumentKey}` : ''}
         {instruments.numDoubling ? 
           ` (${instruments.numDoubling === instruments.numInstruments ? 
-                'each' : appendIndicator(instruments.chairsDoubling)} doubling ${instruments.doubles})`
+                'each' : appendOrdinalIndicator(instruments.chairsDoubling)} doubling ${instruments.doubles})`
         : ''}
       </td>
     </tr>
