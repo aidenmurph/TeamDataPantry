@@ -29,6 +29,7 @@ function appendOrdinalIndicator(inputNumber)
 
 // Converts occurences of " flat" and " sharp" in key signatures to their notaional symbol
 function convertFlatSharp(inputString) {
+  if (!inputString) { return; };
   return inputString.replace(/ flat/g, "♭").replace(/ sharp/g, "♯");
 }
 
