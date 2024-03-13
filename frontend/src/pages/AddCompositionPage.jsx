@@ -7,6 +7,7 @@ import { convertFlatSharp } from '../modules/utilities.mjs';
 
 // Import form componenets
 import { AddOpusNums } from '../components/forms/AddOpusNums.mjs'
+import { AddCatalogueNums } from '../components/forms/AddCatalogueNums.mjs';
 import { QueuedCatalogueNum } from '../components/forms/QueuedCatalogueNum.mjs';
 import { QueuedFeaturedInstrument } from '../components/forms/QueuedFeaturedInstrument.mjs'
 
@@ -21,12 +22,7 @@ export const AddCompositionPage = () => {
   const [formID, setFormID] = useState('');
   const [keySignature, setKeySignature] = useState('');
   const [opusNums, setOpusNums] = useState([]);
-
-  // State variables for CatalogueNums
-  const [catalogueOptionNum, setCatalogueOptionNum] = useState('0');
-  const [catalogueNumInput, setCatalogueNumInput] = useState('');
   const [catalogueNums, setCatalogueNums] = useState([]);
-  const [usedCatalogues, setUsedCatalogues] = useState([]);
 
   // State variables for FeaturedInstrumentation
   const [soloOrEnsemble, setSoloOrEnsemble] = useState("Solo");
@@ -64,13 +60,6 @@ export const AddCompositionPage = () => {
     fetchers.fetchKeySignatures(setKeySignatureOptions);
   }, []);
 
-  // RETRIEVE the current composer's liist of catalogues for use in the dropdown
-  const loadCatalogueOptions = useCallback(() => {
-    if (composerID && composerID !== 0) {
-      fetchers.fetchCataloguesForComposer(composerID, setCatalogueOptions);
-    }
-  }, [composerID]);
-
   // RETRIEVE the list of instrument families for use in dropdowns
   const loadFamilyOptions = useCallback(() => {
     fetchers.fetchFamilyList(setFamilyOptions);
@@ -100,13 +89,6 @@ export const AddCompositionPage = () => {
     loadKeySignatureOptions();
   }, [loadKeySignatureOptions]);
 
-  // LOAD all the catalogues for currently selected composer
-  useEffect(() => {
-    if (composerID && composerID !== 0) {
-      loadCatalogueOptions();
-    }
-  }, [loadCatalogueOptions, composerID]);
-
   // LOAD all the instrument families
   useEffect(() => {
     loadFamilyOptions();
@@ -129,20 +111,23 @@ export const AddCompositionPage = () => {
     if (!composerID || composerID === '0' ||
       !compositionYear || 
       !formID || formID === '0') {
-        alert("Required fields must be completed before submission.");
-        console.log("Required fields must be completed before submission.")
+        const message = "Required fields must be completed before submission.";
+        alert(message);
+        console.log(message);
         return;
     }
     // Check at least one title provided
     if (!englishTitle && !nativeTitle) {
-      alert("At least one title must be provided in either English or the native language of the composition.")
-      console.log("At least one title must be provided in either English or the native language of the composition.")
+      const message = "At least one title must be provided in either English or the native language of the composition.";
+      alert(message);
+      console.log(message);
       return;
     }
     // Check at least one feature instrument provided
     if (featuredInstrumentation.length === 0) {
-      alert("Please add at least one instrument or ensemble to the featured instrumentation.")
-      console.log("Please add at least one instrument or ensemble to the featured instrumentation.")
+      const message = "Please add at least one instrument or ensemble to the featured instrumentation.";
+      alert(message);
+      console.log(message);
       return;
     }
 
@@ -246,52 +231,6 @@ export const AddCompositionPage = () => {
       redirect(`/composition/${newCompositionID}`);
     }
   };
-
-  // Catalogue Number Maintenance Functions ********************
-
-  // Add a catalogue number to the queue of catalogue numbers
-  const queueCatalogueNum = async () => {
-    // Validate input fields
-    if(catalogueNumInput === '') {
-      alert("Cannot add empty catalogue number");
-      return;
-    }
-    if(catalogueOptionNum === '0') {
-      alert("A catalogue must be selected to add this number");
-      return;
-    }
-    
-    // Add catalogue number to the queue
-    const catalogueNum = {
-      id: catalogueOptions[catalogueOptionNum - 1].catalogueID,
-      title: catalogueOptions[catalogueOptionNum - 1].catalogueTitle,
-      symbol: catalogueOptions[catalogueOptionNum - 1].catalogueSymbol,
-      catNum: catalogueNumInput
-    }
-    const queue = [...catalogueNums, catalogueNum];
-    setCatalogueNums(queue)
-
-    // Add catalogue to the list of added catalogues so multiple 
-    // catalogue numbers cannot be added for a single catalogue
-    const catalogues = [...usedCatalogues, catalogueNum.id];
-    setUsedCatalogues(catalogues);
-
-    // Reset input field
-    setCatalogueNumInput('');
-  }
-
-  // Remove a catalogue number from the queue
-  const removeQueuedCatalogueNum = async (catalogueNum) => {
-    // Remove the number from the queue
-    let queue = [...catalogueNums];
-    queue = queue.filter(num => num !== catalogueNum)
-    setCatalogueNums(queue);
-
-    // Remove the catalogue from the list of used catalogues
-    let catalogues = [...usedCatalogues];
-    catalogues = catalogues.filter(id => id !== catalogueNum.id);
-    setUsedCatalogues(catalogues);
-  }
   
   // Featured Instrument Maintenance Functions *****************
   // Add a featured instrument or ensemble to the queue
@@ -612,50 +551,11 @@ export const AddCompositionPage = () => {
               {/* Catalogue Nums */}
               <tr>
                 <td colSpan="3">
-                  {catalogueOptions.length > 0 ? <>
-                    {`Catalogue Numbers: `}
-                    {catalogueNums.map((catalogueNum, i) => (
-                      <QueuedCatalogueNum
-                        key={i}
-                        catalogueNum={catalogueNum}
-                        onRemove={removeQueuedCatalogueNum} 
-                      />
-                    ))}
-                    <select 
-                      name="catalogue" 
-                      id="catalogue" 
-                      className="add-input"
-                      defaultValue={"0"}
-                      onChange={e => setCatalogueOptionNum(e.target.value)} >
-                        {/* Query the composers in the database in order to populate the list */}
-                        <option value="0">--Select Catalogue--</option>
-                        {catalogueOptions.map((option, i) => (
-                          !usedCatalogues.includes(option.catalogueID) ? 
-                            <option 
-                              key={i} 
-                              value={i + 1}
-                            >{option.catalogueTitle}</option> 
-                          : ''
-                        ))}
-                    </select>
-                    <label htmlFor="catNums">{catalogueOptionNum !== '0' ? ` ${catalogueOptions[catalogueOptionNum - 1].catalogueSymbol} ` : ' '}</label>
-                    <input 
-                      type="text" 
-                      name="catNums" 
-                      id="catNums" 
-                      className="add-input"
-                      max="8" 
-                      size="5" 
-                      placeholder="i.e. 110" 
-                      value={catalogueNumInput}
-                      onChange={e => setCatalogueNumInput(e.target.value)} />
-                    <button 
-                      name="add-catnum-button" 
-                      type="add"
-                      onClick={queueCatalogueNum}
-                      id="add"
-                    >Add</button>
-                  </> : <>Catalogue Numbers: This composer has no associated catalogues in the database.</> }
+                  < AddCatalogueNums
+                    composerID={composerID}
+                    catalogueNums={catalogueNums}
+                    setCatalogueNums={setCatalogueNums}                  
+                  />
                 </td>
               </tr>
 
