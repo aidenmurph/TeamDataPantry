@@ -36,7 +36,7 @@ function createComposition(composition) {
     return result;
   })
   .catch(err => {
-    console.error('Error in createComposition:', err);
+    console.error('Error in createComposition: ', err);
     throw err;
   });
 }
@@ -63,7 +63,7 @@ function createOpusNums(opusNums) {
     return result;
   })
   .catch(err => {
-    console.error('Error in createOpusNums:', err);
+    console.error('Error in createOpusNums: ', err);
     throw err;
   });
 }
@@ -91,7 +91,7 @@ function createCatalogueNums(catalogueNums) {
     return result;
   })
   .catch(err => {
-    console.error('Error in createCatalogueNums:', err);
+    console.error('Error in createCatalogueNums: ', err);
     throw err;
   });
 }
@@ -118,7 +118,35 @@ function createFeaturedInstrumentation(featuredInstruments) {
     return result;
   })
   .catch(err => {
-    console.error('Error in createFeaturedInstrumentation:', err);
+    console.error('Error in createFeaturedInstrumentation: ', err);
+    throw err;
+  });
+}
+
+// Create one or more movements numbers for a given composition 
+function createMovements(movements) {
+  let placeholders = movements.map(() => '(?, ?, ?)').join(', ');
+  let params = movements.reduce((acc, { compositionID, movementNum, title }) => 
+    acc.concat(compositionID, movementNum, title), 
+    []);
+  const query = formatSQL(`
+  INSERT INTO Movements (
+    compositionID,
+    movementNum,
+    title
+  ) VALUES ${placeholders}`);
+
+  return pool.getConnection()
+  .then(conn => {
+    const resultPromise = conn.query(query, params);
+    resultPromise.finally(() => conn.release());
+    return resultPromise;
+  })
+  .then(result => {
+    return result;
+  })
+  .catch(err => {
+    console.error('Error in createMovements: ', err);
     throw err;
   });
 }
@@ -216,7 +244,7 @@ function retrieveCompositionByID(compositionID) {
       return entity[0];
     })
     .catch(err => {
-      console.error('Error in retrieveCompositions:', err);
+      console.error('Error in retrieveCompositions: ', err);
       throw err;
     });
 }
@@ -226,8 +254,7 @@ function retrieveMovements(compositionID) {
   const query = formatSQL(`
     SELECT 
       movementNum,
-      title,
-      keySignature
+      title
     FROM Movements 
     WHERE compositionID = ?;`);
   const params = [compositionID];
@@ -242,7 +269,7 @@ function retrieveMovements(compositionID) {
       return rows;
     })
     .catch(err => {
-      console.error('Error in retrieveMovements:', err);
+      console.error('Error in retrieveMovements: ', err);
       throw err;
     });
 }
@@ -261,7 +288,7 @@ function retrieveKeySignatures() {
       return rows;
     })
     .catch(err => {
-      console.error('Error in retrieveKeySignatures:', err);
+      console.error('Error in retrieveKeySignatures: ', err);
       throw err;
     });
 }
@@ -281,7 +308,7 @@ function deleteComposition(compositionID) {
       return result;
     })
     .catch(err => {
-    console.error('Error in deleteComposition:', err);
+    console.error('Error in deleteComposition: ', err);
     throw err;
     });
 }
@@ -291,6 +318,7 @@ export {
   createOpusNums,
   createCatalogueNums,
   createFeaturedInstrumentation,
+  createMovements,
   retrieveCompositions,
   retrieveCompositionByID,
   retrieveMovements,

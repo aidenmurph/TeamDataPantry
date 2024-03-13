@@ -48,6 +48,7 @@ app.post('/api/compositions', compositions.createCompositionController);
 app.post('/api/opus-nums/for-composition-:id', compositions.createOpusNumsController);
 app.post('/api/catalogue-nums/for-composition-:id', compositions.createCatalogueNumsController);
 app.post('/api/featured-instruments/for-composition-:id', compositions.createFeaturedInstrumentationController);
+app.post('/api/movements/for-composition-:id', compositions.createMovementsController);
 app.get('/api/compositions', compositions.retrieveCompositionsController);
 app.get('/api/composition/:id', compositions.retrieveCompositionByIDController);
 app.get('/api/movements/:id', compositions.retrieveMovementsController);

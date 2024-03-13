@@ -46,7 +46,19 @@ function createFeaturedInstrumentationController(req, res) {
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: 'Error creating Featured instrument(s)' });
+      res.status(500).json({ error: 'Error creating featured instrument(s)' });
+    });
+}
+
+function createMovementsController(req, res) {
+  compositions.createMovements(req.body)
+    .then(result => {
+      console.log('Create result:', result);
+      res.json({ success: true, message: 'Movement(s) created successfully' });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Error creating movement(s)' });
     });
 }
 
@@ -128,6 +140,7 @@ export {
   createOpusNumsController,
   createCatalogueNumsController,
   createFeaturedInstrumentationController,
+  createMovementsController,
   retrieveCompositionsController,
   retrieveCompositionByIDController,
   retrieveMovementsController,
