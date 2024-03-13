@@ -33,4 +33,34 @@ function convertFlatSharp(inputString) {
   return inputString.replace(/ flat/g, "♭").replace(/ sharp/g, "♯");
 }
 
-export { formatDate, appendOrdinalIndicator, convertFlatSharp };
+// Sorts an array of JSON objects 
+function sortList([...list], attribute, ascending = true) {
+  return list.sort((a, b) => {
+    // Determine if comparison is of characters or numbers
+    const isNumeric = !isNaN(a[attribute]) && !isNaN(b[attribute]);
+    let valueA, valueB;
+
+    // Compare as numbers
+    if (isNumeric) {
+      valueA = Number(a[attribute]);
+      valueB = Number(b[attribute]);
+
+    // Compare as strings, case-insensitive
+    } else {
+      valueA = a[attribute].toUpperCase();
+      valueB = b[attribute].toUpperCase();
+    }
+
+    // Return sort order
+    if (valueA < valueB) {
+      return ascending === true ? -1 : 1;
+    }
+    if (valueA > valueB) {
+      return ascending === true  ? 1 : -1;
+    }
+    // Values must be equal
+    return 0;
+  });
+}
+
+export { formatDate, appendOrdinalIndicator, convertFlatSharp, sortList };
