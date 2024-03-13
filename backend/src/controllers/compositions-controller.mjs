@@ -22,7 +22,19 @@ function createOpusNumsController(req, res) {
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: 'Error creating composition' });
+      res.status(500).json({ error: 'Error creating opus number(s)' });
+    });
+}
+
+function createCatalogueNumsController(req, res) {
+  compositions.createCatalogueNums(req.body)
+    .then(result => {
+      console.log('Create result:', result);
+      res.json({ success: true, message: 'Catalogue number(s) created successfully' });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Error creating catalogue number(s)' });
     });
 }
 
@@ -102,6 +114,7 @@ function deleteCompositionController(req, res) {
 export {
   createCompositionController,
   createOpusNumsController,
+  createCatalogueNumsController,
   retrieveCompositionsController,
   retrieveCompositionByIDController,
   retrieveMovementsController,

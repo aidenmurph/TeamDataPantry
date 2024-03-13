@@ -41,7 +41,7 @@ function createComposition(composition) {
   });
 }
 
-// Create a composition 
+// Create one or more opus numbers for a given composition 
 function createOpusNums(opusNums) {
   let placeholders = opusNums.map(() => '(?, ?)').join(', ');
   let params = opusNums.reduce((acc, { compositionID, opNum }) => 
@@ -64,6 +64,34 @@ function createOpusNums(opusNums) {
   })
   .catch(err => {
     console.error('Error in createOpusNums:', err);
+    throw err;
+  });
+}
+
+// Create one or more catalogue numbers for a given composition 
+function createCatalogueNums(catalogueNums) {
+  let placeholders = catalogueNums.map(() => '(?, ?, ?)').join(', ');
+  let params = catalogueNums.reduce((acc, { catalogueID, compositionID, catNum }) => 
+    acc.concat(catalogueID, compositionID, catNum), 
+    []);
+  const query = formatSQL(`
+  INSERT INTO CatalogueNums (
+    catalogueID,
+    compositionID,
+    catNum
+  ) VALUES ${placeholders}`);
+
+  return pool.getConnection()
+  .then(conn => {
+    const resultPromise = conn.query(query, params);
+    resultPromise.finally(() => conn.release());
+    return resultPromise;
+  })
+  .then(result => {
+    return result;
+  })
+  .catch(err => {
+    console.error('Error in createCatalogueNums:', err);
     throw err;
   });
 }
@@ -234,6 +262,7 @@ function deleteComposition(compositionID) {
 export {
   createComposition,
   createOpusNums,
+  createCatalogueNums,
   retrieveCompositions,
   retrieveCompositionByID,
   retrieveMovements,
