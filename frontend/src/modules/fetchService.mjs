@@ -234,6 +234,7 @@ const fetchKeySignatures = async (setKeySignatures) => {
 export {
   fetchComposers,
   fetchCatalogues,
+  fetchCataloguesForComposer,
   fetchForms,
   fetchFamilyList,
   fetchAllInstruments,
