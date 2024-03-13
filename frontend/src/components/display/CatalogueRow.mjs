@@ -4,7 +4,7 @@ function CatalogueRow({ catalogue, onEdit, onDelete }) {
   return (
     <tr className="catalogue">
       <td>{catalogue.catalogueTitle}</td>
-      <td>{catalogue.composer}</td>
+      <td>{catalogue.composerFirst} {catalogue.composerLast}</td>
       <td>{catalogue.catalogueSymbol}</td>
       <td>{catalogue.authorFirst} {catalogue.authorLast}</td>
       <td>{catalogue.publicationYear}</td>
