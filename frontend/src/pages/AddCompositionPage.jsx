@@ -8,11 +8,10 @@ import { convertFlatSharp } from '../modules/utilities.mjs';
 // Import form componenets
 import { AddOpusNums } from '../components/forms/AddOpusNums.mjs'
 import { AddCatalogueNums } from '../components/forms/AddCatalogueNums.mjs';
-import { QueuedCatalogueNum } from '../components/forms/QueuedCatalogueNum.mjs';
-import { QueuedFeaturedInstrument } from '../components/forms/QueuedFeaturedInstrument.mjs'
+import { AddFeaturedInstrumentation } from '../components/forms/AddFeaturedInstrumentation.mjs';
 
 export const AddCompositionPage = () => {
-  // State variables for Compositions
+  // State variables for database entities
   const [englishTitle, setEnglishTitle] = useState('');
   const [nativeTitle, setNativeTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
@@ -23,22 +22,13 @@ export const AddCompositionPage = () => {
   const [keySignature, setKeySignature] = useState('');
   const [opusNums, setOpusNums] = useState([]);
   const [catalogueNums, setCatalogueNums] = useState([]);
-
-  // State variables for FeaturedInstrumentation
-  const [soloOrEnsemble, setSoloOrEnsemble] = useState("Solo");
-  const [currentInstrumentFamily, setCurrentInstrumentFamily] = useState('-1');
-  const [inputInstrumentIndex, setInputInstrumentIndex] = useState('-1');
   const [featuredInstrumentation, setFeaturedInstrumentation] = useState([]);
-  const [usedInstruments, setUsedInstruments] = useState([]);
 
   // Options for dropdown menus
   const [catalogueIndex, setCatalogueIndex] = useState([]);
   const [formOptions, setFormOptions] = useState([]);
   const [keyMode, setKeyMode] = useState("Major");
   const [keySignatureOptions, setKeySignatureOptions] = useState([]);
-  const [catalogueOptions, setCatalogueOptions] = useState([]);
-  const [familyOptions, setFamilyOptions] = useState([]);
-  const [instrumentOptions, setInstrumentOptions] = useState([]);
 
   // Assign redirect function
   const redirect = useNavigate();
@@ -60,18 +50,6 @@ export const AddCompositionPage = () => {
     fetchers.fetchKeySignatures(setKeySignatureOptions);
   }, []);
 
-  // RETRIEVE the list of instrument families for use in dropdowns
-  const loadFamilyOptions = useCallback(() => {
-    fetchers.fetchFamilyList(setFamilyOptions);
-  }, []);
-
-  // RETRIEVE the entire list of instruments for use in dropdowns
-  const loadInstrumentOptions = useCallback(() => {
-    if (familyOptions.length) {
-      fetchers.fetchAllInstruments(familyOptions, setInstrumentOptions);
-    }
-  }, [familyOptions]);
-
   // Loaders ***************************************************
   
   // LOAD all the composer options
@@ -88,18 +66,6 @@ export const AddCompositionPage = () => {
   useEffect(() => {
     loadKeySignatureOptions();
   }, [loadKeySignatureOptions]);
-
-  // LOAD all the instrument families
-  useEffect(() => {
-    loadFamilyOptions();
-  }, [loadFamilyOptions]);
-
-  // LOAD all the instruments
-  useEffect(() => {
-    if (familyOptions.length > 0) {
-      loadInstrumentOptions();
-    }
-  }, [loadInstrumentOptions, familyOptions]);
 
   // Form Functions ********************************************
 
@@ -231,58 +197,6 @@ export const AddCompositionPage = () => {
       redirect(`/composition/${newCompositionID}`);
     }
   };
-  
-  // Featured Instrument Maintenance Functions *****************
-  // Add a featured instrument or ensemble to the queue
-  const queueFeaturedInstrument = async () => {
-    // Validate input selection
-    if(inputInstrumentIndex === '-1') {
-      let message = "Please select an "
-      message += soloOrEnsemble === "Solo" ? "instrument." : "ensemble."
-      alert(message);
-      return;
-    }
-
-    // Add featured instrument to the queue
-    const featuredInstrument = {
-      id: instrumentOptions[currentInstrumentFamily][inputInstrumentIndex].instrumentID,
-      name: instrumentOptions[currentInstrumentFamily][inputInstrumentIndex].instrumentName
-    }
-    let queue = [...featuredInstrumentation, featuredInstrument];
-    setFeaturedInstrumentation(queue);
-
-    // Add instrument or ensemble to the list of added featured instruments so multiple 
-    // of the same instrument or ensemble cannot be added for a single composition
-    const instruments = [...usedInstruments, featuredInstrument.id];
-    setUsedInstruments(instruments);
-
-    // Reset input fields
-    if(soloOrEnsemble === "Ensemble") {
-      setSoloOrEnsemble("Solo");
-    }
-    setCurrentInstrumentFamily('-1')
-    setInputInstrumentIndex('-1')
-  }
-
-  // Remove a featured instrument from the queue
-  const removeQueuedFeaturedInstrument = async (featuredInstrument) => {
-    // Remove the number from the queue
-    let queue = [...featuredInstrumentation];
-    queue = queue.filter(ins => ins !== featuredInstrument)
-    setFeaturedInstrumentation(queue);
-
-    // Remove the catalogue from the list of used catalogues
-    let instruments = [...usedInstruments];
-    instruments = instruments.filter(id => id !== featuredInstrument.id);
-    setUsedInstruments(instruments);
-
-    // Reset input fields
-    if(soloOrEnsemble === "Ensemble") {
-      setSoloOrEnsemble("Solo");
-    }
-    setCurrentInstrumentFamily('-1')
-    setInputInstrumentIndex('-1')
-  }
 
   // Utilities and Page Return *********************************
   // Get current date for input limits
@@ -396,6 +310,7 @@ export const AddCompositionPage = () => {
                 </td>
               </tr>
               <tr>
+                
                 {/* Subtitle */}
                 <td><label htmlFor="subtitle">Subtitle: </label>
                   <input 
@@ -439,112 +354,10 @@ export const AddCompositionPage = () => {
               {/* Featured Instruments */}
               <tr>
                 <td colSpan="3">
-                  <span className="required">{`Featured Instrumentation: `}</span>
-
-                  {featuredInstrumentation.length > 0 ?
-                    <p>
-                      {featuredInstrumentation.map((instrument, i) => (
-                        <QueuedFeaturedInstrument
-                          key={i}
-                          instrument={instrument}
-                          i={i}
-                          instrumentCount={featuredInstrumentation.length}                          
-                          onRemove={removeQueuedFeaturedInstrument} 
-                        />
-                      ))}
-                    </p>
-                    : ''
-                  }
-
-                  <select 
-                    name="soloOrEnsemble" 
-                    id="soloOrEnsemble" 
-                    className="add-input"
-                    value={soloOrEnsemble}
-                    onChange={e => {                    
-                      setCurrentInstrumentFamily('-1');
-                      setSoloOrEnsemble(e.target.value);                
-                    }} >
-                      <option value="Solo">Solo Instrument</option>
-                      <option value="Ensemble">Ensemble</option>
-                  </select>
-                  
-                  {/* Solo Instruments */}
-                  {soloOrEnsemble === "Solo" ?                 
-                    <>{/* Select the instrument family */}
-                      <select 
-                        name="selectFamily" 
-                        id="selectFamily" 
-                        className="add-input"
-                        value={currentInstrumentFamily}
-                        onChange={e => {
-                          if(soloOrEnsemble === "Solo") {
-                            setInputInstrumentIndex('-1')};
-                          setCurrentInstrumentFamily(e.target.value);                          
-                        }} >                      
-                          <option value="-1">--Select Instrument Family--</option>
-                          {familyOptions.map((option, i) => (
-                            i !== familyOptions.length - 1 ?
-                              <option 
-                                key={i} 
-                                value={i}
-                              >{option.familyName}</option> 
-                            : ''
-                          ))}
-                      </select>
-
-                      {/* Select the featured instrument */}
-                      {currentInstrumentFamily !== '-1' && instrumentOptions.length > 0 ?  
-                        <select 
-                          name="selectInstrument" 
-                          id="selectInstrument" 
-                          className="add-input"
-                          value={inputInstrumentIndex}
-                          onChange={e => {
-                            setInputInstrumentIndex(e.target.value);
-                          }} >                      
-                            <option value="-1">--Select Instrument--</option>                            
-                              {instrumentOptions[currentInstrumentFamily].map((option, i) => (
-                                !usedInstruments.includes(option.instrumentID) ?
-                                  <option 
-                                    key={i} 
-                                    value={i}
-                                  >{option.instrumentName}</option> 
-                                : ''
-                              ))}
-                        </select>
-                      : ''}
-                    </>  
-                    : 
-                      /* Select from list of ensembles */
-                      <select 
-                        name="selectEnsemble" 
-                        id="selectEnsemble" 
-                        className="add-input"
-                        value={inputInstrumentIndex}
-                        onChange={e => {
-                          setCurrentInstrumentFamily(familyOptions.length - 1);                      
-                          setInputInstrumentIndex(e.target.value);                       
-                        }} >                        
-                          <option value="-1">--Select Ensemble--</option>
-                          {instrumentOptions[familyOptions.length - 1].map((option, i) => (
-                            !usedInstruments.includes(option.instrumentID) ?
-                            <option 
-                              key={i} 
-                              value={i}
-                            >{option.instrumentName}</option> 
-                            : ''
-                          ))}
-                      </select> 
-                    }
-                    
-                    {/* Add the featured instrument */}
-                    <button 
-                      name="add-featured-instrument-button" 
-                      type="add"
-                      onClick={queueFeaturedInstrument}
-                      id="add"
-                    >Add</button>           
+                  <AddFeaturedInstrumentation
+                    featuredInstrumentation={featuredInstrumentation}
+                    setFeaturedInstrumentation={setFeaturedInstrumentation}
+                  />
                 </td>
               </tr>
 
