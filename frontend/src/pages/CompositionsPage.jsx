@@ -41,7 +41,7 @@ function CompositionsPage({ setCompositionToEdit }) {
   }
 
   // Update the active sort and sort the compositions
-  const handleSortComposition = (attribute, ascending) => {
+  const handleSortCompositions = (attribute, ascending) => {
     if (compositions.length > 0) {
       setActiveSort({
         attribute: attribute,
@@ -66,7 +66,7 @@ function CompositionsPage({ setCompositionToEdit }) {
           compositions={compositions} 
           showNums={false}
           activeSortAttribute={activeSort.attribute}
-          onSort={handleSortComposition}
+          onSort={handleSortCompositions}
           onEdit={handleEditComposition} 
           onDelete={handleDeleteComposition} 
       />
