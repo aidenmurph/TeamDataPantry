@@ -31,11 +31,6 @@ function DisplayCompositionPage() {
     }
   }, [familyList, compositionID]);
 
-  // RETRIEVE the list of movements for this composition
-  const loadMovements = useCallback(() => {
-    fetchers.fetchMovements(compositionID, setMovements);
-  }, [compositionID]);
-
   // LOAD all the compositions
   useEffect(() => {
     loadComposition();
@@ -53,11 +48,6 @@ function DisplayCompositionPage() {
     }
   }, [loadInstrumentation, familyList]);
 
-  // LOAD all the movements for this composition
-  useEffect(() => {
-    loadMovements();
-  }, [loadMovements]);
-
   const checkNumInstruments = (instrumentation) => {
     let numInstruments = 0;
     for (let i = 0; i < instrumentation.length; ++i)
@@ -69,7 +59,7 @@ function DisplayCompositionPage() {
 
   return (
     <>
-      <h2>{convertFlatSharp(composition.titleEnglish)}</h2>
+      <h2>{convertFlatSharp(composition.titleEnglish ? composition.titleEnglish : composition.titleNative)}</h2>
       <article>
         <CompositionInfoPanel
           compositionID={compositionID} 
@@ -99,10 +89,10 @@ function DisplayCompositionPage() {
           </section>
         : ''}
 
-        {movements.length > 1 ? 
+        {composition.movements && composition.movements.length > 1 ? 
           <section id="movements">
             <h3>Movements</h3>
-            <MovementList movements={movements} />
+            <MovementList movements={composition.movements} />
           </section> 
         : ''}
       </article>
