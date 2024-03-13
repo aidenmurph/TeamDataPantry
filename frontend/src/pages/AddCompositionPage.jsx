@@ -30,6 +30,9 @@ export const AddCompositionPage = () => {
   const [keyMode, setKeyMode] = useState("Major");
   const [keySignatureOptions, setKeySignatureOptions] = useState([]);
 
+  // Flag for success of all database inserts
+  const [addSuccess, setAddSuccess] = useState(true);
+
   // Assign redirect function
   const redirect = useNavigate();
 
@@ -71,7 +74,6 @@ export const AddCompositionPage = () => {
 
   // Add the composition and auxillary entities
   const addComposition = async () => {
-    let addSuccess = true;
 
     // Check required fields
     if (!composerID || composerID === '0' ||
@@ -126,79 +128,90 @@ export const AddCompositionPage = () => {
       console.log(`Unable to add composition. Request returned status code ${compositionResponse.status}`);
     }
 
-    // Prepare the opus number(s) and submit to the database
+    // INSERT Opus Number(s), if any
     if (opusNums.length > 0) {
-      const opusNumsData = opusNums.map(opusNum => ({ 
-        compositionID: newCompositionID, 
-        opNum: opusNum 
-      }));
-      const opusNumsResponse = await fetch(`${server_url}/api/opus-nums/for-composition-${newCompositionID}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(opusNumsData),
-      })
-      if(opusNumsResponse.ok){
-        console.log(`"Opus number(s) successfully added for composition with ID ${newCompositionID}!`);
-      } 
-      else {
-        addSuccess = false;
-        console.log(`Unable to add opus number(s). Request returned status code ${opusNumsResponse.status}`);
-      }
+      addOpusNums(newCompositionID);
     }
 
-    // Prepare the catalogue number(s) and submit to the database
+    // INSERT Catalogue Number(s), if any
     if (catalogueNums.length > 0) {
-      const catNumsData = catalogueNums.map(catNum => ({ 
-        catalogueID: catNum.id, 
-        compositionID: newCompositionID, 
-        catNum: catNum.catNum 
-      }));
-      const catNumsResponse = await fetch(`${server_url}/api/catalogue-nums/for-composition-${newCompositionID}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(catNumsData),
-      })
-      if(catNumsResponse.ok){
-        console.log(`"Catalogue number(s) successfully added for composition with ID ${newCompositionID}!`);
-      } 
-      else {
-        addSuccess = false;
-        console.log(`Unable to add catalogue number(s). Request returned status code ${catNumsResponse.status}`);
-      }
+      addCatalogueNums(newCompositionID);
     }
 
-    // Prepare the featured instrumentation submit to the database
-    if (featuredInstrumentation.length > 0) {
-      const featuredInstrumentsData = featuredInstrumentation.map(instrument => ({ 
-        compositionID: newCompositionID,
-        instrumentID: instrument.id
-      }));
-      const featuredInstrumentsResponse = await fetch(`${server_url}/api/featured-instruments/for-composition-${newCompositionID}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(featuredInstrumentsData),
-      })
-      if(featuredInstrumentsResponse.ok){
-        console.log(`"Featured instrument(s) successfully added for composition with ID ${newCompositionID}!`);
-      } 
-      else {
-        addSuccess = false;
-        console.log(`Unable to add catalogue number(s). Request returned status code ${featuredInstrumentsResponse.status}`);
-      }
-    }
+    // INSERT Featured Instrumentation
+    await addFeaturedInstrumentation(newCompositionID);
     
     if (addSuccess === true) {
       redirect(`/composition/${newCompositionID}`);
     }
   };
 
-  // Utilities and Page Return *********************************
+  // Prepare the opus numbers as query compatible objects and send to database
+  const addOpusNums = async (compositionID) => {
+    const data = opusNums.map(opusNum => ({ 
+      compositionID: compositionID, 
+      opNum: opusNum 
+    }));
+    const response = await fetch(`${server_url}/api/opus-nums/for-composition-${compositionID}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    if(response.ok){
+      console.log(`"Opus number(s) successfully added for composition with ID ${compositionID}!`);
+    } 
+    else {
+      addSuccess = false;
+      console.log(`Unable to add opus number(s). Request returned status code ${response.status}`);
+    }
+  }
+
+  // Prepare the catalogue numbers as query compatible objects and send to database
+  const addCatalogueNums = async (compositionID) => {
+    const data = catalogueNums.map(catNum => ({ 
+      catalogueID: catNum.id, 
+      compositionID: compositionID, 
+      catNum: catNum.catNum 
+    }));
+    const response = await fetch(`${server_url}/api/catalogue-nums/for-composition-${compositionID}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    if(response.ok){
+      console.log(`"Catalogue number(s) successfully added for composition with ID ${compositionID}!`);
+    } 
+    else {
+      addSuccess = false;
+      console.log(`Unable to add catalogue number(s). Request returned status code ${response.status}`);
+    }
+  }
+
+  // Prepare the featured instrumentation as query compatible objects and send to database
+  const addFeaturedInstrumentation = async (compositionID) => {
+    const data = featuredInstrumentation.map(instrument => ({ 
+      compositionID: compositionID,
+      instrumentID: instrument.id
+    }));
+    const response = await fetch(`${server_url}/api/featured-instruments/for-composition-${compositionID}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    if(response.ok){
+      console.log(`"Featured instrument(s) successfully added for composition with ID ${compositionID}!`);
+    } 
+    else {
+      addSuccess = false;
+      console.log(`Unable to add featured instrument(s). Request returned status code ${response.status}`);
+    }
+  }
 
   // Get current date for input limits
   const currentDate = new Date();
