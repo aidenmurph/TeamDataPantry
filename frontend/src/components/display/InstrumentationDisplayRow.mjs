@@ -1,5 +1,5 @@
 import React from 'react';
-import { appendOrdinalIndicator, convertFlatSharp } from '../modules/utilities.mjs';
+import { appendOrdinalIndicator, convertFlatSharp } from '../../modules/utilities.mjs';
 
 function InstrumentationDisplayRow({ instruments }) {
 

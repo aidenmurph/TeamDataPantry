@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { server_url } from '../config.js';
+import { server_url } from '../../config.js';
 
 function FormRow({ form, onEdit, onDelete }) {
   // State variales

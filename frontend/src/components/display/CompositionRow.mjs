@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { convertFlatSharp } from '../modules/utilities.mjs';
+import { convertFlatSharp } from '../../modules/utilities.mjs';
 
 function CompositionRow({ composition, onEdit, onDelete }) {
   return (
@@ -13,7 +13,7 @@ function CompositionRow({ composition, onEdit, onDelete }) {
       <td>{convertFlatSharp(composition.keySignature)}</td>
       <td>{composition.instrumentation}</td>
       <td>{composition.compositionYear}</td>
-      <td><button onClick={() => onEdit(composition)}>Edit</button></td>
+      <td><button onClick={() => onEdit(composition.compositionID)}>Edit</button></td>
       <td><button onClick={() => onDelete(composition.compositionID)}>Delete</button></td>
     </tr>
   );

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CompositionList from '../components/CompositionList.mjs';
+import CompositionList from '../components/display/CompositionList.mjs';
 import { server_url } from '../config';
 import * as fetchers from '../modules/fetchService.mjs'
 
-function CompositionsPage({ setCompositionToEdit }) {
+function CompositionsPage() {
   
   // Use the useNavigate module for redirection
   const redirect = useNavigate();
@@ -19,13 +19,12 @@ function CompositionsPage({ setCompositionToEdit }) {
 
 
   // UPDATE a single composition
-  const onEditComposition = async composition => {
-    setCompositionToEdit(composition);
-    redirect('/edit-composition');
+  const onEditComposition = async (id) => {;
+    redirect(`/edit-composition/${id}`);
   }
 
   // DELETE a single composition
-  const onDeleteComposition = async id => {
+  const onDeleteComposition = async (id) => {
     const response = await fetch(`${server_url}/api/compositions/${id}`, { method: 'DELETE'});
     if (response.ok) {
       loadCompositions();

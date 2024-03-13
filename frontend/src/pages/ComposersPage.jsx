@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ComposerList from '../components/ComposerList.mjs';
+import ComposerList from '../components/display/ComposerList.mjs';
 import { server_url } from '../config';
 import * as fetchers from '../modules/fetchService.mjs'
 

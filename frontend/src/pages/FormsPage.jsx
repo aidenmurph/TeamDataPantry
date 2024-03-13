@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import FormList from '../components/FormList.mjs';
+import FormList from '../components/display/FormList.mjs';
 import { server_url } from '../config';
 import * as fetchers from '../modules/fetchService.mjs'
 

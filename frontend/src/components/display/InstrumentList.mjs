@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import InstrumentRow from './InstrumentRow.mjs';
-import { server_url } from '../config.js';
+import { server_url } from '../../config.js';
 
 function InstrumentList({ family, instruments, onDelete, onEdit, onAdd }) {
   // State variables

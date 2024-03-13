@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import MovementList from '../components/MovementList.mjs';
-import CompositionInfoPanel from '../components/CompositionInfoPanel.mjs';
-import InstrumentationDisplay from '../components/InstrumentationDisplay.mjs';
+import MovementList from '../components/display/MovementList.mjs';
+import CompositionInfoPanel from '../components/display/CompositionInfoPanel.mjs';
+import InstrumentationDisplay from '../components/display/InstrumentationDisplay.mjs';
 import * as fetchers from '../modules/fetchService.mjs'
 import { convertFlatSharp } from '../modules/utilities.mjs';
 

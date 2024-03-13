@@ -1,5 +1,5 @@
 import React from 'react';
-import { convertFlatSharp } from '../modules/utilities.mjs';
+import { convertFlatSharp } from '../../modules/utilities.mjs';
 
 function MovementRow({ movement }) {
 

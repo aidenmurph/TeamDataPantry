@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import InstrumentList from '../components/InstrumentList.mjs';
+import InstrumentList from '../components/display/InstrumentList.mjs';
 import { server_url } from '../config';
 import * as fetchers from '../modules/fetchService.mjs'
 

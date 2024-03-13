@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CatalogueList from '../components/CatalogueList.mjs';
+import CatalogueList from '../components/display/CatalogueList.mjs';
 import { server_url } from '../config';
 import * as fetchers from '../modules/fetchService.mjs'
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import FormRow from './FormRow.mjs';
-import { server_url } from '../config.js';
+import { server_url } from '../../config.js';
 
 function FormList({ forms, onDelete, onEdit, onAdd }) {
   // State variables
