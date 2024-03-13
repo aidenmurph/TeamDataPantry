@@ -4,7 +4,7 @@ import * as fetchers from '../../modules/fetchService.mjs'
 import { QueuedFeaturedInstrument } from './QueuedFeaturedInstrument.mjs';
 
 // Form component for building an opus number queue to add to a composition
-function AddFeaturedInstrumentation({ featuredInstrumentation, setFeaturedInstrumentation }) {
+function AddFeaturedInstrumentationForm ({ featuredInstrumentation, setFeaturedInstrumentation }) {
   // State variables for dropdown menus
   const [familyOptions, setFamilyOptions] = useState([]);
   const [instrumentOptions, setInstrumentOptions] = useState([]);
@@ -200,4 +200,4 @@ function AddFeaturedInstrumentation({ featuredInstrumentation, setFeaturedInstru
   );
 }
   
-export { AddFeaturedInstrumentation };
+export { AddFeaturedInstrumentationForm };

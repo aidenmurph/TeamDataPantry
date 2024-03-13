@@ -6,9 +6,9 @@ import * as fetchers from '../modules/fetchService.mjs'
 import { convertFlatSharp } from '../modules/utilities.mjs';
 
 // Import form componenets
-import { AddOpusNums } from '../components/forms/AddOpusNums.mjs'
-import { AddCatalogueNums } from '../components/forms/AddCatalogueNums.mjs';
-import { AddFeaturedInstrumentation } from '../components/forms/AddFeaturedInstrumentation.mjs';
+import { AddOpusNumsForm } from '../components/forms/AddOpusNumsForm.mjs'
+import { AddCatalogueNumsForm } from '../components/forms/AddCatalogueNumsForm.mjs';
+import { AddFeaturedInstrumentationForm } from '../components/forms/AddFeaturedInstrumentationForm.mjs';
 
 export const AddCompositionPage = () => {
   // State variables for database entities
@@ -199,6 +199,7 @@ export const AddCompositionPage = () => {
   };
 
   // Utilities and Page Return *********************************
+
   // Get current date for input limits
   const currentDate = new Date();
 
@@ -310,7 +311,7 @@ export const AddCompositionPage = () => {
                 </td>
               </tr>
               <tr>
-                
+
                 {/* Subtitle */}
                 <td><label htmlFor="subtitle">Subtitle: </label>
                   <input 
@@ -344,7 +345,7 @@ export const AddCompositionPage = () => {
 
                 {/* Opus Numbers */}
                 <td>
-                  <AddOpusNums
+                  <AddOpusNumsForm
                     opusNums={opusNums}
                     setOpusNums={setOpusNums}
                   />
@@ -354,7 +355,7 @@ export const AddCompositionPage = () => {
               {/* Featured Instruments */}
               <tr>
                 <td colSpan="3">
-                  <AddFeaturedInstrumentation
+                  <AddFeaturedInstrumentationForm
                     featuredInstrumentation={featuredInstrumentation}
                     setFeaturedInstrumentation={setFeaturedInstrumentation}
                   />
@@ -364,7 +365,7 @@ export const AddCompositionPage = () => {
               {/* Catalogue Nums */}
               <tr>
                 <td colSpan="3">
-                  < AddCatalogueNums
+                  < AddCatalogueNumsForm
                     composerID={composerID}
                     catalogueNums={catalogueNums}
                     setCatalogueNums={setCatalogueNums}                  

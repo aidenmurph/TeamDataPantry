@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { QueuedOpusNum } from './QueuedOpusNum.mjs';
 
 // Form component for building an opus number queue to add to a composition
-function AddOpusNums({ opusNums, setOpusNums }) {
+function AddOpusNumsForm ({ opusNums, setOpusNums }) {
   const [opusNumInput, setOpusNumInput] = useState('');
 
   // Add an opus number to the queue of opus numbers and reset the input field
@@ -58,4 +58,4 @@ function AddOpusNums({ opusNums, setOpusNums }) {
   );
 }
   
-export { AddOpusNums };
+export { AddOpusNumsForm };

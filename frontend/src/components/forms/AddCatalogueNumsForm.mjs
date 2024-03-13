@@ -4,7 +4,7 @@ import * as fetchers from '../../modules/fetchService.mjs'
 import { QueuedCatalogueNum } from './QueuedCatalogueNum.mjs';
 
 // Form component for building an opus number queue to add to a composition
-function AddCatalogueNums({ composerID, catalogueNums, setCatalogueNums }) {
+function AddCatalogueNumsForm ({ composerID, catalogueNums, setCatalogueNums }) {
   // State variables for dropdown menu
   const [catalogueOptions, setCatalogueOptions] = useState([]);
   
@@ -123,4 +123,4 @@ function AddCatalogueNums({ composerID, catalogueNums, setCatalogueNums }) {
   );
 }
   
-export { AddCatalogueNums };
+export { AddCatalogueNumsForm };
