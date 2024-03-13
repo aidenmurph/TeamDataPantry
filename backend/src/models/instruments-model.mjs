@@ -77,36 +77,13 @@ function retrieveInstrumentsByFamily(familyID) {
     });
 }
 
-// Retrieve the featured instruments for a single composition
-function retrieveFeaturedInstruments(compositionID) {
-  const query = formatSQL(`
-    SELECT Instruments.instrumentName, Instruments.familyID 
-    FROM FeaturedInstrumentation
-    INNER JOIN Instruments ON FeaturedInstrumentation.instrumentID = Instruments.instrumentID
-    WHERE FeaturedInstrumentation.compositionID = ?`);
-  const params = [compositionID];
-
-  return pool.getConnection()
-    .then(conn => {
-      const resultPromise = conn.query(query, params);
-      resultPromise.finally(() => conn.release());
-      return resultPromise;
-    })
-    .then(rows => {
-      return rows;
-    })
-    .catch(err => {
-      console.error('Error in retrieveInstrumentByID: ', err);
-      throw err;
-    });
-}
-
 // Retrieve the detailed instrumentation for a single composition by instrument family
 function retrieveInstrumentationByFamily(compositionID, familyID) {
   const query = formatSQL(`
   SELECT 
     Instruments.familyID,
     CompositionPlayers.isSection,
+    Instruments.scorePosition,
     COUNT(DISTINCT CompositionPlayers.playerID) AS numInstruments,
     Instruments.instrumentID,
     Instruments.instrumentName,
@@ -134,6 +111,7 @@ function retrieveInstrumentationByFamily(compositionID, familyID) {
   SELECT 
     Instruments.familyID,
     CompositionPlayers.isSection,
+    Instruments.scorePosition,
     COUNT(DISTINCT CompositionPlayers.playerID) AS numInstruments,
     Instruments.instrumentID,
     CONCAT(Instruments.instrumentName,
@@ -225,7 +203,6 @@ export {
   createInstrument,
   retrieveInstrumentFamilies,
   retrieveInstrumentsByFamily,
-  retrieveFeaturedInstruments,
   retrieveInstrumentationByFamily,
   updateInstrument,
   deleteInstrument

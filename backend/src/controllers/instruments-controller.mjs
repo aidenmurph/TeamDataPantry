@@ -40,17 +40,6 @@ function retrieveInstrumentsByFamilyController(req, res) {
     });
 }
 
-function retrieveFeaturedInstrumentsController(req, res) {
-  instruments.retrieveFeaturedInstruments(req.params.id)
-    .then(rows => {
-      res.json(rows);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send('Error fetching instruments');
-    });
-}
-
 function retrieveInstrumentationByFamilyController(req, res) {
   instruments.retrieveInstrumentationByFamily(req.params.id, req.params.familyid)
     .then(rows => {
@@ -97,7 +86,6 @@ export {
   createInstrumentController,
   retrieveInstrumentFamiliesController,
   retrieveInstrumentsByFamilyController,
-  retrieveFeaturedInstrumentsController,
   retrieveInstrumentationByFamilyController,
   updateInstrumentController,
   deleteInstrumentController

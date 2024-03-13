@@ -59,7 +59,6 @@ app.delete('/api/compositions/:id', compositions.deleteCompositionController);
 app.post('/api/instruments/:familyid', instruments.createInstrumentController);
 app.get('/api/instrument-families', instruments.retrieveInstrumentFamiliesController);
 app.get('/api/instruments/by-family/:id', instruments.retrieveInstrumentsByFamilyController);
-app.get('/api/instruments/featured/:id', instruments.retrieveFeaturedInstrumentsController);
 app.get('/api/instruments/instrumentation/composition-:id/family-:familyid', instruments.retrieveInstrumentationByFamilyController);
 app.put('/api/instruments/:id', instruments.updateInstrumentController);
 app.delete('/api/instruments/:id', instruments.deleteInstrumentController);
