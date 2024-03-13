@@ -158,16 +158,17 @@ function retrieveCompositions() {
       Compositions.compositionID,
       IFNULL(Compositions.titleEnglish, Compositions.titleNative) AS title,
       IFNULL((SELECT 
-        GROUP_CONCAT(OpusNums.opNum SEPARATOR ', ')
+        JSON_ARRAYAGG(OpusNums.opNum)
         FROM OpusNums
-        WHERE OpusNums.compositionID = Compositions.compositionID
-        GROUP BY OpusNums.compositionID), "") AS opusNum, 
+        WHERE OpusNums.compositionID = Compositions.compositionID), "") AS opusNums,
       IFNULL((SELECT 
-        GROUP_CONCAT(CONCAT(Catalogues.catalogueSymbol, ' ', CatalogueNums.catNum) SEPARATOR ', ')
-        FROM CatalogueNums 
-        INNER JOIN Catalogues ON CatalogueNums.catalogueID = Catalogues.catalogueID
-        WHERE CatalogueNums.compositionID = Compositions.compositionID
-        GROUP BY CatalogueNums.compositionID), "") AS catalogueNum,
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'catalogueID', CatalogueNums.catalogueID,
+            'symbol', (SELECT catalogueSymbol FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
+            'num', CatalogueNums.catNum))
+        FROM CatalogueNums
+        WHERE CatalogueNums.compositionID = Compositions.compositionID), '[]') AS catalogueNums,
       Compositions.composerID, 
       Composers.firstName AS composerFirst,  
       Composers.lastName AS composerLast, 
@@ -176,13 +177,24 @@ function retrieveCompositions() {
         FROM Forms
         WHERE Forms.formID = Compositions.formID) AS form,
       IFNULL(Compositions.keySignature, "") AS keySignature,
-      (SELECT 
-        GROUP_CONCAT(Instruments.instrumentName SEPARATOR ', ')
-        FROM FeaturedInstrumentation
-        INNER JOIN Instruments ON FeaturedInstrumentation.instrumentID = Instruments.instrumentID
-        WHERE FeaturedInstrumentation.compositionID = Compositions.compositionID
-        GROUP BY FeaturedInstrumentation.compositionID) AS instrumentation,
-      Compositions.compositionYear 
+      IFNULL((SELECT 
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'instrumentID', Instruments.instrumentID,
+            'familyID', Instruments.familyID,
+            'scorePosition', Instruments.scorePosition,
+            'name', Instruments.instrumentName)) 
+        FROM Instruments
+        INNER JOIN FeaturedInstrumentation ON Instruments.instrumentID = FeaturedInstrumentation.instrumentID
+        WHERE FeaturedInstrumentation.compositionID = Compositions.compositionID), '[]') AS featuredInstrumentation,
+      Compositions.compositionYear,
+      IFNULL((SELECT 
+        JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'movementNum', Movements.movementNum,
+                'title', Movements.title))
+        FROM Movements
+        WHERE Movements.compositionID = Compositions.compositionID), '[]') AS movements 
     FROM Compositions 
     INNER JOIN Composers ON Compositions.composerID = Composers.composerID;`);
 
@@ -210,10 +222,17 @@ function retrieveCompositionByID(compositionID) {
       Compositions.subtitle,
       Compositions.dedication,
       IFNULL((SELECT 
-        GROUP_CONCAT(OpusNums.opNum SEPARATOR ', ')
-        FROM OpusNums
-        WHERE OpusNums.compositionID = Compositions.compositionID
-        GROUP BY OpusNums.compositionID), "") AS opusNum, 
+          JSON_ARRAYAGG(OpusNums.opNum)
+          FROM OpusNums
+          WHERE OpusNums.compositionID = Compositions.compositionID), '[]') AS opusNums,
+      IFNULL((SELECT 
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'catalogueID', CatalogueNums.catalogueID,
+            'symbol', (SELECT catalogueSymbol FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
+            'num', CatalogueNums.catNum))
+        FROM CatalogueNums
+        WHERE CatalogueNums.compositionID = Compositions.compositionID), '[]') AS catalogueNums,
       Compositions.composerID, 
       Composers.firstName AS composerFirst, 
       Composers.lastName AS composerLast, 
@@ -221,14 +240,25 @@ function retrieveCompositionByID(compositionID) {
         Forms.formName
         FROM Forms
         WHERE Forms.formID = Compositions.formID) AS form,
-      IFNULL(Compositions.keySignature, "") AS keySignature,
-      (SELECT 
-        GROUP_CONCAT(Instruments.instrumentName SEPARATOR ', ')
-        FROM FeaturedInstrumentation
-        INNER JOIN Instruments ON FeaturedInstrumentation.instrumentID = Instruments.instrumentID
-        WHERE FeaturedInstrumentation.compositionID = Compositions.compositionID
-        GROUP BY FeaturedInstrumentation.compositionID) AS featuredInstrumentation,
+      IFNULL(Compositions.keySignature, '') AS keySignature,
+      IFNULL((SELECT 
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'instrumentID', Instruments.instrumentID,
+            'familyID', Instruments.familyID,
+            'scorePosition', Instruments.scorePosition,
+            'name', Instruments.instrumentName)) 
+        FROM Instruments
+        INNER JOIN FeaturedInstrumentation ON Instruments.instrumentID = FeaturedInstrumentation.instrumentID
+        WHERE FeaturedInstrumentation.compositionID = Compositions.compositionID), '[]') AS featuredInstrumentation,
       Compositions.compositionYear,
+      IFNULL((SELECT 
+        JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'movementNum', Movements.movementNum,
+                'title', Movements.title))
+        FROM Movements
+        WHERE Movements.compositionID = Compositions.compositionID), '[]') AS movements,
       Compositions.infoText 
     FROM Compositions 
     INNER JOIN Composers ON Compositions.composerID = Composers.composerID

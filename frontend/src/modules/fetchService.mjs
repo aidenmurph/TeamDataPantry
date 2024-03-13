@@ -140,7 +140,14 @@ const fetchCompositions = (setCompositions) => {
       return response.json();
     })
     .then(compositions => {
-      setCompositions(compositions);
+      const parsedCompositions = compositions.map(composition => ({
+        ...composition,
+        opusNums: composition.opusNums ? JSON.parse(composition.opusNums) : '',
+        catalogueNums: composition.catalogueNums ? JSON.parse(composition.catalogueNums) : '',
+        featuredInstrumentation: composition.featuredInstrumentation ? JSON.parse(composition.featuredInstrumentation) : '',
+        movements: composition.movements ? JSON.parse(composition.movements) : ''
+      }));
+      setCompositions(parsedCompositions);
     })
     .catch(error => {
       console.error('Error fetching compositions:', error);
@@ -157,7 +164,14 @@ const fetchComposition = (compositionID, setComposition) => {
       return response.json();
     })
     .then(composition => {
-      setComposition(composition);
+      const updatedComposition = {
+        ...composition,
+        opusNums: composition.opusNums ? JSON.parse(composition.opusNums) : '',
+        catalogueNums: composition.catalogueNums ? JSON.parse(composition.catalogueNums) : '',
+        featuredInstrumentation: composition.featuredInstrumentation ? JSON.parse(composition.featuredInstrumentation) : '',
+        movements: composition.movements ? JSON.parse(composition.movements) : ''
+      };
+      setComposition(updatedComposition);
     })
     .catch(error => {
       console.error(`Error fetching composition with ID ${compositionID}:`, error);
