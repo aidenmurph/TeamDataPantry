@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { server_url } from '../config';
 import * as fetchers from '../modules/fetchService.mjs'
 import { convertFlatSharp } from '../modules/utilities.mjs';
-import { QueuedOpusNum } from '../components/QueuedOpusNum.mjs'
-import { QueuedCatalogueNum } from '../components/QueuedCatalogueNum.mjs';
-import { QueuedFeaturedInstrument } from '../components/QueuedFeaturedInstrument.mjs'
+
+// Import form componenets
+import { AddOpusNums } from '../components/forms/AddOpusNums.mjs'
+import { QueuedCatalogueNum } from '../components/forms/QueuedCatalogueNum.mjs';
+import { QueuedFeaturedInstrument } from '../components/forms/QueuedFeaturedInstrument.mjs'
 
 export const AddCompositionPage = () => {
   // State variables for Compositions
@@ -18,10 +20,6 @@ export const AddCompositionPage = () => {
   const [compositionYear, setCompositionYear] = useState('');
   const [formID, setFormID] = useState('');
   const [keySignature, setKeySignature] = useState('');
-
-  // State variables for OpusNums
-  const [opusCount, setOpusCount] = useState(0);
-  const [opusNumInput, setOpusNumInput] = useState('');
   const [opusNums, setOpusNums] = useState([]);
 
   // State variables for CatalogueNums
@@ -36,7 +34,6 @@ export const AddCompositionPage = () => {
   const [inputInstrumentIndex, setInputInstrumentIndex] = useState('-1');
   const [featuredInstrumentation, setFeaturedInstrumentation] = useState([]);
   const [usedInstruments, setUsedInstruments] = useState([]);
-
 
   // Options for dropdown menus
   const [catalogueIndex, setCatalogueIndex] = useState([]);
@@ -249,28 +246,6 @@ export const AddCompositionPage = () => {
       redirect(`/composition/${newCompositionID}`);
     }
   };
-
-  // Opus Number Maintenance Functions *************************
-
-  // Add an opus number to the queue of opus numbers and reset the input field
-  const queueOpusNum = async () => {
-    if(opusNumInput === '') {
-      alert("Cannot add empty opus number");
-      return;
-    }
-    let queue = [...opusNums, opusNumInput];
-    setOpusNums(queue)
-    setOpusCount(opusCount + 1);
-    setOpusNumInput('');
-  }
-
-  // Remove an opus number from the queue
-  const removeQueuedOpusNum = async (opusNum) => {
-    let queue = [...opusNums];
-    queue = queue.filter(num => num !== opusNum)
-    setOpusCount(opusCount - 1);
-    setOpusNums(queue);
-  }
 
   // Catalogue Number Maintenance Functions ********************
 
@@ -514,32 +489,11 @@ export const AddCompositionPage = () => {
                 </td>
 
                 {/* Opus Numbers */}
-                <td><label htmlFor="opusNums">Op. </label>
-                  {opusNums.map((opusNum, i) => (
-                    <QueuedOpusNum
-                      key={i} 
-                      opusNum={opusNum}
-                      i={i}
-                      opusCount={opusCount}
-                      onRemove={removeQueuedOpusNum}
-                    /> 
-                  ))}
-                  <input 
-                    type="text" 
-                    name="opusNums" 
-                    id="opusNums" 
-                    className="add-input"
-                    max="8" 
-                    size="5" 
-                    placeholder="i.e. 110" 
-                    value={opusNumInput}
-                    onChange={e => setOpusNumInput(e.target.value)} />
-                  <button 
-                    name="add-opnum-button" 
-                    type="add"
-                    onClick={queueOpusNum}
-                    id="add"
-                  >Add</button>
+                <td>
+                  <AddOpusNums
+                    opusNums={opusNums}
+                    setOpusNums={setOpusNums}
+                  />
                 </td>
               </tr>
 
