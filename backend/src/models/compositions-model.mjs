@@ -156,7 +156,7 @@ function retrieveCompositions() {
   const query = formatSQL(`
     SELECT 
       Compositions.compositionID,
-      Compositions.titleEnglish,
+      IFNULL(Compositions.titleEnglish, Compositions.titleNative) AS title,
       IFNULL((SELECT 
         GROUP_CONCAT(OpusNums.opNum SEPARATOR ', ')
         FROM OpusNums
@@ -169,7 +169,8 @@ function retrieveCompositions() {
         WHERE CatalogueNums.compositionID = Compositions.compositionID
         GROUP BY CatalogueNums.compositionID), "") AS catalogueNum,
       Compositions.composerID, 
-      CONCAT(Composers.firstName, " ", Composers.lastName) AS composer, 
+      Composers.firstName AS composerFirst,  
+      Composers.lastName AS composerLast, 
       (SELECT 
         Forms.formName
         FROM Forms
