@@ -31,7 +31,7 @@ function CompositionList({ compositions, showNums, activeSortAttribute, onSort, 
           <CompositionRow
             key={i} 
             composition={composition} 
-            showNums={false}
+            showNums={showNums}
             onDelete={onDelete}
             onEdit={onEdit} 
           />)}
