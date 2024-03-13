@@ -18,13 +18,13 @@ function CataloguesPage({ setCatalogueToEdit }) {
   }, []);
 
   // UPDATE a single catalogue
-  const onEditCatalogue = async catalogue => {
+  const onEditCatalogue = async (catalogue) => {
     setCatalogueToEdit(catalogue);
     redirect('/edit-catalogue');
   }
 
   // DELETE a single catalogue
-  const onDeleteCatalogue = async id => {
+  const onDeleteCatalogue = async (id) => {
     const response = await fetch(`${server_url}/api/catalogues/${id}`, { method: 'DELETE'});
     if (response.ok) {
       loadCatalogues();

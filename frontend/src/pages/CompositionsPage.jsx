@@ -4,7 +4,7 @@ import CompositionList from '../components/display/CompositionList.mjs';
 import { server_url } from '../config';
 import * as fetchers from '../modules/fetchService.mjs'
 
-function CompositionsPage() {
+function CompositionsPage({ setCompositionToEdit }) {
   
   // Use the useNavigate module for redirection
   const redirect = useNavigate();
@@ -19,8 +19,9 @@ function CompositionsPage() {
 
 
   // UPDATE a single composition
-  const onEditComposition = async (id) => {;
-    redirect(`/edit-composition/${id}`);
+  const onEditComposition = async (composition) => {;
+    setCompositionToEdit(composition);
+    redirect(`/edit-composition/`);
   }
 
   // DELETE a single composition

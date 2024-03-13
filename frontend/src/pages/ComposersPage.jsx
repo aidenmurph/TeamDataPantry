@@ -18,13 +18,13 @@ function ComposersPage({ setComposerToEdit }) {
   }, []);
 
   // UPDATE a single composer
-  const onEditComposer = async composer => {
+  const onEditComposer = async (composer) => {
     setComposerToEdit(composer);
     redirect('/edit-composer');
   }
 
   // DELETE a single composer
-  const onDeleteComposer = async id => {
+  const onDeleteComposer = async (id) => {
     const response = await fetch(`${server_url}/api/composers/${id}`, { method: 'DELETE'});
     if (response.ok) {
       loadComposers();

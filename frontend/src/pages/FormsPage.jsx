@@ -14,7 +14,7 @@ function FormsPage() {
   }, []);
   
     // DELETE a single form
-    const onDeleteForm = async id => {
+    const onDeleteForm = async (id) => {
       const response = await fetch(`${server_url}/api/forms/${id}`, { method: 'DELETE'});
       if (response.ok) {
         loadForms();
