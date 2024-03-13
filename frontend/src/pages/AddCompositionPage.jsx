@@ -9,6 +9,7 @@ import { convertFlatSharp } from '../modules/utilities.mjs';
 import { AddOpusNumsForm } from '../components/forms/AddOpusNumsForm.mjs'
 import { AddCatalogueNumsForm } from '../components/forms/AddCatalogueNumsForm.mjs';
 import { AddFeaturedInstrumentationForm } from '../components/forms/AddFeaturedInstrumentationForm.mjs';
+import { AddMovementsForm } from '../components/forms/AddMovementsForm.mjs';
 
 export const AddCompositionPage = () => {
   // State variables for database entities
@@ -23,6 +24,7 @@ export const AddCompositionPage = () => {
   const [opusNums, setOpusNums] = useState([]);
   const [catalogueNums, setCatalogueNums] = useState([]);
   const [featuredInstrumentation, setFeaturedInstrumentation] = useState([]);
+  const [movements, setMovements] = useState([]);
 
   // Options for dropdown menus
   const [catalogueIndex, setCatalogueIndex] = useState([]);
@@ -124,7 +126,7 @@ export const AddCompositionPage = () => {
       console.log(`"${englishTitle ? englishTitle : nativeTitle}" was successfully added!`);
     } 
     else {
-      addSuccess = false;
+      setAddSuccess(false);
       console.log(`Unable to add composition. Request returned status code ${compositionResponse.status}`);
     }
 
@@ -140,6 +142,9 @@ export const AddCompositionPage = () => {
 
     // INSERT Featured Instrumentation
     await addFeaturedInstrumentation(newCompositionID);
+
+    // INSERT Movement(s)
+    await addMovements(newCompositionID);
     
     if (addSuccess === true) {
       redirect(`/composition/${newCompositionID}`);
@@ -160,10 +165,10 @@ export const AddCompositionPage = () => {
       body: JSON.stringify(data),
     })
     if(response.ok){
-      console.log(`"Opus number(s) successfully added for composition with ID ${compositionID}!`);
+      console.log(`Opus number(s) successfully added for composition with ID ${compositionID}!`);
     } 
     else {
-      addSuccess = false;
+      setAddSuccess(false);
       console.log(`Unable to add opus number(s). Request returned status code ${response.status}`);
     }
   }
@@ -183,10 +188,10 @@ export const AddCompositionPage = () => {
       body: JSON.stringify(data),
     })
     if(response.ok){
-      console.log(`"Catalogue number(s) successfully added for composition with ID ${compositionID}!`);
+      console.log(`Catalogue number(s) successfully added for composition with ID ${compositionID}!`);
     } 
     else {
-      addSuccess = false;
+      setAddSuccess(false);
       console.log(`Unable to add catalogue number(s). Request returned status code ${response.status}`);
     }
   }
@@ -205,13 +210,45 @@ export const AddCompositionPage = () => {
       body: JSON.stringify(data),
     })
     if(response.ok){
-      console.log(`"Featured instrument(s) successfully added for composition with ID ${compositionID}!`);
+      console.log(`Featured instrument(s) successfully added for composition with ID ${compositionID}!`);
     } 
     else {
       addSuccess = false;
       console.log(`Unable to add featured instrument(s). Request returned status code ${response.status}`);
     }
   }
+
+    // Prepare the movements as query compatible objects and send to database
+    const addMovements = async (compositionID) => {
+      const data = movements.length > 0 ?        
+        // Multi-movement works
+        movements.map(movement => ({ 
+          compositionID: compositionID, 
+          movementNum: movement.num,
+          title:  movement.title === '' ? null : movement.title
+        }))
+      :
+        // Single-movement works
+        [{
+          compositionID: compositionID,
+          movementNum: 1,
+          title: null
+        }]
+      const response = await fetch(`${server_url}/api/movements/for-composition-${compositionID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      if(response.ok){
+        console.log(`Movement(s) successfully added for composition with ID ${compositionID}!`);
+      } 
+      else {
+        setAddSuccess(false);
+        console.log(`Unable to movement(s). Request returned status code ${response.status}`);
+      }
+    }
 
   // Get current date for input limits
   const currentDate = new Date();
@@ -232,7 +269,8 @@ export const AddCompositionPage = () => {
                     name="titleEnglish" 
                     id="titleEnglish" 
                     className="add-input" 
-                    size="50" 
+                    size="50"
+                    value={englishTitle} 
                     placeholder="Title" 
                     onChange={e => setEnglishTitle(e.target.value)} />
                 </td>
@@ -243,7 +281,7 @@ export const AddCompositionPage = () => {
                     name="composer" 
                     id="composer" 
                     className="add-input"
-                    defaultValue={"0"}
+                    value={composerID}
                     onChange={e => setComposerID(e.target.value)} >
                       {/* Query the composers in the database in order to populate the list */}
                       <option value="0">--Select Composer--</option>
@@ -271,7 +309,7 @@ export const AddCompositionPage = () => {
                     name="keySignature" 
                     id="keySignature" 
                     className="add-input"
-                    defaultValue={"0"}
+                    value={keySignature}
                     onChange={e => setKeySignature(e.target.value)} >
                       {/* Query the key signatures in the database in order to populate the dropdown */}
                       <option value="0">--Select Key Signature--</option>
@@ -295,6 +333,7 @@ export const AddCompositionPage = () => {
                     id="titleNative" 
                     className="add-input" 
                     size="50" 
+                    value={nativeTitle}
                     placeholder="Title" 
                     onChange={e => setNativeTitle(e.target.value)} />
                 </td>
@@ -305,7 +344,8 @@ export const AddCompositionPage = () => {
                     type="text" 
                     name="dedication" 
                     id="dedication" 
-                    className="add-input" 
+                    className="add-input"
+                    value={dedication} 
                     placeholder="Dedication" 
                     onChange={e => setDedication(e.target.value)} />
                 </td>
@@ -319,6 +359,7 @@ export const AddCompositionPage = () => {
                     size="8"
                     min="0"
                     max={currentDate.getFullYear()}
+                    value={compositionYear}
                     placeholder="i.e. 1999"
                     onChange={e => setCompositionYear(e.target.value)} />
                 </td>
@@ -365,16 +406,6 @@ export const AddCompositionPage = () => {
                 </td>
               </tr>
 
-              {/* Featured Instruments */}
-              <tr>
-                <td colSpan="3">
-                  <AddFeaturedInstrumentationForm
-                    featuredInstrumentation={featuredInstrumentation}
-                    setFeaturedInstrumentation={setFeaturedInstrumentation}
-                  />
-                </td>
-              </tr>
-
               {/* Catalogue Nums */}
               <tr>
                 <td colSpan="3">
@@ -386,14 +417,39 @@ export const AddCompositionPage = () => {
                 </td>
               </tr>
 
+              {/* Featured Instrumentation */}
+              <tr>
+                <td colSpan="3">
+                  <AddFeaturedInstrumentationForm
+                    featuredInstrumentation={featuredInstrumentation}
+                    setFeaturedInstrumentation={setFeaturedInstrumentation}
+                  />
+                </td>
+              </tr>
+
+              {/* Movements */}
+              <tr>
+                <td colSpan="3">
+                  <AddMovementsForm
+                    movements={movements}
+                    setMovements={setMovements}
+                  />
+                </td>
+              </tr>                     
+
+              {/* Submit Button */}
+              <tr>
+                <td colSpan="3" style={{ textAlign: "center" }}>
+                  <button 
+                    name="submit-button" 
+                    type="submit"
+                    onClick={addComposition}
+                    id="submit"
+                  >Submit</button>
+                </td>
+              </tr>
             </tbody>
-          </table>
-        <button 
-          name="submit-button" 
-          type="submit"
-          onClick={addComposition}
-          id="submit"
-        >Submit</button>
+          </table>        
       </article>
     </>
   )
