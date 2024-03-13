@@ -38,6 +38,18 @@ function createCatalogueNumsController(req, res) {
     });
 }
 
+function createFeaturedInstrumentationController(req, res) {
+  compositions.createFeaturedInstrumentation(req.body)
+    .then(result => {
+      console.log('Create result:', result);
+      res.json({ success: true, message: 'Featured instrument(s) created successfully' });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Error creating Featured instrument(s)' });
+    });
+}
+
 // RETRIEVE Controllers ****************************************
 function retrieveCompositionsController(req, res) {
   compositions.retrieveCompositions()
@@ -115,6 +127,7 @@ export {
   createCompositionController,
   createOpusNumsController,
   createCatalogueNumsController,
+  createFeaturedInstrumentationController,
   retrieveCompositionsController,
   retrieveCompositionByIDController,
   retrieveMovementsController,

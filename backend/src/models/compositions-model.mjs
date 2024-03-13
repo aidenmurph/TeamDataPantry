@@ -96,6 +96,33 @@ function createCatalogueNums(catalogueNums) {
   });
 }
 
+// Create one or more catalogue numbers for a given composition 
+function createFeaturedInstrumentation(featuredInstruments) {
+  let placeholders = featuredInstruments.map(() => '(?, ?)').join(', ');
+  let params = featuredInstruments.reduce((acc, { compositionID, instrumentID }) => 
+    acc.concat(compositionID, instrumentID), 
+    []);
+  const query = formatSQL(`
+  INSERT INTO FeaturedInstrumentation (
+    compositionID,
+    instrumentID
+  ) VALUES ${placeholders}`);
+
+  return pool.getConnection()
+  .then(conn => {
+    const resultPromise = conn.query(query, params);
+    resultPromise.finally(() => conn.release());
+    return resultPromise;
+  })
+  .then(result => {
+    return result;
+  })
+  .catch(err => {
+    console.error('Error in createFeaturedInstrumentation:', err);
+    throw err;
+  });
+}
+
 // Retreive composition info for displaying in the composition list
 function retrieveCompositions() {
   const query = formatSQL(`
@@ -108,7 +135,7 @@ function retrieveCompositions() {
         WHERE OpusNums.compositionID = Compositions.compositionID
         GROUP BY OpusNums.compositionID), "") AS opusNum, 
       IFNULL((SELECT 
-        GROUP_CONCAT(CONCAT(Catalogues.catalogueSymbol, CatalogueNums.catNum) SEPARATOR ', ')
+        GROUP_CONCAT(CONCAT(Catalogues.catalogueSymbol, ' ', CatalogueNums.catNum) SEPARATOR ', ')
         FROM CatalogueNums 
         INNER JOIN Catalogues ON CatalogueNums.catalogueID = Catalogues.catalogueID
         WHERE CatalogueNums.compositionID = Compositions.compositionID
@@ -263,6 +290,7 @@ export {
   createComposition,
   createOpusNums,
   createCatalogueNums,
+  createFeaturedInstrumentation,
   retrieveCompositions,
   retrieveCompositionByID,
   retrieveMovements,
