@@ -9,8 +9,15 @@ function AddOpusNumsForm ({ opusNums, setOpusNums }) {
   // Add an opus number to the queue of opus numbers and reset the input field
   const queueOpusNum = async () => {
     if(opusNumInput === '') {
-      alert("Cannot add empty opus number");
-      console.log("Cannot add empty opus number");
+      const message = "Cannot add empty opus number";
+      alert(message);
+      console.log(message);
+      return;
+    }
+    if(opusNums.includes(opusNumInput)) {
+      const message = "That opus number has already been added for this composition";
+      alert(message);
+      console.log(message);
       return;
     }
     let queue = [...opusNums, opusNumInput];
