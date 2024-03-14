@@ -151,69 +151,73 @@ function createMovements(movements) {
   });
 }
 
+// Base retreival query for compositions
+const retrieveQuery = `
+  SELECT
+    Compositions.compositionID,
+    IFNULL(Compositions.titleEnglish, Compositions.titleNative) AS title,
+    Compositions.titleEnglish,
+    Compositions.titleNative,
+    Compositions.subtitle,
+    Compositions.dedication,
+    IFNULL((SELECT 
+        JSON_ARRAYAGG(OpusNums.opNum)
+        FROM OpusNums
+        WHERE OpusNums.compositionID = Compositions.compositionID), '[]') AS opusNums,
+    IFNULL((SELECT 
+      JSON_ARRAYAGG(
+        JSON_OBJECT(
+          'catalogueID', CatalogueNums.catalogueID,
+          'title',  (SELECT catalogueTitle FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
+          'symbol', (SELECT catalogueSymbol FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
+          'catNum', CatalogueNums.catNum))
+      FROM CatalogueNums
+      WHERE CatalogueNums.compositionID = Compositions.compositionID), '[]') AS catalogueNums,
+    Compositions.composerID, 
+    Composers.firstName AS composerFirst, 
+    Composers.lastName AS composerLast,
+    (SELECT
+      JSON_OBJECT(
+        'id', Forms.formID,
+        'name', Forms.formName)
+      FROM Forms
+      WHERE Forms.formID = Compositions.formID) AS form,
+    (SELECT CASE
+      WHEN Compositions.keySignature IS NULL THEN
+        JSON_OBJECT(
+          'name', NULL,
+          'type', NULL)
+      ELSE
+        (SELECT JSON_OBJECT(
+          'name', KeySignatures.keyName,
+          'type', KeySignatures.keyType)
+      FROM KeySignatures
+      WHERE KeySignatures.keyName = Compositions.keySignature) END) AS keySignature,
+    IFNULL((SELECT 
+      JSON_ARRAYAGG(
+        JSON_OBJECT(
+          'id', Instruments.instrumentID,
+          'family', Instruments.familyID,
+          'scorePosition', Instruments.scorePosition,
+          'name', Instruments.instrumentName)) 
+      FROM Instruments
+      INNER JOIN FeaturedInstrumentation ON Instruments.instrumentID = FeaturedInstrumentation.instrumentID
+      WHERE FeaturedInstrumentation.compositionID = Compositions.compositionID), '[]') AS featuredInstrumentation,
+    Compositions.compositionYear,
+    IFNULL((SELECT 
+      JSON_ARRAYAGG(
+          JSON_OBJECT(
+              'num', Movements.movementNum,
+              'title', Movements.title))
+      FROM Movements
+      WHERE Movements.compositionID = Compositions.compositionID), '[]') AS movements,
+    Compositions.infoText 
+    FROM Compositions 
+    INNER JOIN Composers ON Compositions.composerID = Composers.composerID`
+
 // Retreive composition info for displaying in the composition list
 function retrieveCompositions() {
-  const query = formatSQL(`
-    SELECT
-      Compositions.compositionID,
-      IFNULL(Compositions.titleEnglish, Compositions.titleNative) AS title,
-      Compositions.titleEnglish,
-      Compositions.titleNative,
-      Compositions.subtitle,
-      Compositions.dedication,
-      IFNULL((SELECT 
-          JSON_ARRAYAGG(OpusNums.opNum)
-          FROM OpusNums
-          WHERE OpusNums.compositionID = Compositions.compositionID), '[]') AS opusNums,
-      IFNULL((SELECT 
-        JSON_ARRAYAGG(
-          JSON_OBJECT(
-            'catalogueID', CatalogueNums.catalogueID,
-            'title',  (SELECT catalogueTitle FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
-            'symbol', (SELECT catalogueSymbol FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
-            'catNum', CatalogueNums.catNum))
-        FROM CatalogueNums
-        WHERE CatalogueNums.compositionID = Compositions.compositionID), '[]') AS catalogueNums,
-      Compositions.composerID, 
-      Composers.firstName AS composerFirst, 
-      Composers.lastName AS composerLast,
-      (SELECT
-        JSON_OBJECT(
-          'id', Forms.formID,
-          'name', Forms.formName)
-        FROM Forms
-        WHERE Forms.formID = Compositions.formID) AS form,
-      (SELECT CASE
-        WHEN Compositions.keySignature IS NULL THEN
-          JSON_OBJECT(
-            'name', NULL,
-            'type', NULL)
-        ELSE
-          (SELECT JSON_OBJECT(
-            'name', KeySignatures.keyName,
-            'type', KeySignatures.keyType)
-        FROM KeySignatures
-        WHERE KeySignatures.keyName = Compositions.keySignature) END) AS keySignature,
-      IFNULL((SELECT 
-        JSON_ARRAYAGG(
-          JSON_OBJECT(
-            'id', Instruments.instrumentID,
-            'family', Instruments.familyID,
-            'scorePosition', Instruments.scorePosition,
-            'name', Instruments.instrumentName)) 
-        FROM Instruments
-        INNER JOIN FeaturedInstrumentation ON Instruments.instrumentID = FeaturedInstrumentation.instrumentID
-        WHERE FeaturedInstrumentation.compositionID = Compositions.compositionID), '[]') AS featuredInstrumentation,
-      Compositions.compositionYear,
-      IFNULL((SELECT 
-        JSON_ARRAYAGG(
-            JSON_OBJECT(
-                'num', Movements.movementNum,
-                'title', Movements.title))
-        FROM Movements
-        WHERE Movements.compositionID = Compositions.compositionID), '[]') AS movements
-    FROM Compositions 
-    INNER JOIN Composers ON Compositions.composerID = Composers.composerID`);
+  const query = formatSQL(retrieveQuery);
 
   return pool.getConnection()
     .then(conn => {
@@ -233,65 +237,7 @@ function retrieveCompositions() {
 // Retrieve composition info for displaying on a composition page 
 function retrieveCompositionByID(compositionID) {
   const query = formatSQL(`
-    SELECT
-      Compositions.titleEnglish,
-      Compositions.titleNative,
-      Compositions.subtitle,
-      Compositions.dedication,
-      IFNULL((SELECT 
-          JSON_ARRAYAGG(OpusNums.opNum)
-          FROM OpusNums
-          WHERE OpusNums.compositionID = Compositions.compositionID), '[]') AS opusNums,
-      IFNULL((SELECT 
-        JSON_ARRAYAGG(
-          JSON_OBJECT(
-            'catalogueID', CatalogueNums.catalogueID,
-            'title',  (SELECT catalogueTitle FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
-            'symbol', (SELECT catalogueSymbol FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
-            'catNum', CatalogueNums.catNum))
-        FROM CatalogueNums
-        WHERE CatalogueNums.compositionID = Compositions.compositionID), '[]') AS catalogueNums,
-      Compositions.composerID, 
-      Composers.firstName AS composerFirst, 
-      Composers.lastName AS composerLast,
-      (SELECT
-        JSON_OBJECT(
-          'id', Forms.formID,
-          'name', Forms.formName)
-        FROM Forms
-        WHERE Forms.formID = Compositions.formID) AS form,
-      (SELECT CASE
-        WHEN Compositions.keySignature IS NULL THEN
-          JSON_OBJECT(
-            'name', NULL,
-            'type', NULL)
-        ELSE
-          (SELECT JSON_OBJECT(
-            'name', KeySignatures.keyName,
-            'type', KeySignatures.keyType)
-        FROM KeySignatures
-        WHERE KeySignatures.keyName = Compositions.keySignature) END) AS keySignature,
-      IFNULL((SELECT 
-        JSON_ARRAYAGG(
-          JSON_OBJECT(
-            'id', Instruments.instrumentID,
-            'family', Instruments.familyID,
-            'scorePosition', Instruments.scorePosition,
-            'name', Instruments.instrumentName)) 
-        FROM Instruments
-        INNER JOIN FeaturedInstrumentation ON Instruments.instrumentID = FeaturedInstrumentation.instrumentID
-        WHERE FeaturedInstrumentation.compositionID = Compositions.compositionID), '[]') AS featuredInstrumentation,
-      Compositions.compositionYear,
-      IFNULL((SELECT 
-        JSON_ARRAYAGG(
-            JSON_OBJECT(
-                'num', Movements.movementNum,
-                'title', Movements.title))
-        FROM Movements
-        WHERE Movements.compositionID = Compositions.compositionID), '[]') AS movements,
-      Compositions.infoText 
-    FROM Compositions 
-    INNER JOIN Composers ON Compositions.composerID = Composers.composerID
+    ${retrieveQuery}
     WHERE Compositions.compositionID = ?`);
   const params = [compositionID];
 
@@ -477,6 +423,7 @@ export {
   createFeaturedInstrumentation,
   createMovements,
   retrieveCompositions,
+  retrieveFilteredCompositions,
   retrieveCompositionByID,
   retrieveKeySignatures,
   updateComposition,
