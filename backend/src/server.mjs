@@ -51,7 +51,6 @@ app.post('/api/featured-instruments/for-composition-:id', compositions.createFea
 app.post('/api/movements/for-composition-:id', compositions.createMovementsController);
 app.get('/api/compositions', compositions.retrieveCompositionsController);
 app.get('/api/composition/:id', compositions.retrieveCompositionByIDController);
-app.get('/api/movements/:id', compositions.retrieveMovementsController);
 app.put('/api/compositions/:id', compositions.updateCompositionController);
 app.delete('/api/compositions/:id', compositions.deleteCompositionController);
 

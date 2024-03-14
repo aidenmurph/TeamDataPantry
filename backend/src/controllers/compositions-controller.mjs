@@ -85,17 +85,6 @@ function retrieveCompositionByIDController(req, res) {
     });
 }
 
-function retrieveMovementsController(req, res) {
-  compositions.retrieveMovements(req.params.id)
-    .then(rows => {
-      res.json(rows);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send(`Error fetching movements for composition with ID ${req.params.id}`);
-    });
-}
-
 function retrieveKeySignaturesController(req, res) {
   compositions.retrieveKeySignatures()
     .then(rows => {
@@ -143,7 +132,6 @@ export {
   createMovementsController,
   retrieveCompositionsController,
   retrieveCompositionByIDController,
-  retrieveMovementsController,
   retrieveKeySignaturesController,
   updateCompositionController,
   deleteCompositionController
