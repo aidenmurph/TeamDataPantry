@@ -7,12 +7,11 @@ import * as fetchers from '../modules/fetchService.mjs'
 import { convertFlatSharp } from '../modules/utilities.mjs';
 
 function DisplayCompositionPage({ setCompositionToEdit }) {
-
+  // State variables for displaying composition
   const { compositionID } = useParams();
   const [composition, setComposition] = useState([]);
   const [familyList, setFamilyList] = useState([]);
   const [instrumentation, setInstrumentation] = useState([]);
-  const [movements, setMovements] = useState([]);
 
   // RETRIEVE the information for this composition
   const loadComposition = useCallback(() => {
@@ -63,7 +62,7 @@ function DisplayCompositionPage({ setCompositionToEdit }) {
       <article>
         <CompositionInfoPanel
           composition={composition} 
-          movements={movements} 
+          movements={composition.movements ? composition.movements : ''} 
           setCompositionToEdit={setCompositionToEdit} />
 
         <section id="info">
