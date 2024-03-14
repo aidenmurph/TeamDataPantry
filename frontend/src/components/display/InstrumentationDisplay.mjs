@@ -1,5 +1,6 @@
 import React from 'react';
 import InstrumentationDisplayRow from './InstrumentationDisplayRow.mjs';
+import { sortList } from '../../modules/utilities.mjs';
 
 function InstrumentationDisplay({ family, instrumentation }) {
   return (
@@ -10,7 +11,7 @@ function InstrumentationDisplay({ family, instrumentation }) {
         </tr>
       </thead>
       <tbody>
-        {instrumentation.map((instruments, i) => 
+        {sortList(instrumentation, "scorePosition", true).map((instruments, i) => 
           <InstrumentationDisplayRow 
             instruments={instruments} 
             key={i}

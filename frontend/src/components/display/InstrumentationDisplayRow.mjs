@@ -2,6 +2,15 @@ import React from 'react';
 import { appendOrdinalIndicator, convertFlatSharp } from '../../modules/utilities.mjs';
 
 function InstrumentationDisplayRow({ instruments }) {
+  const printDeterminer = () => {
+    if (instruments.numDoubling === instruments.numInstruments) {
+      if (instruments.numInstruments === 1) {
+        return '';
+      }
+      return 'each ';
+    }
+    return `${appendOrdinalIndicator(instruments.chairsDoubling)} `;
+  }
 
   return (
     <tr className="instrumentation">
@@ -10,8 +19,7 @@ function InstrumentationDisplayRow({ instruments }) {
         {instruments.instrumentName}{instruments.numInstruments > 1 ? 's' : ''}
         {instruments.instrumentKey ? ` in ${convertFlatSharp(instruments.instrumentKey)}` : ''}
         {instruments.numDoubling ? 
-          ` (${instruments.numDoubling === instruments.numInstruments ? 
-                'each' : appendOrdinalIndicator(instruments.chairsDoubling)} doubling ${convertFlatSharp(instruments.doubles)})`
+          ` (${printDeterminer()}doubling ${convertFlatSharp(instruments.doubles)})`
         : ''}
       </td>
     </tr>
