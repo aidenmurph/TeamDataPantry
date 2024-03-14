@@ -96,7 +96,7 @@ function createCatalogueNums(catalogueNums) {
   });
 }
 
-// Create one or more catalogue numbers for a given composition 
+// Create one or more featured instruments for a given composition 
 function createFeaturedInstrumentation(featuredInstruments) {
   let placeholders = featuredInstruments.map(() => '(?, ?)').join(', ');
   let params = featuredInstruments.reduce((acc, { compositionID, instrumentID }) => 
@@ -123,7 +123,7 @@ function createFeaturedInstrumentation(featuredInstruments) {
   });
 }
 
-// Create one or more movements numbers for a given composition 
+// Create one or more movements for a given composition 
 function createMovements(movements) {
   let placeholders = movements.map(() => '(?, ?, ?)').join(', ');
   let params = movements.reduce((acc, { compositionID, movementNum, title }) => 
@@ -154,34 +154,51 @@ function createMovements(movements) {
 // Retreive composition info for displaying in the composition list
 function retrieveCompositions() {
   const query = formatSQL(`
-    SELECT 
+    SELECT
       Compositions.compositionID,
       IFNULL(Compositions.titleEnglish, Compositions.titleNative) AS title,
+      Compositions.titleEnglish,
+      Compositions.titleNative,
+      Compositions.subtitle,
+      Compositions.dedication,
       IFNULL((SELECT 
-        JSON_ARRAYAGG(OpusNums.opNum)
-        FROM OpusNums
-        WHERE OpusNums.compositionID = Compositions.compositionID), "") AS opusNums,
+          JSON_ARRAYAGG(OpusNums.opNum)
+          FROM OpusNums
+          WHERE OpusNums.compositionID = Compositions.compositionID), '[]') AS opusNums,
       IFNULL((SELECT 
         JSON_ARRAYAGG(
           JSON_OBJECT(
             'catalogueID', CatalogueNums.catalogueID,
+            'title',  (SELECT catalogueTitle FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
             'symbol', (SELECT catalogueSymbol FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
-            'num', CatalogueNums.catNum))
+            'catNum', CatalogueNums.catNum))
         FROM CatalogueNums
         WHERE CatalogueNums.compositionID = Compositions.compositionID), '[]') AS catalogueNums,
       Compositions.composerID, 
-      Composers.firstName AS composerFirst,  
-      Composers.lastName AS composerLast, 
-      (SELECT 
-        Forms.formName
+      Composers.firstName AS composerFirst, 
+      Composers.lastName AS composerLast,
+      (SELECT
+        JSON_OBJECT(
+          'id', Forms.formID,
+          'name', Forms.formName)
         FROM Forms
         WHERE Forms.formID = Compositions.formID) AS form,
-      IFNULL(Compositions.keySignature, "") AS keySignature,
+      (SELECT CASE
+        WHEN Compositions.keySignature IS NULL THEN
+          JSON_OBJECT(
+            'name', NULL,
+            'type', NULL)
+        ELSE
+          (SELECT JSON_OBJECT(
+            'name', KeySignatures.keyName,
+            'type', KeySignatures.keyType)
+        FROM KeySignatures
+        WHERE KeySignatures.keyName = Compositions.keySignature) END) AS keySignature,
       IFNULL((SELECT 
         JSON_ARRAYAGG(
           JSON_OBJECT(
-            'instrumentID', Instruments.instrumentID,
-            'familyID', Instruments.familyID,
+            'id', Instruments.instrumentID,
+            'family', Instruments.familyID,
             'scorePosition', Instruments.scorePosition,
             'name', Instruments.instrumentName)) 
         FROM Instruments
@@ -191,12 +208,12 @@ function retrieveCompositions() {
       IFNULL((SELECT 
         JSON_ARRAYAGG(
             JSON_OBJECT(
-                'movementNum', Movements.movementNum,
+                'num', Movements.movementNum,
                 'title', Movements.title))
         FROM Movements
-        WHERE Movements.compositionID = Compositions.compositionID), '[]') AS movements 
+        WHERE Movements.compositionID = Compositions.compositionID), '[]') AS movements
     FROM Compositions 
-    INNER JOIN Composers ON Compositions.composerID = Composers.composerID;`);
+    INNER JOIN Composers ON Compositions.composerID = Composers.composerID`);
 
   return pool.getConnection()
     .then(conn => {
