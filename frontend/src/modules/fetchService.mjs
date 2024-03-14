@@ -154,6 +154,32 @@ const fetchCompositions = (setCompositions) => {
     });
 };
 
+// Fetch a filtered selection of compositions for display as a list
+const fetchFilteredCompositions = (setCompositions, filterList) => {
+  const params = new URLSearchParams(filterList).toString();
+  const url = `${server_url}/api/compositions/filtered`
+  fetch(`${url}?${params}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response returned status: ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then(compositions => {
+      const parsedCompositions = compositions.map(composition => ({
+        ...composition,
+        opusNums: composition.opusNums ? JSON.parse(composition.opusNums) : '',
+        catalogueNums: composition.catalogueNums ? JSON.parse(composition.catalogueNums) : '',
+        featuredInstrumentation: composition.featuredInstrumentation ? JSON.parse(composition.featuredInstrumentation) : '',
+        movements: composition.movements ? JSON.parse(composition.movements) : ''
+      }));
+      setCompositions(parsedCompositions);
+    })
+    .catch(error => {
+      console.error('Error fetching filtered compositions:', error);
+    });
+};
+
 // Fetch a single composition's data from the database
 const fetchComposition = (compositionID, setComposition) => {
   fetch(`${server_url}/api/composition/${compositionID}`)
@@ -253,7 +279,8 @@ export {
   fetchFamilyList,
   fetchAllInstruments,
   fetchInstrumentFamily,
-  fetchCompositions, 
+  fetchCompositions,
+  fetchFilteredCompositions, 
   fetchComposition,
   fetchFullInstrumentation,
   fetchInstrumentationFamily,
