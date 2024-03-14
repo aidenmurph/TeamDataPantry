@@ -41,7 +41,7 @@ function FormList({ forms, activeSortAttribute, onSort, onDelete, onEdit, onAdd 
     <table id="forms" className="forms">
       <thead>
         <tr>
-          <th>Form Name <SortButton attribute={"formName"} activeSort={activeSortAttribute} onSort={onSort}/></th>
+          <th>Form Name <SortButton attribute={"formName"} activeSort={activeSortAttribute} onSort={onSort} iconType={"charOnly"}/></th>
           <th>Edit</th>
           <th>Delete</th>
         </tr>
