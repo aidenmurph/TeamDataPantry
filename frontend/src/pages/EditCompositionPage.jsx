@@ -24,7 +24,7 @@ export const EditCompositionPage = ({ compositionToEdit }) => {
   const [opusNums, setOpusNums] = useState(compositionToEdit.opusNums);
   const [catalogueNums, setCatalogueNums] = useState(compositionToEdit.catalogueNums);
   const [featuredInstrumentation, setFeaturedInstrumentation] = useState(compositionToEdit.featuredInstrumentation);
-  const [movements, setMovements] = useState(compositionToEdit.movements > 1 ? compositionToEdit.movements : []);
+  const [movements, setMovements] = useState(compositionToEdit.movements.length > 1 ? compositionToEdit.movements : []);
 
   // Options for dropdown menus
   const [catalogueIndex, setCatalogueIndex] = useState([]);
