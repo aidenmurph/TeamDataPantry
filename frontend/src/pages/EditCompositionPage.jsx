@@ -7,11 +7,11 @@ import * as service from '../modules/compositionService.mjs';
 
 export const EditCompositionPage = ({ compositionToEdit }) => {
   // State variables for database entities
-  const [englishTitle, setEnglishTitle] = useState(compositionToEdit.titleEnglish);
-  const [nativeTitle, setNativeTitle] = useState(compositionToEdit.titleNative);
-  const [subtitle, setSubtitle] = useState(compositionToEdit.subtitle);
+  const [englishTitle, setEnglishTitle] = useState(compositionToEdit.titleEnglish ? compositionToEdit.titleEnglish : '');
+  const [nativeTitle, setNativeTitle] = useState(compositionToEdit.titleNative ? compositionToEdit.titleNative : '');
+  const [subtitle, setSubtitle] = useState(compositionToEdit.subtitle ? compositionToEdit.subtitle : '');
   const [composerID, setComposerID] = useState(compositionToEdit.composerID);
-  const [dedication, setDedication] = useState(compositionToEdit.dedication);
+  const [dedication, setDedication] = useState(compositionToEdit.dedication ? compositionToEdit.dedication : '');
   const [compositionYear, setCompositionYear] = useState(compositionToEdit.compositionYear);
   const [formID, setFormID] = useState(compositionToEdit.form.id);
   const [keySignature, setKeySignature] = useState(compositionToEdit.keySignature.name ? compositionToEdit.keySignature.name : 'SELECT');
