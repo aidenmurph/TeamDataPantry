@@ -57,7 +57,7 @@ function App() {
             <Route path="/instruments" element={<InstrumentsPage />} />
 
             {/* Detailed Display Routes */}
-            <Route path="/composition/:compositionID" element={<DisplayCompositionPage />} />
+            <Route path="/composition/:compositionID" element={<DisplayCompositionPage setCompositionToEdit={setCompositionToEdit} />} />
 
             {/* Collection Editing Routes */}
             <Route path="/add-composer" element={<AddComposerPage />} />
