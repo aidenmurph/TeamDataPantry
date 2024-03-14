@@ -373,7 +373,8 @@ export const AddCompositionPage = () => {
                     name="subtitle" 
                     id="subtitle" 
                     className="add-input" 
-                    size="50" 
+                    size="50"
+                    value={subtitle} 
                     placeholder="Subtitle" 
                     onChange={e => setSubtitle(e.target.value)} />
                 </td>
@@ -384,7 +385,7 @@ export const AddCompositionPage = () => {
                     name="form" 
                     id="form" 
                     className="add-input"
-                    defaultValue={"0"}
+                    value={formID}
                     onChange={e => setFormID(e.target.value)} >
                       {/* Query the forms in the database in order to populate the dropdown */}
                       <option value="0">--Select Form--</option>
