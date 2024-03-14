@@ -100,6 +100,13 @@ export const AddCompositionPage = () => {
       console.log(message);
       return;
     }
+    // Check there is not only one movement added
+    if (movements.length === 1) {
+      const message = "A composition cannot feature only one named movement. Please add one or more movements or remove the added movement.";
+      alert(message);
+      console.log(message);
+      return;
+    }
 
     const newComposition = {
       englishTitle,
@@ -213,7 +220,7 @@ export const AddCompositionPage = () => {
       console.log(`Featured instrument(s) successfully added for composition with ID ${compositionID}!`);
     } 
     else {
-      addSuccess = false;
+      setAddSuccess(false);
       console.log(`Unable to add featured instrument(s). Request returned status code ${response.status}`);
     }
   }
