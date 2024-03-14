@@ -21,7 +21,7 @@ function CompositionRow({ composition, showNums, onEdit, onDelete }) {
         : ''}</td>
       <td>{composition.compositionYear}</td>
       <td><button onClick={() => onEdit(composition)}>Edit</button></td>
-      <td><button onClick={() => onDelete(composition)}>Delete</button></td>
+      <td><button onClick={() => onDelete(composition.compositionID)}>Delete</button></td>
     </tr>
   );
 }
