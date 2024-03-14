@@ -57,7 +57,7 @@ CREATE OR REPLACE TABLE Compositions(
     FOREIGN KEY (composerID) REFERENCES Composers(composerID) ON DELETE CASCADE,
     compositionYear SMALLINT UNSIGNED NOT NULL,
     formID INT NOT NULL,
-    FOREIGN KEY (formID) REFERENCES Forms(formID),
+    FOREIGN KEY (formID) REFERENCES Forms(formID) ON DELETE CASCADE,
     keySignature VARCHAR(25),
     FOREIGN KEY (keySignature) REFERENCES KeySignatures(keyName),
     infoText LONGTEXT,
@@ -153,9 +153,9 @@ CREATE OR REPLACE TABLE CompositionPlayers(
     compositionID INT,
     FOREIGN KEY (compositionID) REFERENCES Compositions(compositionID) ON DELETE CASCADE,
     instrumentID INT,
-    FOREIGN KEY (instrumentID) REFERENCES Instruments(instrumentID),
+    FOREIGN KEY (instrumentID) REFERENCES Instruments(instrumentID) ON DELETE CASCADE,
     instrumentKey VARCHAR(25),
-    FOREIGN KEY (instrumentKey) REFERENCES KeySignatures(keyName),
+    FOREIGN KEY (instrumentKey) REFERENCES KeySignatures(keyName) ON DELETE CASCADE,
     chairNum SMALLINT UNSIGNED NOT NULL,
     -- Chair number should be zero for unassigned percussion and un-numbered sections
     CHECK (chairNum >= 0),
@@ -169,7 +169,7 @@ CREATE OR REPLACE TABLE DoubledInstruments(
     playerID INT,
     FOREIGN KEY (playerID) REFERENCES CompositionPlayers(playerID) ON DELETE CASCADE,
     instrumentID INT,
-    FOREIGN KEY (instrumentID) REFERENCES Instruments(instrumentID),
+    FOREIGN KEY (instrumentID) REFERENCES Instruments(instrumentID) ON DELETE CASCADE,
     instrumentKey VARCHAR(25),
     FOREIGN KEY (instrumentKey) REFERENCES KeySignatures(keyName),
     PRIMARY KEY (playerID, instrumentID)
@@ -889,9 +889,8 @@ VALUES
     (@CompGConcerto, @InsConcertFlute, NULL, 1, FALSE),
     (@CompGConcerto, @InsOboe, NULL, 1, FALSE),
     (@CompGConcerto, @InsEnglishHorn, NULL, 1, FALSE),
-    (@CompGConcerto, @InsClarinet, 'B flat', 1, FALSE),
-    (@CompGConcerto, @InsClarinet, 'A', 1, FALSE),
     (@CompGConcerto, @InsClarinet, 'E flat', 1, FALSE),
+    (@CompGConcerto, @InsClarinet, 'B flat', 2, FALSE),
     (@CompGConcerto, @InsBassoon, NULL, 1, FALSE),
     (@CompGConcerto, @InsBassoon, NULL, 2, FALSE),
     -- Brass
@@ -1005,6 +1004,10 @@ VALUES
     (@CompScheherezade, @InsDoubleBass, NULL, 0, TRUE);
 
 
+SET @GConcertoClarinet2 = (SELECT playerID FROM CompositionPlayers 
+                           WHERE CompositionID = @CompGConcerto 
+                           AND instrumentID = @InsClarinet
+                           AND chairNum = 2);
 SET @ScheherezadeFlute2 = (SELECT playerID FROM CompositionPlayers 
                            WHERE CompositionID = @CompScheherezade 
                            AND instrumentID = @InsConcertFlute
@@ -1032,6 +1035,7 @@ SET @ScheherezadeTrumpet2 = (SELECT playerID FROM CompositionPlayers
 
 INSERT INTO DoubledInstruments (playerID, instrumentID, instrumentKey)
 VALUES
+    (@GConcertoClarinet2, @InsClarinet, 'A'),
     (@ScheherezadeFlute2, @InsPiccoloFlute, NULL),
     (@ScheherezadeOboe2, @InsEnglishHorn, NULL),
     (@ScheherezadeClarinet1, @InsClarinet, 'B flat'),
