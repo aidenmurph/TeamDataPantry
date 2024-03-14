@@ -109,7 +109,7 @@ function updateCompositionController(req, res) {
     });
 }
 
-// DELETE Controller *******************************************
+// DELETE Controllers ******************************************
 function deleteCompositionController(req, res) {
   console.log(`Attempting to delete composition with ID: ${req.params.id}`);
   
@@ -124,6 +124,62 @@ function deleteCompositionController(req, res) {
     });
 }
 
+function deleteOpusNumsController(req, res) {
+  console.log(`Attempting to delete opus numbers from composition with ID: ${req.params.id}`);
+  
+  compositions.deleteOpusNums(req.params.id)
+    .then(result => {
+      console.log('Delete result:', result);
+      res.json({ success: true, message: 'Opus number(s) deleted successfully' });
+    })
+    .catch(err => {
+      console.error('Error in deleteOpusNumsController:', err);
+      res.status(500).json({ error: 'Error deleting Opus number(s)' });
+    });
+}
+
+function deleteCatalogueNumsController(req, res) {
+  console.log(`Attempting to delete catalogue number(s) from composition with ID: ${req.params.id}`);
+  
+  compositions.deleteCatalogueNums(req.params.id)
+    .then(result => {
+      console.log('Delete result:', result);
+      res.json({ success: true, message: 'Catalogue number(s) deleted successfully' });
+    })
+    .catch(err => {
+      console.error('Error in deleteCatalogueNumsController:', err);
+      res.status(500).json({ error: 'Error deleting catalogue number(s)' });
+    });
+}
+
+function deleteFeaturedInstrumentationController(req, res) {
+  console.log(`Attempting to delete featured instrumentation from composition with ID: ${req.params.id}`);
+  
+  compositions.deleteFeaturedInstrumentation(req.params.id)
+    .then(result => {
+      console.log('Delete result:', result);
+      res.json({ success: true, message: 'Featured instrument(s) deleted successfully' });
+    })
+    .catch(err => {
+      console.error('Error in deleteFeaturedInstrumentationController:', err);
+      res.status(500).json({ error: 'Error deleting featured instrumentation' });
+    });
+}
+
+function deleteMovementsController(req, res) {
+  console.log(`Attempting to delete movement(s) from composition with ID: ${req.params.id}`);
+  
+  compositions.deleteMovements(req.params.id)
+    .then(result => {
+      console.log('Delete result:', result);
+      res.json({ success: true, message: 'Movement(s) deleted successfully' });
+    })
+    .catch(err => {
+      console.error('Error in deleteMovementsController:', err);
+      res.status(500).json({ error: 'Error deleting movements' });
+    });
+}
+
 export {
   createCompositionController,
   createOpusNumsController,
@@ -134,5 +190,9 @@ export {
   retrieveCompositionByIDController,
   retrieveKeySignaturesController,
   updateCompositionController,
-  deleteCompositionController
+  deleteCompositionController,
+  deleteOpusNumsController,
+  deleteCatalogueNumsController,
+  deleteFeaturedInstrumentationController,
+  deleteMovementsController
 };

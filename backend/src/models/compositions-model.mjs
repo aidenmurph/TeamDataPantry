@@ -316,6 +316,47 @@ function retrieveKeySignatures() {
     });
 }
 
+// Update a composition 
+function updateComposition(compositionID, composition) {
+  const query = formatSQL(`
+    UPDATE Compositions
+    SET
+      titleEnglish = ?,
+      titleNative = ?,
+      subtitle = ?,
+      composerID = ?,
+      dedication = ?,
+      compositionYear = ?,
+      formID = ?,
+      keySignature = ?
+    WHERE compositionID = ?`);
+  const params = [
+    composition.englishTitle === '' ? null : composition.englishTitle,
+    composition.nativeTitle === '' ? null : composition.nativeTitle,
+    composition.subtitle === '' ? null : composition.subtitle,
+    composition.composerID,
+    composition.dedication === '' ? null : composition.dedication,
+    composition.compositionYear,
+    composition.formID,
+    composition.keySignature === '' || composition.keySignature === '0' ? null : composition.keySignature,
+    compositionID
+  ];
+
+  return pool.getConnection()
+  .then(conn => {
+    const resultPromise = conn.query(query, params);
+    resultPromise.finally(() => conn.release());
+    return resultPromise;
+  })
+  .then(result => {
+    return result;
+  })
+  .catch(err => {
+    console.error('Error in updateComposition: ', err);
+    throw err;
+  });
+}
+
 // Delete a single composition
 function deleteComposition(compositionID) {
   const query = `DELETE FROM Compositions WHERE compositionID = ?`
@@ -336,6 +377,86 @@ function deleteComposition(compositionID) {
     });
 }
 
+// Delete all opus numbers for a single composition
+function deleteOpusNums(compositionID) {
+  const query = `DELETE FROM OpusNums WHERE compositionID = ?`
+  const params = [compositionID];
+
+  return pool.getConnection()
+    .then(conn => {
+      const resultPromise = conn.query(query, params);
+      resultPromise.finally(() => conn.release());
+      return resultPromise;
+    })
+    .then(result => {
+      return result;
+    })
+    .catch(err => {
+    console.error('Error in deleteOpusNums: ', err);
+    throw err;
+    });
+}
+
+// Delete all catalogue numbers for a single composition
+function deleteCatalogueNums(compositionID) {
+  const query = `DELETE FROM CatalogueNums WHERE compositionID = ?`
+  const params = [compositionID];
+
+  return pool.getConnection()
+    .then(conn => {
+      const resultPromise = conn.query(query, params);
+      resultPromise.finally(() => conn.release());
+      return resultPromise;
+    })
+    .then(result => {
+      return result;
+    })
+    .catch(err => {
+    console.error('Error in deleteCatalogueNums: ', err);
+    throw err;
+    });
+}
+
+// Delete the featured instrumentation for a single composition
+function deleteFeaturedInstrumentation(compositionID) {
+  const query = `DELETE FROM FeaturedInstrumentation WHERE compositionID = ?`
+  const params = [compositionID];
+
+  return pool.getConnection()
+    .then(conn => {
+      const resultPromise = conn.query(query, params);
+      resultPromise.finally(() => conn.release());
+      return resultPromise;
+    })
+    .then(result => {
+      return result;
+    })
+    .catch(err => {
+    console.error('Error in deleteFeaturedInstrumentation: ', err);
+    throw err;
+    });
+}
+
+// Delete all movements for a single composition
+function deleteMovements(compositionID) {
+  const query = `DELETE FROM Movements WHERE compositionID = ?`
+  const params = [compositionID];
+
+  return pool.getConnection()
+    .then(conn => {
+      const resultPromise = conn.query(query, params);
+      resultPromise.finally(() => conn.release());
+      return resultPromise;
+    })
+    .then(result => {
+      return result;
+    })
+    .catch(err => {
+    console.error('Error in deleteMovements: ', err);
+    throw err;
+    });
+}
+
 export {
   createComposition,
   createOpusNums,
@@ -345,5 +466,10 @@ export {
   retrieveCompositions,
   retrieveCompositionByID,
   retrieveKeySignatures,
-  deleteComposition
+  updateComposition,
+  deleteComposition,
+  deleteOpusNums,
+  deleteCatalogueNums,
+  deleteFeaturedInstrumentation,
+  deleteMovements
 };

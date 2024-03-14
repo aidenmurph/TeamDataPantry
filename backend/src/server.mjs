@@ -53,6 +53,10 @@ app.get('/api/compositions', compositions.retrieveCompositionsController);
 app.get('/api/composition/:id', compositions.retrieveCompositionByIDController);
 app.put('/api/compositions/:id', compositions.updateCompositionController);
 app.delete('/api/compositions/:id', compositions.deleteCompositionController);
+app.delete('/api/opus-nums/for-composition-:id', compositions.deleteOpusNumsController);
+app.delete('/api/catalogue-nums/for-composition-:id', compositions.deleteCatalogueNumsController);
+app.delete('/api/featured-instruments/for-composition-:id', compositions.deleteFeaturedInstrumentationController);
+app.delete('/api/movements/for-composition-:id', compositions.deleteMovementsController);
 
 // Instruments
 app.post('/api/instruments/:familyid', instruments.createInstrumentController);
