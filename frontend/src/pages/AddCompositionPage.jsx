@@ -117,7 +117,6 @@ export const AddCompositionPage = () => {
       <article>
         <h2>Add a Composition</h2>
         <p>Fill out the fields below to add a composition to the database.</p>
-          <h3>Details</h3>
           <CompositionForm 
             englishTitle={englishTitle} setEnglishTitle={setEnglishTitle}
             nativeTitle={nativeTitle} setNativeTitle={setNativeTitle}

@@ -9,7 +9,9 @@ function InstrumentList({ family, instruments, onDelete, onEdit, onAdd }) {
   const addInstrument = async (familyID) => {
     // Validate inputs
     if (!instrumentName) {
-      alert(`ADD in Family ${familyID}: All fields must be completed before submission.`);
+      const message = `ADD in Family ${familyID}: All fields must be completed before submission.`;
+      console.log(message);
+      alert(message);
       return;
     }
 
@@ -33,7 +35,10 @@ function InstrumentList({ family, instruments, onDelete, onEdit, onAdd }) {
       }
       return;
     }
-  onAdd(familyID);
+    
+    // Clear the input field and reload the instrument list
+    setInstrumentName('');
+    onAdd(familyID);
   };
 
   return (
@@ -64,6 +69,7 @@ function InstrumentList({ family, instruments, onDelete, onEdit, onAdd }) {
             className="add-input"
             id="instrument-name"
             placeholder="Instrument Name"
+            value={instrumentName}
             onChange={e => setInstrumentName(e.target.value)} />
           </td>
           <td colSpan="2" style={{ textAlign: "center" }}>
