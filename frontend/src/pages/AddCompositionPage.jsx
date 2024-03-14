@@ -1,8 +1,9 @@
 // Import dependencies
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { server_url } from '../config';
 import { CompositionForm } from '../components/forms/CompositionForm.mjs';
+import * as service from '../modules/compositionService.mjs';
 
 export const AddCompositionPage = () => {
   // State variables for database entities
@@ -92,123 +93,24 @@ export const AddCompositionPage = () => {
 
     // INSERT Opus Number(s), if any
     if (opusNums.length > 0) {
-      addOpusNums(newCompositionID);
+      service.addOpusNums(newCompositionID, opusNums);
     }
 
     // INSERT Catalogue Number(s), if any
     if (catalogueNums.length > 0) {
-      addCatalogueNums(newCompositionID);
+      service.addCatalogueNums(newCompositionID, catalogueNums);
     }
 
     // INSERT Featured Instrumentation
-    await addFeaturedInstrumentation(newCompositionID);
+    await service.addFeaturedInstrumentation(newCompositionID, featuredInstrumentation);
 
     // INSERT Movement(s)
-    await addMovements(newCompositionID);
+    await service.addMovements(newCompositionID, movements);
     
     if (addSuccess === true) {
       redirect(`/composition/${newCompositionID}`);
     }
   };
-
-  // Prepare the opus numbers as query compatible objects and send to database
-  const addOpusNums = async (compositionID) => {
-    const data = opusNums.map(opusNum => ({ 
-      compositionID: compositionID, 
-      opNum: opusNum 
-    }));
-    const response = await fetch(`${server_url}/api/opus-nums/for-composition-${compositionID}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-    if(response.ok){
-      console.log(`Opus number(s) successfully added for composition with ID ${compositionID}!`);
-    } 
-    else {
-      setAddSuccess(false);
-      console.log(`Unable to add opus number(s). Request returned status code ${response.status}`);
-    }
-  }
-
-  // Prepare the catalogue numbers as query compatible objects and send to database
-  const addCatalogueNums = async (compositionID) => {
-    const data = catalogueNums.map(catNum => ({ 
-      catalogueID: catNum.catalogueID, 
-      compositionID: compositionID, 
-      catNum: catNum.catNum 
-    }));
-    const response = await fetch(`${server_url}/api/catalogue-nums/for-composition-${compositionID}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-    if(response.ok){
-      console.log(`Catalogue number(s) successfully added for composition with ID ${compositionID}!`);
-    } 
-    else {
-      setAddSuccess(false);
-      console.log(`Unable to add catalogue number(s). Request returned status code ${response.status}`);
-    }
-  }
-
-  // Prepare the featured instrumentation as query compatible objects and send to database
-  const addFeaturedInstrumentation = async (compositionID) => {
-    const data = featuredInstrumentation.map(instrument => ({ 
-      compositionID: compositionID,
-      instrumentID: instrument.id
-    }));
-    const response = await fetch(`${server_url}/api/featured-instruments/for-composition-${compositionID}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-    if(response.ok){
-      console.log(`Featured instrument(s) successfully added for composition with ID ${compositionID}!`);
-    } 
-    else {
-      setAddSuccess(false);
-      console.log(`Unable to add featured instrument(s). Request returned status code ${response.status}`);
-    }
-  }
-
-    // Prepare the movements as query compatible objects and send to database
-    const addMovements = async (compositionID) => {
-      const data = movements.length > 0 ?        
-        // Multi-movement works
-        movements.map(movement => ({ 
-          compositionID: compositionID, 
-          movementNum: movement.num,
-          title:  movement.title === '' ? null : movement.title
-        }))
-      :
-        // Single-movement works
-        [{
-          compositionID: compositionID,
-          movementNum: 1,
-          title: null
-        }]
-      const response = await fetch(`${server_url}/api/movements/for-composition-${compositionID}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-      if(response.ok){
-        console.log(`Movement(s) successfully added for composition with ID ${compositionID}!`);
-      } 
-      else {
-        setAddSuccess(false);
-        console.log(`Unable to movement(s). Request returned status code ${response.status}`);
-      }
-    }
 
   return (
     <>
