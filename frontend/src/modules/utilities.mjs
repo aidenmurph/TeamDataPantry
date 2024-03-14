@@ -90,4 +90,39 @@ function sortList([...list], attribute, ascending = true) {
   });
 }
 
-export { formatDate, appendOrdinalIndicator, convertFlatSharp, sortList };
+// Converts a digit to the equivalent Roman numeral, used in displaying Movement Numbers
+function numberToRoman(number) {
+  if (number < 1 || number > 3999) {
+    return number;
+  }
+
+  const numeralCodes = [
+    ["M", 1000],
+    ["CM", 900],
+    ["D", 500],
+    ["CD", 400],
+    ["C", 100],
+    ["XC", 90],
+    ["L", 50],
+    ["XL", 40],
+    ["X", 10],
+    ["IX", 9],
+    ["V", 5],
+    ["IV", 4],
+    ["I", 1]
+  ];
+
+  let roman = "";
+  let num = number;
+
+  numeralCodes.forEach(([letter, value]) => {
+    while (num >= value) {
+      roman += letter;
+      num -= value;
+    }
+  });
+
+  return roman;
+}
+
+export { formatDate, appendOrdinalIndicator, convertFlatSharp, sortList, numberToRoman };

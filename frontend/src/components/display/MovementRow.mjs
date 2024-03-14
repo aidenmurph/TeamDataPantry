@@ -1,10 +1,11 @@
 import React from 'react';
+import { numberToRoman } from '../../modules/utilities.mjs';
 
 function MovementRow({ movement }) {
 
   return (
     <tr className="movement">
-      <td>{movement.num}. {movement.title}</td> 
+      <td>{numberToRoman(movement.num)}. {movement.title}</td> 
     </tr>
   );
 }
