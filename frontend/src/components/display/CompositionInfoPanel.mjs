@@ -7,7 +7,7 @@ function CompositionInfoPanel({ composition, movements }) {
       
       {/* Display title and subtitle */}
       <h3><i>{composition.titleEnglish ? composition.titleEnglish : composition.titleNative}</i></h3>
-      {composition.subtltle ? <p><strong>{composition.subtltle}</strong></p> : ''}
+      {composition.subtitle ? <p><strong>{composition.subtitle}</strong></p> : ''}
 
       {/* Display featured instrumentation and composer name*/}
       {composition.featuredInstrumentation ?
