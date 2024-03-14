@@ -14,14 +14,14 @@ function CompositionRow({ composition, showNums, onEdit, onDelete }) {
           }).join(', ')}</td>
         </>: ''}
       <td>{composition.composerFirst} {composition.composerLast}</td>
-      <td>{composition.form}</td>
-      <td>{convertFlatSharp(composition.keySignature)}</td>
+      <td>{composition.form.name}</td>
+      <td>{convertFlatSharp(composition.keySignature.name)}</td>
       <td>{composition.featuredInstrumentation ? 
         composition.featuredInstrumentation.map(instrument => instrument.name).join(', ')
         : ''}</td>
       <td>{composition.compositionYear}</td>
-      <td><button onClick={() => onEdit(composition.compositionID)}>Edit</button></td>
-      <td><button onClick={() => onDelete(composition.compositionID)}>Delete</button></td>
+      <td><button onClick={() => onEdit(composition)}>Edit</button></td>
+      <td><button onClick={() => onDelete(composition)}>Delete</button></td>
     </tr>
   );
 }

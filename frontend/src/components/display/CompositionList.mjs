@@ -18,9 +18,9 @@ function CompositionList({ compositions, showNums, activeSortAttribute, onSort, 
               <th>Cat.</th> 
             </>: ''}
           <th>Composer <SortButton attribute={"composerLast"} activeSort={activeSortAttribute} onSort={onSort}/></th>
-          <th>Form <SortButton attribute={"form"} activeSort={activeSortAttribute} onSort={onSort}/></th>
-          <th>Key Signature  <SortButton attribute={"keySignature"} activeSort={activeSortAttribute} onSort={onSort}/></th>
-          <th>Instrumentation  <SortButton attribute={"instrumentation"} activeSort={activeSortAttribute} onSort={onSort}/></th>
+          <th>Form <SortButton attribute={"form.name"} activeSort={activeSortAttribute} onSort={onSort}/></th>
+          <th>Key Signature  <SortButton attribute={"keySignature.name"} activeSort={activeSortAttribute} onSort={onSort}/></th>
+          <th>Instrumentation  <SortButton attribute={"featuredInstrumentation.name"} activeSort={activeSortAttribute} onSort={onSort}/></th>
           <th>Year <SortButton attribute={"compositionYear"} activeSort={activeSortAttribute} onSort={onSort}/></th>
           <th>Edit</th>
           <th>Delete</th>
