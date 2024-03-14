@@ -248,7 +248,7 @@ function retrieveFilteredCompositions(filterList) {
     params.push(filterList.formID);
   }
   if(filterList.keyName) {
-    if (filterList.keyName === '0') {
+    if (filterList.keyName === 'NONE') {
       whereClauses.push(`Compositions.keySignature IS NULL`);
     } else {
       whereClauses.push(`Compositions.keySignature = ?`);
