@@ -45,6 +45,18 @@ function CompositionInfoPanel({ composition, movements, setCompositionToEdit }) 
             </tr> 
           : ''}
 
+          {/* Catalogue Number(s) */}
+          {composition.catalogueNums && composition.catalogueNums.length > 0 ? 
+            <tr>
+              <td><strong>Catalogue</strong></td>
+              <td>
+                {composition.catalogueNums.map(catalogueNum => {
+                  return `${catalogueNum.symbol} ${catalogueNum.catNum}`;
+                }).join(', ')}
+              </td>
+            </tr> 
+          : ''}
+
           {/* Key Signature */}
           {composition.keySignature && composition.keySignature.name !== null ?
             <tr>

@@ -10,7 +10,7 @@ function CompositionRow({ composition, showNums, onEdit, onDelete }) {
         <>
           <td>{composition.opusNums ? `Op. ${composition.opusNums.join(', ')}` : ''}</td>
           <td>{composition.catalogueNums.map(catalogueNum => {
-            return `${catalogueNum.symbol} ${catalogueNum.num}`;
+            return `${catalogueNum.symbol} ${catalogueNum.catNum}`;
           }).join(', ')}</td>
         </>: ''}
       <td>{composition.composerFirst} {composition.composerLast}</td>
