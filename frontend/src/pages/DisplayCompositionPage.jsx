@@ -6,7 +6,7 @@ import InstrumentationDisplay from '../components/display/InstrumentationDisplay
 import * as fetchers from '../modules/fetchService.mjs'
 import { convertFlatSharp } from '../modules/utilities.mjs';
 
-function DisplayCompositionPage() {
+function DisplayCompositionPage({ setCompositionToEdit }) {
 
   const { compositionID } = useParams();
   const [composition, setComposition] = useState([]);
@@ -62,9 +62,9 @@ function DisplayCompositionPage() {
       <h2>{convertFlatSharp(composition.titleEnglish ? composition.titleEnglish : composition.titleNative)}</h2>
       <article>
         <CompositionInfoPanel
-          compositionID={compositionID} 
           composition={composition} 
-          movements={movements} />
+          movements={movements} 
+          setCompositionToEdit={setCompositionToEdit} />
 
         <section id="info">
           <h3>Overview</h3>
