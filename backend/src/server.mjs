@@ -3,9 +3,15 @@ import express from 'express';
 import cors from 'cors';
 import * as composers from './controllers/composers-controller.mjs';
 import * as catalogues from './controllers/catalogues-controller.mjs';
+import * as compositions from './controllers/compositions-controller.mjs'
 import * as instruments from './controllers/instruments-controller.mjs'
 import * as forms from './controllers/forms-controller.mjs'
 import 'dotenv/config';
+
+// Apply BigInt serialization patch
+BigInt.prototype.toJSON = function () {
+  return parseInt(this);
+};
 
 // Configure Middleware
 const app = express();
@@ -32,12 +38,32 @@ app.delete('/api/composers/:id', composers.deleteComposerController);
 // Catalogues
 app.post('/api/catalogues', catalogues.createCatalogueController);
 app.get('/api/catalogues', catalogues.retrieveCataloguesController);
+app.get('/api/catalogues/for-composer-:id', catalogues.retrieveCataloguesForComposerController);
 app.put('/api/catalogues/:id', catalogues.updateCatalogueController);
 app.delete('/api/catalogues/:id', catalogues.deleteCatalogueController);
 
+// Compositions
+app.get('/api/key-signatures', compositions.retrieveKeySignaturesController);
+app.post('/api/compositions', compositions.createCompositionController);
+app.post('/api/opus-nums/for-composition-:id', compositions.createOpusNumsController);
+app.post('/api/catalogue-nums/for-composition-:id', compositions.createCatalogueNumsController);
+app.post('/api/featured-instruments/for-composition-:id', compositions.createFeaturedInstrumentationController);
+app.post('/api/movements/for-composition-:id', compositions.createMovementsController);
+app.get('/api/compositions', compositions.retrieveCompositionsController);
+app.get('/api/compositions/filtered', compositions.retrieveFilteredCompositionsController);
+app.get('/api/composition/:id', compositions.retrieveCompositionByIDController);
+app.put('/api/compositions/:id', compositions.updateCompositionController);
+app.delete('/api/compositions/:id', compositions.deleteCompositionController);
+app.delete('/api/opus-nums/for-composition-:id', compositions.deleteOpusNumsController);
+app.delete('/api/catalogue-nums/for-composition-:id', compositions.deleteCatalogueNumsController);
+app.delete('/api/featured-instruments/for-composition-:id', compositions.deleteFeaturedInstrumentationController);
+app.delete('/api/movements/for-composition-:id', compositions.deleteMovementsController);
+
 // Instruments
-app.post('/api/instruments', instruments.createInstrumentController);
-app.get('/api/instruments', instruments.retrieveInstrumentsController);
+app.post('/api/instruments/:familyid', instruments.createInstrumentController);
+app.get('/api/instrument-families', instruments.retrieveInstrumentFamiliesController);
+app.get('/api/instruments/by-family/:id', instruments.retrieveInstrumentsByFamilyController);
+app.get('/api/instruments/instrumentation/composition-:id/family-:familyid', instruments.retrieveInstrumentationByFamilyController);
 app.put('/api/instruments/:id', instruments.updateInstrumentController);
 app.delete('/api/instruments/:id', instruments.deleteInstrumentController);
 

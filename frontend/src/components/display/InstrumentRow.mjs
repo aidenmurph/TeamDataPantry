@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { server_url } from '../config.js';
+import { server_url } from '../../config.js';
 
-function InstrumentRow({ instrument, onEdit, onDelete }) {
+function InstrumentRow({ family, instrument, onEdit, onDelete }) {
   // State variales
   const [editMode, setEditMode] = useState(false);
   const [instrumentName, setInstrumentName] = useState(instrument.instrumentName);
 
   const toggleEdit = () => setEditMode(!editMode);
 
-  const editInstrument = async () => {
+  const editInstrument = async (familyID) => {
     // Validate inputs
     if (!instrumentName) {
       alert("All fields must be completed before submission.");
@@ -33,7 +33,7 @@ function InstrumentRow({ instrument, onEdit, onDelete }) {
       return;
     }
     toggleEdit();
-    onEdit();
+    onEdit(familyID);
   };
 
   return (
@@ -54,7 +54,7 @@ function InstrumentRow({ instrument, onEdit, onDelete }) {
               name="add-button" 
               id="add"
               type="submit"
-              onClick={editInstrument}
+              onClick={() => editInstrument(family.familyID)}
             >Commit</button>
           </td>
         </>
@@ -62,7 +62,7 @@ function InstrumentRow({ instrument, onEdit, onDelete }) {
         <>
           <td>{instrument.instrumentName}</td>
           <td><button onClick={toggleEdit}>Edit</button></td>
-          <td><button onClick={() => onDelete(instrument.instrumentID)}>Delete</button></td>
+          <td><button onClick={() => onDelete(instrument)}>Delete</button></td>
         </>
       )}
     </tr>

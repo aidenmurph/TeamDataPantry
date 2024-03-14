@@ -1,8 +1,15 @@
 // Import database pool
 import pool from '../db.mjs';
+import { formatSQL } from '../modules/utilities.mjs'
 
 function createComposer(composer) {
-  const query = `INSERT INTO Composers (firstName, lastName, birthDate, deathDate) VALUES (?, ?, ?, ?)`;
+  const query = formatSQL(`
+    INSERT INTO Composers (
+      firstName, 
+      lastName, 
+      birthDate, 
+      deathDate
+    ) VALUES (?, ?, ?, ?)`);
   const params = [
     composer.firstName,
     composer.lastName,
@@ -44,7 +51,10 @@ function retrieveComposers() {
 }
 
 function retrieveComposerID(composer) {
-  const query = `SELECT composerID FROM Composers WHERE firstName = ? AND lastName = ?`
+  const query = formatSQL(`
+    SELECT composerID 
+    FROM Composers 
+    WHERE firstName = ? AND lastName = ?`);
   const params = [
     composer.firstName,
     composer.lastName
@@ -85,7 +95,14 @@ function retrieveComposerByID(composerID) {
 }
 
 function updateComposer(composerID, composer) {
-  const query = `UPDATE Composers SET firstName = ?, lastName = ?, birthDate = ?, deathDate = ? WHERE composerID = ?`;
+  const query = formatSQL(`
+    UPDATE Composers 
+    SET 
+      firstName = ?, 
+      lastName = ?, 
+      birthDate = ?, 
+      deathDate = ? 
+    WHERE composerID = ?`);
   const params = [
     composer.firstName,
     composer.lastName,

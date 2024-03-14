@@ -1,8 +1,17 @@
 // Import database pool
 import pool from '../db.mjs';
+import { formatSQL } from '../modules/utilities.mjs'
 
 function createCatalogue(catalogue) {
-  const query = `INSERT INTO Catalogues (composerID, catalogueTitle, catalogueSymbol, authorFirst, authorLast, publicationYear) VALUES (?, ?, ?, ?, ?, ?)`;
+  const query = formatSQL(`
+    INSERT INTO Catalogues (
+      composerID, 
+      catalogueTitle, 
+      catalogueSymbol, 
+      authorFirst, 
+      authorLast, 
+      publicationYear
+    ) VALUES (?, ?, ?, ?, ?, ?)`);
   const params = [
     catalogue.composerID,
     catalogue.catalogueTitle,
@@ -28,7 +37,19 @@ function createCatalogue(catalogue) {
 }
 
 function retrieveCatalogues() {
-  const query = `SELECT Catalogues.catalogueID, Catalogues.catalogueTitle, Catalogues.composerID, CONCAT(Composers.firstName, " ", Composers.lastName) AS composer, Catalogues.catalogueSymbol, Catalogues.authorFirst, Catalogues.authorLast, Catalogues.publicationYear FROM Catalogues INNER JOIN Composers ON Catalogues.composerID = Composers.composerID;`
+  const query = formatSQL(`
+    SELECT 
+      Catalogues.catalogueID, 
+      Catalogues.catalogueTitle, 
+      Catalogues.composerID, 
+      Composers.firstName AS composerFirst,
+      Composers.lastName AS composerLast, 
+      Catalogues.catalogueSymbol, 
+      Catalogues.authorFirst, 
+      Catalogues.authorLast, 
+      Catalogues.publicationYear 
+    FROM Catalogues 
+    INNER JOIN Composers ON Catalogues.composerID = Composers.composerID;`);
 
   return pool.getConnection()
     .then(conn => {
@@ -47,7 +68,7 @@ function retrieveCatalogues() {
 
 function retrieveCatalogueByID(catalogueID) {
   const query = `SELECT * FROM Catalogues WHERE catalogueID = ?`;
-  params = [catalogueID];
+  const params = [catalogueID];
 
   return pool.getConnection()
     .then(conn => {
@@ -64,8 +85,36 @@ function retrieveCatalogueByID(catalogueID) {
     });
 }
 
+function retrieveCataloguesForComposer(composerID) {
+  const query = `SELECT * FROM Catalogues WHERE composerID = ?`;
+  const params = [composerID];
+
+  return pool.getConnection()
+    .then(conn => {
+      const resultPromise = conn.query(query, params);
+      resultPromise.finally(() => conn.release());
+      return resultPromise;
+    })
+    .then(rows => {
+      return rows;
+    })
+    .catch(err => {
+      console.error('Error in retrieveCataloguesForComposer:', err);
+      throw err;
+    });
+}
+
 function updateCatalogue(catalogueID, catalogue) {
-  const query = `UPDATE Catalogues SET composerID = ?, catalogueTitle = ?, catalogueSymbol = ?, authorFirst = ?, authorLast = ?, publicationYear = ? WHERE catalogueID = ?;`;
+  const query = formatSQL(`
+  UPDATE Catalogues 
+  SET 
+    composerID = ?, 
+    catalogueTitle = ?, 
+    catalogueSymbol = ?, 
+    authorFirst = ?, 
+    authorLast = ?, 
+    publicationYear = ? 
+  WHERE catalogueID = ?;`);
   const params = [
     catalogue.composerID,
     catalogue.catalogueTitle,
@@ -114,6 +163,7 @@ export {
   createCatalogue,
   retrieveCatalogues,
   retrieveCatalogueByID,
+  retrieveCataloguesForComposer,
   updateCatalogue,
   deleteCatalogue
 };

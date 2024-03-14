@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import FormRow from './FormRow.mjs';
-import { server_url } from '../config.js';
+import { server_url } from '../../config.js';
+import { SortButton } from '../SortButton.mjs';
 
-function FormList({ forms, onDelete, onEdit, onAdd }) {
+function FormList({ forms, activeSortAttribute, onSort, onDelete, onEdit, onAdd }) {
   // State variables
   const [formName, setFormName] = useState('');
 
@@ -40,7 +41,7 @@ function FormList({ forms, onDelete, onEdit, onAdd }) {
     <table id="forms" className="forms">
       <thead>
         <tr>
-          <th>Form Name</th>
+          <th>Form Name <SortButton attribute={"formName"} activeSort={activeSortAttribute} onSort={onSort} iconType={"charOnly"}/></th>
           <th>Edit</th>
           <th>Delete</th>
         </tr>

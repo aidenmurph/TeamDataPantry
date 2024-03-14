@@ -1,41 +1,37 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CatalogueList from '../components/CatalogueList.mjs';
+import CatalogueList from '../components/display/CatalogueList.mjs';
 import { server_url } from '../config';
+import * as fetchers from '../modules/fetchService.mjs'
+import { sortList } from '../modules/utilities.mjs';
 
 function CataloguesPage({ setCatalogueToEdit }) {
   
   // Use the useNavigate module for redirection
   const redirect = useNavigate();
 
-  // Define state variable for displaying catalogues
+  // Define state variables for displaying catalogues
   const [catalogues, setCatalogues] = useState([]);
+  const [activeSort, setActiveSort] = useState({});
 
   // RETRIEVE the entire list of catalogues
   const loadCatalogues = useCallback(() => {
-    fetch(`${server_url}/api/catalogues`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-      })
-      .then(catalogues => {
-        setCatalogues(catalogues);
-      })
-      .catch(error => {
-        console.error('Error fetching catalogues:', error);
-      });
+    fetchers.fetchCatalogues(setCatalogues);
   }, []);
 
+  // LOAD all the catalogues upon first render
+  useEffect(() => {
+    loadCatalogues();
+  }, [loadCatalogues]);
+
   // UPDATE a single catalogue
-  const onEditCatalogue = async catalogue => {
+  const handleEditCatalogue = async (catalogue) => {
     setCatalogueToEdit(catalogue);
     redirect('/edit-catalogue');
   }
 
   // DELETE a single catalogue
-  const onDeleteCatalogue = async id => {
+  const handleDeleteCatalogue = async (id) => {
     const response = await fetch(`${server_url}/api/catalogues/${id}`, { method: 'DELETE'});
     if (response.ok) {
       loadCatalogues();
@@ -44,26 +40,35 @@ function CataloguesPage({ setCatalogueToEdit }) {
     }
   }
 
-  // LOAD all the catalogues
+  // Update the active sort and sort the catalogues
+  const handleSortCatalogue = (attribute, ascending) => {
+    if (catalogues.length > 0) {
+      setActiveSort({
+        attribute: attribute,
+        ascending: ascending
+      })
+      setCatalogues(sortList(catalogues, attribute, ascending))
+    }
+  }
+
+  // Maintain the active sort when the catalogue list is modified (i.e. through deletion)
   useEffect(() => {
-    loadCatalogues();
-  }, [loadCatalogues]);
+    if (activeSort.attribute && catalogues.length > 0) {
+      setCatalogues(sortList(catalogues, activeSort.attribute, activeSort.ascending));
+    }
+  }, [catalogues.length]);
 
   return (
     <>
       <h2>Catalogues</h2>
       <p>See a live list of the catalogues in our database. Click the add button below to add a new catalogue to the collection. Click the edit button to the right of a single catalogue to modify that entry. Click the delete button to remove that entry.</p>
       <CatalogueList 
-          catalogues={catalogues} 
-          onEdit={onEditCatalogue} 
-          onDelete={onDeleteCatalogue} 
+          catalogues={catalogues}
+          activeSortAttribute={activeSort.attribute}
+          onSort={handleSortCatalogue} 
+          onEdit={handleEditCatalogue} 
+          onDelete={handleDeleteCatalogue} 
       />
-      <button
-          className="buttonGeneral addButton"
-          type="addCatalogue"
-          onClick={() => redirect("/add-catalogue")}
-          id="addCatalogue"
-          >Add New Catalogue</button>
     </>
   );
 }

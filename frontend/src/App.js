@@ -11,22 +11,27 @@ import './App.css';
 import HomePage from './pages/HomePage';
 import ComposersPage from './pages/ComposersPage';
 import CompositionsPage from './pages/CompositionsPage';
-import MovementsPage from './pages/MovementsPage';
 import CataloguesPage from './pages/CataloguesPage';
 import FormsPage from './pages/FormsPage';
 import InstrumentsPage from './pages/InstrumentsPage';
+
+// Import detailed display pages
+import DisplayCompositionPage from './pages/DisplayCompositionPage';
 
 // Import collection editing pages
 import AddComposerPage from './pages/AddComposerPage';
 import EditComposerPage from './pages/EditComposerPage';
 import AddCataloguePage from './pages/AddCataloguePage';
 import EditCataloguePage from './pages/EditCataloguePage';
+import AddCompositionPage from './pages/AddCompositionPage';
+import EditCompositionPage from './pages/EditCompositionPage';
 
 function App() {
 
-  // Define state variables for collections
+  // Define state variables for modifying collections
   const [composerToEdit, setComposerToEdit]   = useState([])
   const [catalogueToEdit, setCatalogueToEdit] = useState([])
+  const [compositionToEdit, setCompositionToEdit] = useState([])
 
   return (
     <>
@@ -46,17 +51,21 @@ function App() {
             {/* Main Navigation Routes */}
             <Route path="/" element={<HomePage />} />
             <Route path="/composers" element={<ComposersPage setComposerToEdit={setComposerToEdit} />} />
-            <Route path="/compositions" element={<CompositionsPage />} />
-            <Route path="/movements" element={<MovementsPage />} />
             <Route path="/catalogues" element={<CataloguesPage setCatalogueToEdit={setCatalogueToEdit} />} />
+            <Route path="/compositions" element={<CompositionsPage setCompositionToEdit={setCompositionToEdit} />} />
             <Route path="/forms" element={<FormsPage />} />
             <Route path="/instruments" element={<InstrumentsPage />} />
+
+            {/* Detailed Display Routes */}
+            <Route path="/composition/:compositionID" element={<DisplayCompositionPage setCompositionToEdit={setCompositionToEdit} />} />
 
             {/* Collection Editing Routes */}
             <Route path="/add-composer" element={<AddComposerPage />} />
             <Route path="/edit-composer" element={<EditComposerPage composerToEdit={composerToEdit} />} />
             <Route path="/add-catalogue" element={<AddCataloguePage />} />
             <Route path="/edit-catalogue" element={<EditCataloguePage catalogueToEdit={catalogueToEdit} />} />
+            <Route path="/add-composition" element={<AddCompositionPage />} />
+            <Route path="/edit-composition" element={<EditCompositionPage compositionToEdit={compositionToEdit} />} />
           </Routes>
         </section>
       </main>

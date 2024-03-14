@@ -1,151 +1,94 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { server_url } from '../config';
+import * as fetchers from '../modules/fetchService.mjs'
+import CompositionList from '../components/display/CompositionList.mjs';
+import { sortList } from '../modules/utilities.mjs';
+import FilterCompositionSelector from '../components/display/FilterCompositionsSelector.mjs';
 
-function Compositions() {
-  const initialCompositions = [
-    {
-      title: 'Scheherazade',
-      opus: 'Op.35',
-      cat: '',
-      composer: 'Nikolai Rimsky-Korsakov',
-      form: 'Suite',
-      keySignature: '',
-      instrumentation: 'Orchestra',
-      year: '1888'
-    },
-    {
-      title: 'Concerto for the Left Hand',
-      opus: '',
-      cat: 'M.82',
-      composer: 'Maurice Ravel',
-      form: 'Concerto',
-      keySignature: 'D major',
-      instrumentation: 'Piano, Orchestra',
-      year: '1930'
-    },
-    {
-      title: 'String Quartet in F Major',
-      opus: '',
-      cat: 'M.35',
-      composer: 'Maurice Ravel',
-      form: 'Quartet',
-      keySignature: 'F major',
-      instrumentation: 'String Quartet',
-      year: '1903'
-    },
-    {
-      title: 'String Quartet in E Minor',
-      opus: 'Op.121',
-      cat: '',
-      composer: 'Gabriel Fauré',
-      form: 'Quartet',
-      keySignature: 'E minor',
-      instrumentation: 'String Quartet',
-      year: '1924'
-    },
-    {
-      title: 'String Quartet in G Minor',
-      opus: 'Op.10',
-      cat: 'L.91',
-      composer: 'Claude Debussy',
-      form: 'Quartet',
-      keySignature: 'G minor',
-      instrumentation: 'String Quartet',
-      year: '1893'
-    },
-    {
-      title: 'Piano Concerto in G major',
-      opus: '',
-      cat: 'M.83',
-      composer: 'Maurice Ravel',
-      form: 'Concerto',
-      keySignature: 'G major',
-      instrumentation: 'Piano, Orchestra',
-      year: '1931'
-    },
-    {
-      title: 'Ballade in F-sharp Major',
-      opus: 'Op.19',
-      cat: '',
-      composer: 'Gabriel Fauré',
-      form: 'Ballade',
-      keySignature: 'F-sharp major',
-      instrumentation: 'Piano',
-      year: '1879'
+function CompositionsPage({ setCompositionToEdit }) {
+  
+  // Use the useNavigate module for redirection
+  const redirect = useNavigate();
+
+  // Define state variables for displaying compositions
+  const [compositions, setCompositions] = useState([]);
+  const [activeSort, setActiveSort] = useState({});
+  const [filterList, setFilterList] = useState([]);
+  
+  // Track the length of the compositions array to maintain sort after updates
+  const compositionsLengthRef = useRef(compositions.length)
+
+  // RETRIEVE the entire list of compositions
+  const loadCompositions = useCallback(() => {
+    fetchers.fetchCompositions(setCompositions);
+  }, []);
+
+  // RETRIEVE list of compositions based on the current filter criteria
+  useEffect(() => {
+    if (Object.keys(filterList).length === 0) {
+      loadCompositions();
+      return;
     }
-  ];
+    fetchers.fetchFilteredCompositions(setCompositions, filterList);
+  }, [loadCompositions, filterList]);
 
-  const [compositions, setCompositions] = useState(initialCompositions);
-  const [filter, setFilter] = useState('');
-
-  const filteredCompositions = compositions.filter(comp => 
-    filter === '' || comp.composer.includes(filter)
-  );
-
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
-  };
-
-  const handleEdit = (composition) => {
-    // Logic to handle edit
-  };
-
-  const handleDelete = (composition) => {
-    setCompositions(compositions.filter(c => c !== composition));
-  };
-
-  const handleAdd = () => {
-    // Logic to handle add
-  };
-
-  return (
-    <div>
-      <h2>Compositions</h2>
-      <p>See a live list of the compositions in our database. Click the add button below to add a new composition to the collection. Click the edit button to the right of a single composition to modify that entry. Click the delete button to remove that entry.</p>
-      <div>
-        <label htmlFor="composerFilter">Filter by Composer:</label>
-        <select id="composerFilter" onChange={handleFilterChange}>
-          <option value="">--Choose Composer--</option>
-          {/* Map through composers for filter options */}
-        </select>
-        <button onClick={() => setFilter('')}>Filter</button>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Opus</th>
-            <th>Cat.</th>
-            <th>Composer</th>
-            <th>Form</th>
-            <th>Key Signature</th>
-            <th>Instrumentation</th>
-            <th>Year</th>
-            <th>Edit</th>
-            <th>Delete</th>
-            </tr>
-            </thead>
-            <tbody>
-            {filteredCompositions.map((composition, index) => (
-            <tr key={index}>
-            <td>{composition.title}</td>
-            <td>{composition.opus}</td>
-            <td>{composition.cat}</td>
-            <td>{composition.composer}</td>
-            <td>{composition.form}</td>
-            <td>{composition.keySignature}</td>
-            <td>{composition.instrumentation}</td>
-            <td>{composition.year}</td>
-            <td><button onClick={() => handleEdit(composition)}>Edit</button></td>
-            <td><button onClick={() => handleDelete(composition)}>Delete</button></td>
-            </tr>
-            ))}
-            </tbody>
-            </table>
-            <button onClick={handleAdd}>Add Composition</button>
-            </div>
-            );
+  // UPDATE a single composition
+  const handleEditComposition = async (composition) => {;
+    setCompositionToEdit(composition);
+    redirect(`/edit-composition/`);
   }
 
-export default Compositions;
+  // DELETE a single composition
+  const handleDeleteComposition = async (id) => {
+    const response = await fetch(`${server_url}/api/compositions/${id}`, { method: 'DELETE'});
+    if (response.ok) {
+      loadCompositions();
+    } else {
+        console.error(`Unable to delete Composition with ID ${id}, status code = ${response.status}`)
+    }
+  }
 
+  // Update the active sort and sort the compositions
+  const handleSortCompositions = (attribute, ascending) => {
+    if (compositions.length > 0) {
+      setActiveSort({
+        attribute: attribute,
+        ascending: ascending
+      })
+      setCompositions(sortList(compositions, attribute, ascending))
+    }
+  }
+
+  // Maintain the active sort when the composition list is modified (i.e. through deletion)
+  useEffect(() => {
+    if (compositionsLengthRef.current !== compositions.length) {
+      if (activeSort.attribute && compositions.length > 0) {
+        setCompositions(sortList(compositions, activeSort.attribute, activeSort.ascending));
+      }
+      compositionsLengthRef.current = compositions.length;
+    }
+  }, [compositions, activeSort.attribute, activeSort.ascending]);
+
+  return (
+    <>
+      <h2>Compositions</h2>
+      <p>See below a live list of the compositions in our database. To sort compositions, click the sort button to the right of a field to sort by that category. Composer names are sorted by last name.</p>
+      <p>To filter the list of compositions, use the interface below. Select one or more items and click filter to see a narrowed list of compositions:</p>
+      <FilterCompositionSelector
+        setFilterList={setFilterList}
+      />
+      <p>Click the add button to add a new composition to the collection. Click the edit button to the right of a single composition to modify that entry. Click the delete button to remove that entry.</p>
+      <CompositionList 
+        compositions={compositions} 
+        showNums={false}
+        activeSortAttribute={activeSort.attribute}
+        onSort={handleSortCompositions}
+        onEdit={handleEditComposition} 
+        onDelete={handleDeleteComposition} 
+      />
+    </>
+  );
+}
+
+export default CompositionsPage;
