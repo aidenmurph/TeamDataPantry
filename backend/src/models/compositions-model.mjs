@@ -246,23 +246,36 @@ function retrieveCompositionByID(compositionID) {
         JSON_ARRAYAGG(
           JSON_OBJECT(
             'catalogueID', CatalogueNums.catalogueID,
+            'title',  (SELECT catalogueTitle FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
             'symbol', (SELECT catalogueSymbol FROM Catalogues WHERE catalogueID = CatalogueNums.catalogueID),
-            'num', CatalogueNums.catNum))
+            'catNum', CatalogueNums.catNum))
         FROM CatalogueNums
         WHERE CatalogueNums.compositionID = Compositions.compositionID), '[]') AS catalogueNums,
       Compositions.composerID, 
       Composers.firstName AS composerFirst, 
-      Composers.lastName AS composerLast, 
-      (SELECT 
-        Forms.formName
+      Composers.lastName AS composerLast,
+      (SELECT
+        JSON_OBJECT(
+          'id', Forms.formID,
+          'name', Forms.formName)
         FROM Forms
         WHERE Forms.formID = Compositions.formID) AS form,
-      IFNULL(Compositions.keySignature, '') AS keySignature,
+      (SELECT CASE
+        WHEN Compositions.keySignature IS NULL THEN
+          JSON_OBJECT(
+            'name', NULL,
+            'type', NULL)
+        ELSE
+          (SELECT JSON_OBJECT(
+            'name', KeySignatures.keyName,
+            'type', KeySignatures.keyType)
+        FROM KeySignatures
+        WHERE KeySignatures.keyName = Compositions.keySignature) END) AS keySignature,
       IFNULL((SELECT 
         JSON_ARRAYAGG(
           JSON_OBJECT(
-            'instrumentID', Instruments.instrumentID,
-            'familyID', Instruments.familyID,
+            'id', Instruments.instrumentID,
+            'family', Instruments.familyID,
             'scorePosition', Instruments.scorePosition,
             'name', Instruments.instrumentName)) 
         FROM Instruments
@@ -272,7 +285,7 @@ function retrieveCompositionByID(compositionID) {
       IFNULL((SELECT 
         JSON_ARRAYAGG(
             JSON_OBJECT(
-                'movementNum', Movements.movementNum,
+                'num', Movements.movementNum,
                 'title', Movements.title))
         FROM Movements
         WHERE Movements.compositionID = Compositions.compositionID), '[]') AS movements,
