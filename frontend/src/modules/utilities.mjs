@@ -33,22 +33,49 @@ function convertFlatSharp(inputString) {
   return inputString.replace(/ flat/g, "♭").replace(/ sharp/g, "♯");
 }
 
-// Sorts an array of JSON objects 
+// Sorts an array of JSON objects by a passed in attribute
 function sortList([...list], attribute, ascending = true) {
   return list.sort((a, b) => {
+    // Variables to hold the two compar
+    let compareableA;
+    let compareableB;
+
+    // Sort value is within a nested object
+    if (attribute.includes('.')) {
+      const parts = attribute.split('.');
+      const objectName = parts[0];
+      const objectAttribute = parts[1];
+
+      // Object is an array of objects
+      if (Array.isArray(a[objectName])) {
+        compareableA = a[objectName].map(a => a[objectAttribute]).join(', ');
+        compareableB = b[objectName].map(b => b[objectAttribute]).join(', ');
+      }
+      // Object is a basic object
+      else {
+        compareableA = a[objectName][objectAttribute] === null ? '' : a[objectName][objectAttribute];
+        compareableB = b[objectName][objectAttribute] === null ? '' : b[objectName][objectAttribute];
+      }
+    }
+    // Sort value is an attribute of the list
+    else {
+      compareableA = a[attribute] === null ? '' : a[attribute];
+      compareableB = b[attribute] === null ? '' : b[attribute];
+    }
+
     // Determine if comparison is of characters or numbers
-    const isNumeric = !isNaN(a[attribute]) && !isNaN(b[attribute]);
+    const isNumeric = !isNaN(compareableA) && !isNaN(compareableB);
     let valueA, valueB;
 
     // Compare as numbers
     if (isNumeric) {
-      valueA = Number(a[attribute]);
-      valueB = Number(b[attribute]);
+      valueA = Number(compareableA);
+      valueB = Number(compareableB);
 
     // Compare as strings, case-insensitive
     } else {
-      valueA = a[attribute].toUpperCase();
-      valueB = b[attribute].toUpperCase();
+      valueA = compareableA.toUpperCase();
+      valueB = compareableB.toUpperCase();
     }
 
     // Return sort order
