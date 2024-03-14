@@ -41,7 +41,7 @@ function AddCatalogueNumsForm ({ composerID, catalogueNums, setCatalogueNums }) 
     
     // Add catalogue number to the queue
     const catalogueNum = {
-      id: catalogueOptions[catalogueOptionNum].catalogueID,
+      catalogueID: catalogueOptions[catalogueOptionNum].catalogueID,
       title: catalogueOptions[catalogueOptionNum].catalogueTitle,
       symbol: catalogueOptions[catalogueOptionNum].catalogueSymbol,
       catNum: catalogueNumInput
@@ -51,7 +51,7 @@ function AddCatalogueNumsForm ({ composerID, catalogueNums, setCatalogueNums }) 
 
     // Add catalogue to the list of added catalogues so multiple 
     // catalogue numbers cannot be added for a single catalogue
-    const catalogues = [...usedCatalogues, catalogueNum.id];
+    const catalogues = [...usedCatalogues, catalogueNum.catalogueID];
     setUsedCatalogues(catalogues);
 
     // Reset input field
@@ -68,7 +68,7 @@ function AddCatalogueNumsForm ({ composerID, catalogueNums, setCatalogueNums }) 
 
     // Remove the catalogue from the list of used catalogues
     let catalogues = [...usedCatalogues];
-    catalogues = catalogues.filter(id => id !== catalogueNum.id);
+    catalogues = catalogues.filter(id => id !== catalogueNum.catalogueID);
     setUsedCatalogues(catalogues);
   }
 

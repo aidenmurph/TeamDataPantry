@@ -197,7 +197,7 @@ export const EditCompositionPage = ({ compositionToEdit }) => {
   // Prepare the catalogue numbers as query compatible objects and send to database
   const addCatalogueNums = async (compositionID) => {
     const data = catalogueNums.map(catNum => ({ 
-      catalogueID: catNum.id, 
+      catalogueID: catNum.catalogueID, 
       compositionID: compositionID, 
       catNum: catNum.catNum 
     }));
