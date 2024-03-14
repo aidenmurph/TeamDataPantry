@@ -4,7 +4,7 @@ function MovementRow({ movement }) {
 
   return (
     <tr className="movement">
-      <td>{movement.movementNum}. {movement.title}</td> 
+      <td>{movement.num}. {movement.title}</td> 
     </tr>
   );
 }

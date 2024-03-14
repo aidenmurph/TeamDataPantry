@@ -14,8 +14,9 @@ function CompositionInfoPanel({ composition, movements }) {
         <p>
           {composition.featuredInstrumentation.length === 1 
             && composition.featuredInstrumentation[0].name === "String Quartet" ? "" 
-            : `${composition.form} for `} 
-          {`${composition.featuredInstrumentation.map(instrument => instrument.name).join(', ')} `}
+            : `${composition.form.name} for `} 
+          {`${composition.featuredInstrumentation.map(instrument => instrument.name)
+            .join(composition.featuredInstrumentation.length === 2 ? ' and ' : ', ')} `}
         </p>  
       : ''}
       <p>
@@ -35,10 +36,10 @@ function CompositionInfoPanel({ composition, movements }) {
           : ''}
 
           {/* Key Signature */}
-          {composition.keySignature ?
+          {composition.keySignature && composition.keySignature.name !== null ?
             <tr>
               <td><strong>Key</strong></td>
-              <td>{convertFlatSharp(composition.keySignature)}</td>
+              <td>{convertFlatSharp(composition.keySignature.name)}</td>
             </tr>
           : ''}
 
