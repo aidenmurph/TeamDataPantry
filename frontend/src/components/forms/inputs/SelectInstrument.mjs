@@ -1,7 +1,6 @@
 // Import dependencies
 import React, { useState, useEffect, useCallback } from 'react';
 import * as fetchers from '../../../modules/fetchService.mjs'
-import { convertFlatSharp } from '../../../modules/utilities.mjs';
 
 function SelectInstrument ({ id, value, setValue, used = [] }) {
   // State variables for dropdown menus

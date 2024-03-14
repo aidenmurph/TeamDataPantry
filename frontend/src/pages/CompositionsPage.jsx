@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { server_url } from '../config';
 import * as fetchers from '../modules/fetchService.mjs'
@@ -14,8 +14,11 @@ function CompositionsPage({ setCompositionToEdit }) {
   // Define state variables for displaying compositions
   const [compositions, setCompositions] = useState([]);
   const [activeSort, setActiveSort] = useState({});
-  const [filterList, setFilterList] = useState([]); 
+  const [filterList, setFilterList] = useState([]);
   
+  // Track the length of the compositions array to maintain sort after updates
+  const compositionsLengthRef = useRef(compositions.length)
+
   // RETRIEVE the entire list of compositions
   const loadCompositions = useCallback(() => {
     fetchers.fetchCompositions(setCompositions);
@@ -59,10 +62,13 @@ function CompositionsPage({ setCompositionToEdit }) {
 
   // Maintain the active sort when the composition list is modified (i.e. through deletion)
   useEffect(() => {
-    if (activeSort.attribute && compositions.length > 0) {
-      setCompositions(sortList(compositions, activeSort.attribute, activeSort.ascending));
+    if (compositionsLengthRef.current !== compositions.length) {
+      if (activeSort.attribute && compositions.length > 0) {
+        setCompositions(sortList(compositions, activeSort.attribute, activeSort.ascending));
+      }
+      compositionsLengthRef.current = compositions.length;
     }
-  }, [compositions.length]);
+  }, [compositions, activeSort.attribute, activeSort.ascending]);
 
   return (
     <>

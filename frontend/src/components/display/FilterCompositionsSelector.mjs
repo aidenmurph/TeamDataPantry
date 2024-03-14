@@ -1,6 +1,5 @@
 // Import dependencies
-import React, { useState, useEffect, useCallback } from 'react';
-import * as fetchers from '../../modules/fetchService.mjs';
+import React, { useState } from 'react';
 
 // Import form components
 import { SelectComposer } from '../forms/inputs/SelectComposer.mjs';

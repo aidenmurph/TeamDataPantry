@@ -21,7 +21,7 @@ function SelectKeySignature ({ id, value, setValue }) {
   // Reset key signature on mode change
   useEffect(() => {
     setValue(keyMode === "None" ? 'NONE' : 'SELECT');
-  }, [keyMode]);
+  }, [keyMode, setValue]);
 
   return (
     <>
