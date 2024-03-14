@@ -234,6 +234,61 @@ function retrieveCompositions() {
     });
 }
 
+// Retreive composition info for displaying in the composition list
+function retrieveFilteredCompositions(filterList) {
+  // Build the WHERE clauses based on the passed in parameters
+  let whereClauses = [];
+  let params = [];
+  if(filterList.composerID) {
+    whereClauses.push(`Compositions.composerID = ?`);
+    params.push(filterList.composerID);
+  }
+  if(filterList.formID) {
+    whereClauses.push(`Compositions.formID = ?`);
+    params.push(filterList.formID);
+  }
+  if(filterList.keyName) {
+    if (filterList.keyName === '0') {
+      whereClauses.push(`Compositions.keySignature IS NULL`);
+    } else {
+      whereClauses.push(`Compositions.keySignature = ?`);
+      params.push(filterList.keyName);
+    }
+  }
+  if(filterList.instrumentID) {
+    whereClauses.push(`EXISTS (
+      SELECT 1 FROM FeaturedInstrumentation 
+      WHERE FeaturedInstrumentation.compositionID = Compositions.compositionID 
+      AND FeaturedInstrumentation.instrumentID = ?)`);
+    params.push(filterList.instrumentID);
+  }
+  if(filterList.minYear) {
+    whereClauses.push(`Compositions.compositionYear >= ?`);
+    params.push(filterList.minYear);
+  }
+  if(filterList.maxYear) {
+    whereClauses.push(`Compositions.compositionYear <= ?`);
+    params.push(filterList.maxYear);
+  }
+
+  // Assemble the query and send to the database
+  const query = formatSQL(retrieveQuery + ` WHERE ${whereClauses.join(' AND ')}`)
+
+  return pool.getConnection()
+    .then(conn => {
+      const resultPromise = conn.query(query, params);
+      resultPromise.finally(() => conn.release());
+      return resultPromise;
+    })
+    .then(rows => {
+      return rows;
+    })
+    .catch(err => {
+      console.error('Error in retrieveFilteredCompositions: ', err);
+      throw err;
+    });
+}
+
 // Retrieve composition info for displaying on a composition page 
 function retrieveCompositionByID(compositionID) {
   const query = formatSQL(`

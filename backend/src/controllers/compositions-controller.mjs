@@ -74,6 +74,17 @@ function retrieveCompositionsController(req, res) {
     });
 }
 
+function retrieveFilteredCompositionsController(req, res) {
+  compositions.retrieveFilteredCompositions(req.query)
+    .then(rows => {
+      res.json(rows);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Error fetching filtered compositions');
+    });
+}
+
 function retrieveCompositionByIDController(req, res) {
   compositions.retrieveCompositionByID(req.params.id)
     .then(entity => {
@@ -187,6 +198,7 @@ export {
   createFeaturedInstrumentationController,
   createMovementsController,
   retrieveCompositionsController,
+  retrieveFilteredCompositionsController,
   retrieveCompositionByIDController,
   retrieveKeySignaturesController,
   updateCompositionController,

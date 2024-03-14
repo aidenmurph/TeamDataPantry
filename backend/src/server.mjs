@@ -50,6 +50,7 @@ app.post('/api/catalogue-nums/for-composition-:id', compositions.createCatalogue
 app.post('/api/featured-instruments/for-composition-:id', compositions.createFeaturedInstrumentationController);
 app.post('/api/movements/for-composition-:id', compositions.createMovementsController);
 app.get('/api/compositions', compositions.retrieveCompositionsController);
+app.get('/api/compositions/filtered', compositions.retrieveFilteredCompositionsController);
 app.get('/api/composition/:id', compositions.retrieveCompositionByIDController);
 app.put('/api/compositions/:id', compositions.updateCompositionController);
 app.delete('/api/compositions/:id', compositions.deleteCompositionController);
