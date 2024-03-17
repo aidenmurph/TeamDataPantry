@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import 'daisyui/dist/full.css';
+
 .header nav{
   list-style: none;
   display: inline-block;
@@ -30,3 +35,41 @@ td{
   border: 1px solid black;
   padding: 10px;
 }
+
+aside.compositionPanel {
+  padding: 10px;
+  border: 2px solid black;
+  float: right;
+  min-height: 100px;
+  text-align: center;
+}
+ 
+.instrumentations {
+  display: inline-block;
+  vertical-align: top;
+}
+ 
+.instruments {
+  display: inline-block;
+  vertical-align: top;
+}
+ 
+.required:after {
+  content:" *";
+  color:red;
+}
+ 
+.clickable {
+  cursor: pointer;
+}
+ 
+.proceedDialogue {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  z-index: 1000;
+}
+
