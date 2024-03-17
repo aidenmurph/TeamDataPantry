@@ -59,7 +59,13 @@ function retrieveInstrumentFamilies() {
 
 // Retrieve all instruments in a single family
 function retrieveInstrumentsByFamily(familyID) {
-  const query = `SELECT * FROM Instruments WHERE familyID = ?;`
+  const query = `
+    SELECT
+      familyID AS family,
+      instrumentID AS id,
+      scorePosition,
+      instrumentName AS name
+    FROM Instruments WHERE familyID = ?;`
   const params = [familyID];
 
   return pool.getConnection()
