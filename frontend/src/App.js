@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 
 // Import Components, styles, mdiea
+import Footer from './components/Footer.mjs';
 import Navigation from './components/Navigation.mjs';
 import './App.css';
 import './output.css';
@@ -71,9 +72,7 @@ function App() {
             </Routes>
           </section>
         </main>
-        <footer>
-          <p>&copy; 2024, Team Data Pantry</p>
-        </footer>
+        <Footer />
       </html>
     </>
   );
