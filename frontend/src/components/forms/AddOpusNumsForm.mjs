@@ -1,6 +1,6 @@
 // Import dependencies
 import React, { useState } from 'react';
-import { QueuedOpusNum } from './QueuedOpusNum.mjs';
+import { QueuedOpusNum } from './queued-elements/QueuedOpusNum.mjs';
 
 // Form component for building an opus number queue to add to a composition
 function AddOpusNumsForm ({ opusNums, setOpusNums }) {

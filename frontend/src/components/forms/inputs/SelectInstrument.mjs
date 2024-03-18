@@ -8,6 +8,7 @@ function SelectInstrument ({ id, value, setValue, used = [] }) {
   const [instrumentOptions, setInstrumentOptions] = useState([]);
   const [soloOrEnsemble, setSoloOrEnsemble] = useState("Solo");
   const [currentInstrumentFamily, setCurrentInstrumentFamily] = useState('SELECT');
+  const [currentInstrumentIndex, setCurrentInstrumentIndex] = useState('SELECT');
 
   // RETRIEVE the list of instrument families for use in dropdowns
   const loadFamilyOptions = useCallback(() => {
@@ -35,7 +36,8 @@ function SelectInstrument ({ id, value, setValue, used = [] }) {
 
   // Reset selection on cleared value
   useEffect(() => {
-    if(value === 'RESET') {
+    if(Object.keys(value).length === 0) {
+      setCurrentInstrumentIndex('SELECT');
       setCurrentInstrumentFamily('SELECT');
       setSoloOrEnsemble('Solo'); 
     }
@@ -50,7 +52,7 @@ function SelectInstrument ({ id, value, setValue, used = [] }) {
         className="dropdown"
         value={soloOrEnsemble}
         onChange={e => {            
-          setValue('SELECT');        
+          setCurrentInstrumentIndex('SELECT');        
           setCurrentInstrumentFamily('SELECT');
           setSoloOrEnsemble(e.target.value);                
         }} >
@@ -68,16 +70,16 @@ function SelectInstrument ({ id, value, setValue, used = [] }) {
           value={currentInstrumentFamily}
           onChange={e => {
             if(soloOrEnsemble === "Solo") {
-              setValue('SELECT')};
+              setCurrentInstrumentIndex('SELECT')};
             setCurrentInstrumentFamily(e.target.value);                          
           }} >                      
             <option value="SELECT">--Select Instrument Family--</option>
-            {familyOptions.map((option, i) => (
+            {familyOptions.map((family, i) => (
               i !== familyOptions.length - 1 ?
                 <option 
                   key={i} 
                   value={i}
-                >{option.familyName}</option> 
+                >{family.familyName}</option> 
               : ''
             ))}
         </select>
@@ -88,17 +90,19 @@ function SelectInstrument ({ id, value, setValue, used = [] }) {
             name={id} 
             id={id}
             className="dropdown"
-            value={value}
+            value={currentInstrumentIndex}
             onChange={e => {
-              setValue(e.target.value);
+              setCurrentInstrumentIndex(e.target.value)
+              setValue(e.target.value === 'SELECT' ?
+                'SELECT' : instrumentOptions[currentInstrumentFamily][e.target.value]);
             }} >                      
               <option value="SELECT">--Select Instrument--</option>                            
-                {instrumentOptions[currentInstrumentFamily].map((option, i) => (
-                  !used.includes(option.instrumentID) ?
+                {instrumentOptions[currentInstrumentFamily].map((instrument, i) => (
+                  !used.includes(instrument.id) ?
                     <option 
                       key={i} 
-                      value={option.instrumentID}
-                    >{option.instrumentName}</option>
+                      value={i}
+                    >{instrument.name}</option>
                   : ''
                 ))}
           </select> : ''} </>  
@@ -108,18 +112,20 @@ function SelectInstrument ({ id, value, setValue, used = [] }) {
         name={id} 
         id={id} 
         className="dropdown"
-        value={value}
+        value={currentInstrumentIndex}
         onChange={e => {
-          setCurrentInstrumentFamily(familyOptions.length - 1);                      
-          setValue(e.target.value);                       
+          setCurrentInstrumentIndex(e.target.value);
+          setCurrentInstrumentFamily(familyOptions.length - 1);                     
+          setValue(e.target.value === 'SELECT' ?
+            'SELECT' : instrumentOptions[familyOptions.length - 1][e.target.value]);                      
         }} >                        
           <option value="SELECT">--Select Ensemble--</option>
-          {instrumentOptions[familyOptions.length - 1].map((option, i) => (
-            !used.includes(option.instrumentID) ?
+          {instrumentOptions[familyOptions.length - 1].map((ensemble, i) => (
+            !used.includes(ensemble.id) ?
               <option 
                 key={i} 
-                value={option.instrumentID}
-              >{option.instrumentName}</option>                
+                value={i}
+              >{ensemble.name}</option>                
           : '' ))}
       </select> }          
     </>

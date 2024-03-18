@@ -4,7 +4,7 @@ import { server_url } from '../../config.js';
 function InstrumentRow({ family, instrument, onEdit, onDelete }) {
   // State variales
   const [editMode, setEditMode] = useState(false);
-  const [instrumentName, setInstrumentName] = useState(instrument.instrumentName);
+  const [instrumentName, setInstrumentName] = useState(instrument.name);
 
   const toggleEdit = () => setEditMode(!editMode);
 
@@ -15,7 +15,7 @@ function InstrumentRow({ family, instrument, onEdit, onDelete }) {
       return;
     }
 
-    const response = await fetch(`${server_url}/api/instruments/${instrument.instrumentID}`, {
+    const response = await fetch(`${server_url}/api/instruments/${instrument.id}`, {
       method: 'PUT',
       body: JSON.stringify({ 
         instrumentName: instrumentName
@@ -60,7 +60,7 @@ function InstrumentRow({ family, instrument, onEdit, onDelete }) {
         </>
       ) : (
         <>
-          <td>{instrument.instrumentName}</td>
+          <td>{instrument.name}</td>
           <td><button onClick={toggleEdit}>Edit</button></td>
           <td><button onClick={() => onDelete(instrument)}>Delete</button></td>
         </>

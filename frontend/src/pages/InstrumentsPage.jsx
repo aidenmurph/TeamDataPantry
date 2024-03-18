@@ -28,11 +28,11 @@ function InstrumentsPage() {
   
   // DELETE a single instrument
   const onDeleteInstrument = async (instrument) => {
-    const response = await fetch(`${server_url}/api/instruments/${instrument.instrumentID}`, { method: 'DELETE'});
+    const response = await fetch(`${server_url}/api/instruments/${instrument.id}`, { method: 'DELETE'});
     if (response.ok) {
-      loadInstrumentFamily(instrument.familyID);
+      loadInstrumentFamily(instrument.family);
     } else {
-        console.error(`Unable to delete Instrument with ID ${instrument.instrumentID}, status code = ${response.status}`)
+        console.error(`Unable to delete Instrument with ID ${instrument.id}, status code = ${response.status}`)
     }
   }
 

@@ -5,8 +5,9 @@ import { convertFlatSharp } from '../../../modules/utilities.mjs';
 
 function SelectKeySignature ({ id, value, setValue }) {
   // State variables for dropdown menus
-  const [keyMode, setKeyMode] = useState("Major");
+  const [keyType, setKeyType] = useState(value === 'SELECT' ? 'Major' : value.type);
   const [keySignatureOptions, setKeySignatureOptions] = useState([]);
+  const [keySignatureIndex, setKeySignatureIndex] = useState('SELECT')
 
   // RETRIEVE the entire list of key signatures for use in the dropdown
   const loadKeySignatureOptions = useCallback(() => {
@@ -18,38 +19,49 @@ function SelectKeySignature ({ id, value, setValue }) {
     loadKeySignatureOptions();
   }, [loadKeySignatureOptions]);
 
-  // Reset key signature on mode change
+  // Reset key signature on type change
   useEffect(() => {
-    setValue(keyMode === "None" ? 'NONE' : 'SELECT');
-  }, [keyMode, setValue]);
+    setValue(keyType === "None" ? 'NONE' : 'SELECT');
+  }, [keyType, setValue]);
+
+  useEffect(() => {
+    if (value === 'SELECT') {
+      setKeySignatureIndex('SELECT')
+    }
+    else if (keySignatureOptions.length > 0) {
+      setKeySignatureIndex(value.id - 1);
+    }
+  }, [value, keySignatureOptions]);
 
   return (
     <>
       <select 
-        name="keyMode" 
-        id="keyMode" 
+        name="keyType" 
+        id="keyType" 
         className="dropdown"
-        defaultValue={"Major"}
-        onChange={e => setKeyMode(e.target.value)} >
+        value={keyType}
+        onChange={e => setKeyType(e.target.value)} >
           <option value="Major">Major</option>
           <option value="Minor">Minor</option>
           <option value="None">None</option>
       </select>
-      {keyMode !== "None" ?       
+      {keyType !== "None" ?       
         <select 
           name={id} 
           id={id}
           className="dropdown"
-          value={value}
-          onChange={e => setValue(e.target.value)} >
+          value={keySignatureIndex}
+          onChange={e => {
+            setValue(e.target.value === 'SELECT' ? e.target.value : keySignatureOptions[e.target.value]);
+          }} >
             {/* Query the key signatures in the database in order to populate the dropdown */}
             <option value="SELECT">--Select Key Signature--</option>
             {keySignatureOptions.map((option, i) => (
-              option.keyType === keyMode ?
+              option.type === keyType ?
                 <option 
                   key={i} 
-                  value={option.keyName}
-                >{convertFlatSharp(option.keyName)}</option> 
+                  value={i}
+                >{convertFlatSharp(option.name)}</option> 
               : ''
             ))}
         </select>

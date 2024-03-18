@@ -13,7 +13,7 @@ function FilterCompositionSelector({ setFilterList }) {
   const [composerID, setComposerID] = useState('SELECT');
   const [formID, setFormID] = useState('SELECT');
   const [keySignature, setKeySignature] = useState('SELECT');
-  const [instrumentID, setInstrumentID] = useState('SELECT');
+  const [instrument, setInstrument] = useState({});
   const [minYear, setMinYear] = useState ('');
   const [maxYear, setMaxYear] = useState ('');
 
@@ -29,10 +29,10 @@ function FilterCompositionSelector({ setFilterList }) {
       filterList.formID = formID;
     }
     if (keySignature !== 'SELECT') {
-      filterList.keyName = keySignature;
+      filterList.keyID = keySignature === 'NONE' ? 'NONE' : keySignature.id;
     }
-    if (!['SELECT', 'RESET'].includes(instrumentID)) {
-      filterList.instrumentID = instrumentID;
+    if (instrument !== 'SELECT' && Object.keys(instrument).length !== 0) {
+      filterList.instrumentID = instrument.id;
     }
     if (minYear !== '') {
       filterList.minYear = minYear
@@ -48,7 +48,7 @@ function FilterCompositionSelector({ setFilterList }) {
     setComposerID('SELECT');
     setFormID('SELECT');
     setKeySignature('SELECT');
-    setInstrumentID('RESET');        
+    setInstrument({});        
     setMinYear('');
     setMaxYear('');  
     setFilterList({});
@@ -96,8 +96,8 @@ function FilterCompositionSelector({ setFilterList }) {
           <td><label htmlFor="featuredInstruments">Instrumentation: </label>            
             <SelectInstrument
               id={"instrument"}
-              value={instrumentID}
-              setValue={setInstrumentID}
+              value={instrument}
+              setValue={setInstrument}
             />
           </td>
 

@@ -13,7 +13,7 @@ function createComposition(composition) {
       dedication,
       compositionYear,
       formID,
-      keySignature
+      keyID
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
   const params = [
     composition.englishTitle === '' ? null : composition.englishTitle,
@@ -23,7 +23,7 @@ function createComposition(composition) {
     composition.dedication === '' ? null : composition.dedication,
     composition.compositionYear,
     composition.formID,
-    composition.keySignature === '' || composition.keySignature === '0' ? null : composition.keySignature
+    composition.keySignature.id
   ];
 
   return pool.getConnection()
@@ -183,16 +183,13 @@ const retrieveQuery = `
       FROM Forms
       WHERE Forms.formID = Compositions.formID) AS form,
     (SELECT CASE
-      WHEN Compositions.keySignature IS NULL THEN
-        JSON_OBJECT(
-          'name', NULL,
-          'type', NULL)
-      ELSE
+      WHEN Compositions.keyID IS NOT NULL THEN
         (SELECT JSON_OBJECT(
+          'id', KeySignatures.keyID,
           'name', KeySignatures.keyName,
           'type', KeySignatures.keyType)
-      FROM KeySignatures
-      WHERE KeySignatures.keyName = Compositions.keySignature) END) AS keySignature,
+        FROM KeySignatures
+        WHERE KeySignatures.keyID = Compositions.keyID) END) AS keySignature,
     IFNULL((SELECT 
       JSON_ARRAYAGG(
         JSON_OBJECT(
@@ -247,12 +244,12 @@ function retrieveFilteredCompositions(filterList) {
     whereClauses.push(`Compositions.formID = ?`);
     params.push(filterList.formID);
   }
-  if(filterList.keyName) {
-    if (filterList.keyName === 'NONE') {
-      whereClauses.push(`Compositions.keySignature IS NULL`);
+  if(filterList.keyID) {
+    if (filterList.keyID === 'NONE') {
+      whereClauses.push(`Compositions.keyID IS NULL`);
     } else {
-      whereClauses.push(`Compositions.keySignature = ?`);
-      params.push(filterList.keyName);
+      whereClauses.push(`Compositions.keyID = ?`);
+      params.push(filterList.keyID);
     }
   }
   if(filterList.instrumentID) {
@@ -313,7 +310,12 @@ function retrieveCompositionByID(compositionID) {
 
 // Retreive keySignatures info for use in adding/editing compositions & instrumentation
 function retrieveKeySignatures() {
-  const query = `SELECT * FROM KeySignatures;`
+  const query = `
+  SELECT
+    keyID AS id, 
+    keyName AS name,
+    keyType AS type 
+  FROM KeySignatures;`
 
   return pool.getConnection()
     .then(conn => {
@@ -342,7 +344,7 @@ function updateComposition(compositionID, composition) {
       dedication = ?,
       compositionYear = ?,
       formID = ?,
-      keySignature = ?
+      keyID = ?
     WHERE compositionID = ?`);
   const params = [
     composition.englishTitle === '' ? null : composition.englishTitle,
@@ -352,7 +354,7 @@ function updateComposition(compositionID, composition) {
     composition.dedication === '' ? null : composition.dedication,
     composition.compositionYear,
     composition.formID,
-    composition.keySignature === '' || composition.keySignature === '0' ? null : composition.keySignature,
+    composition.keySignature.id,
     compositionID
   ];
 

@@ -2,14 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { convertFlatSharp } from '../../modules/utilities.mjs';
 
-function CompositionInfoPanel({ composition, movements, setCompositionToEdit }) {
+function CompositionInfoPanel({ composition, movements }) {
     // Use the useNavigate module for redirection
     const redirect = useNavigate();
 
   // UPDATE this composition
-  const handleEditComposition = async (composition) => {;
-    setCompositionToEdit(composition);
-    redirect(`/edit-composition/`);
+  const handleEditComposition = async () => {;
+    redirect(`/edit-composition/${composition.compositionID}`);
   }
 
   return (
@@ -58,7 +57,7 @@ function CompositionInfoPanel({ composition, movements, setCompositionToEdit }) 
           : ''}
 
           {/* Key Signature */}
-          {composition.keySignature && composition.keySignature.name !== null ?
+          {composition.keySignature ?
             <tr>
               <td><strong>Key</strong></td>
               <td>{convertFlatSharp(composition.keySignature.name)}</td>
@@ -89,7 +88,7 @@ function CompositionInfoPanel({ composition, movements, setCompositionToEdit }) 
 
           {/* Edit Composition Button */}
           <tr>
-            <td colSpan="2" style={{ textAlign: "center" }}><button onClick={() => handleEditComposition(composition)}>Edit Composition</button></td>
+            <td colSpan="2" style={{ textAlign: "center" }}><button onClick={() => handleEditComposition()}>Edit Composition</button></td>
           </tr>
 
         </tbody>

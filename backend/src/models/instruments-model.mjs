@@ -59,7 +59,13 @@ function retrieveInstrumentFamilies() {
 
 // Retrieve all instruments in a single family
 function retrieveInstrumentsByFamily(familyID) {
-  const query = `SELECT * FROM Instruments WHERE familyID = ?;`
+  const query = `
+    SELECT
+      familyID AS family,
+      instrumentID AS id,
+      scorePosition,
+      instrumentName AS name
+    FROM Instruments WHERE familyID = ?;`
   const params = [familyID];
 
   return pool.getConnection()
@@ -87,16 +93,23 @@ function retrieveInstrumentationByFamily(compositionID, familyID) {
     COUNT(DISTINCT CompositionPlayers.playerID) AS numInstruments,
     Instruments.instrumentID,
     Instruments.instrumentName,
-    CompositionPlayers.instrumentKey,
+    (SELECT
+      KeySignatures.keyName 
+      FROM KeySignatures 
+      WHERE KeySignatures.keyID = CompositionPlayers.keyID) as instrumentKey,
     COUNT(DISTINCT DoubledInstruments.playerID) AS numDoubling,
     GROUP_CONCAT(DISTINCT 
-                 IF(DoubledInstruments.instrumentKey IS NOT NULL, 
-                    CONCAT(doubled.instrumentName, ' in ', DoubledInstruments.instrumentKey),
-                    doubled.instrumentName) 
-                 SEPARATOR ', ') AS doubles,
+      IF(DoubledInstruments.keyID IS NOT NULL, 
+        CONCAT(doubled.instrumentName, ' in ', 
+        (SELECT
+          KeySignatures.keyName 
+          FROM KeySignatures 
+          WHERE KeySignatures.keyID = DoubledInstruments.keyID)),
+        doubled.instrumentName) 
+        SEPARATOR ', ') AS doubles,
     GROUP_CONCAT(DISTINCT 
-                 IF(DoubledInstruments.instrumentID IS NOT NULL, CompositionPlayers.chairNum, NULL) 
-                 SEPARATOR ', ') AS chairsDoubling
+      IF(DoubledInstruments.instrumentID IS NOT NULL, CompositionPlayers.chairNum, NULL) 
+      SEPARATOR ', ') AS chairsDoubling
   FROM CompositionPlayers
   INNER JOIN Instruments ON CompositionPlayers.instrumentID = Instruments.instrumentID
   LEFT JOIN DoubledInstruments ON DoubledInstruments.playerID = CompositionPlayers.playerID
@@ -105,8 +118,8 @@ function retrieveInstrumentationByFamily(compositionID, familyID) {
   AND Instruments.familyID = ?
   AND CompositionPlayers.isSection = FALSE
   GROUP BY
-      CompositionPlayers.instrumentKey, 
-      Instruments.instrumentID
+    CompositionPlayers.keyID, 
+    Instruments.instrumentID
   UNION
   SELECT 
     Instruments.familyID,
@@ -114,10 +127,14 @@ function retrieveInstrumentationByFamily(compositionID, familyID) {
     Instruments.scorePosition,
     COUNT(DISTINCT CompositionPlayers.playerID) AS numInstruments,
     Instruments.instrumentID,
-    CONCAT(Instruments.instrumentName,
-          IF(Instruments.instrumentName = "Double Bass", 'es ', 's '), 
-          IF(CompositionPlayers.chairNum != 0, CompositionPlayers.chairNum, '')) AS instrumentName, 
-    CompositionPlayers.instrumentKey,
+    CONCAT(
+      Instruments.instrumentName,
+      IF(Instruments.instrumentName = "Double Bass", 'es ', 's '), 
+      IF(CompositionPlayers.chairNum != 0, CompositionPlayers.chairNum, '')) AS instrumentName, 
+    (SELECT
+      KeySignatures.keyName 
+      FROM KeySignatures 
+      WHERE KeySignatures.keyID = CompositionPlayers.keyID) as instrumentKey,
     NULL AS doubles,
     NULL AS numDoubling,
     NULL AS chairsDoubling
@@ -127,7 +144,7 @@ function retrieveInstrumentationByFamily(compositionID, familyID) {
   AND Instruments.familyID = ?
   AND CompositionPlayers.isSection = TRUE
   GROUP BY
-    CompositionPlayers.instrumentKey, 
+    CompositionPlayers.keyID, 
     CompositionPlayers.playerID
   ORDER BY familyID, instrumentID`);
   const params = [compositionID, familyID, compositionID, familyID];
