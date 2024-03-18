@@ -38,10 +38,12 @@ CREATE OR REPLACE TABLE Forms(
 -- KeySignatures (Category Table)
 -- DESC: The key for a composition or instrument
 CREATE OR REPLACE TABLE KeySignatures(
+    keyID INT NOT NULL AUTO_INCREMENT,
     keyName VARCHAR(25),
     keyType VARCHAR(11) NOT NULL,
     CHECK (keyType = "Major" OR keyType = "Minor" OR keyType = "Instrument"),
-    PRIMARY KEY (keyName)
+    UNIQUE (keyName),
+    PRIMARY KEY (keyID)
 );
 
 -- Compositions
@@ -58,8 +60,8 @@ CREATE OR REPLACE TABLE Compositions(
     compositionYear SMALLINT UNSIGNED NOT NULL,
     formID INT NOT NULL,
     FOREIGN KEY (formID) REFERENCES Forms(formID) ON DELETE CASCADE,
-    keySignature VARCHAR(25),
-    FOREIGN KEY (keySignature) REFERENCES KeySignatures(keyName),
+    keyID INT,
+    FOREIGN KEY (keyID) REFERENCES KeySignatures(keyID),
     infoText LONGTEXT,
     PRIMARY KEY (compositionID)
 );
@@ -107,7 +109,6 @@ CREATE OR REPLACE TABLE CatalogueNums(
     compositionID INT NOT NULL,
     FOREIGN KEY (compositionID) REFERENCES Compositions(compositionID) ON DELETE CASCADE,
     catNum VARCHAR(9) NOT NULL,
-    
     PRIMARY KEY (catalogueID, catNum)
 );
 
@@ -154,8 +155,8 @@ CREATE OR REPLACE TABLE CompositionPlayers(
     FOREIGN KEY (compositionID) REFERENCES Compositions(compositionID) ON DELETE CASCADE,
     instrumentID INT,
     FOREIGN KEY (instrumentID) REFERENCES Instruments(instrumentID) ON DELETE CASCADE,
-    instrumentKey VARCHAR(25),
-    FOREIGN KEY (instrumentKey) REFERENCES KeySignatures(keyName) ON DELETE CASCADE,
+    keyID INT,
+    FOREIGN KEY (keyID) REFERENCES KeySignatures(keyID) ON DELETE CASCADE,
     chairNum SMALLINT UNSIGNED NOT NULL,
     -- Chair number should be zero for unassigned percussion and un-numbered sections
     CHECK (chairNum >= 0),
@@ -170,8 +171,8 @@ CREATE OR REPLACE TABLE DoubledInstruments(
     FOREIGN KEY (playerID) REFERENCES CompositionPlayers(playerID) ON DELETE CASCADE,
     instrumentID INT,
     FOREIGN KEY (instrumentID) REFERENCES Instruments(instrumentID) ON DELETE CASCADE,
-    instrumentKey VARCHAR(25),
-    FOREIGN KEY (instrumentKey) REFERENCES KeySignatures(keyName),
+    keyID INT,
+    FOREIGN KEY (keyID) REFERENCES KeySignatures(keyID),
     PRIMARY KEY (playerID, instrumentID)
 );
 
@@ -196,7 +197,7 @@ BEGIN
     END IF;
 
     -- Check if the instrumentKey corresponds to an 'Instrument' type in KeySignatures
-    SELECT keyType INTO instrumentKeyType FROM KeySignatures WHERE keyName = NEW.instrumentKey;
+    SELECT keyType INTO instrumentKeyType FROM KeySignatures WHERE keyID = NEW.keyID;
     IF instrumentKeyType != 'Instrument' THEN
         SIGNAL SQLSTATE "45000" 
         SET MESSAGE_TEXT = 'Instrument keys must be of type "Instrument".';
@@ -218,7 +219,7 @@ BEGIN
     END IF;
 
     -- Check if the instrumentKey corresponds to an 'Instrument' type in KeySignatures
-    SELECT keyType INTO instrumentKeyType FROM KeySignatures WHERE keyName = NEW.instrumentKey;
+    SELECT keyType INTO instrumentKeyType FROM KeySignatures WHERE keyID = NEW.keyID;
     IF instrumentKeyType != 'Instrument' THEN
         SIGNAL SQLSTATE '45000' 
         SET MESSAGE_TEXT = 'Instrument keys must be of type "Instrument".';
@@ -240,7 +241,7 @@ BEGIN
     END IF;
 
     -- Check if the instrumentKey corresponds to an 'Instrument' type in KeySignatures
-    SELECT keyType INTO instrumentKeyType FROM KeySignatures WHERE keyName = NEW.instrumentKey;
+    SELECT keyType INTO instrumentKeyType FROM KeySignatures WHERE keyID = NEW.keyID;
     IF instrumentKeyType != 'Instrument' THEN
         SIGNAL SQLSTATE '45000' 
         SET MESSAGE_TEXT = 'Instrument keys must be of type "Instrument".';
@@ -262,7 +263,7 @@ BEGIN
     END IF;
 
     -- Check if the instrumentKey corresponds to an 'Instrument' type in KeySignatures
-    SELECT keyType INTO instrumentKeyType FROM KeySignatures WHERE keyName = NEW.instrumentKey;
+    SELECT keyType INTO instrumentKeyType FROM KeySignatures WHERE keyID = NEW.keyID;
     IF instrumentKeyType != 'Instrument' THEN
         SIGNAL SQLSTATE '45000' 
         SET MESSAGE_TEXT = 'Instrument keys must be of type "Instrument".';
@@ -398,7 +399,7 @@ INSERT INTO Compositions (
     composerID, 
     compositionYear, 
     formID, 
-    keySignature
+    keyID
 )
 VALUES 
 (
@@ -417,7 +418,7 @@ VALUES
     @MauriceRavel,
     1930, 
     (SELECT formID FROM Forms WHERE formName = "Concerto"), 
-    (SELECT keyName FROM KeySignatures WHERE keyName = "D major")
+    (SELECT keyID FROM KeySignatures WHERE keyName = "D major")
 ),
 (
     "String Quartet in F Major", 
@@ -426,7 +427,7 @@ VALUES
     @MauriceRavel,
     1903, 
     (SELECT formID FROM Forms WHERE formName = "Quartet"), 
-    (SELECT keyName FROM KeySignatures WHERE keyName = "F major")
+    (SELECT keyID FROM KeySignatures WHERE keyName = "F major")
 ),
 (
     "String Quartet in E Minor", 
@@ -435,7 +436,7 @@ VALUES
     @GabrielFaure, 
     1924, 
     (SELECT formID FROM Forms WHERE formName = "Quartet"), 
-    (SELECT keyName FROM KeySignatures WHERE keyName = "E minor")
+    (SELECT keyID FROM KeySignatures WHERE keyName = "E minor")
 ),
 (
     "String Quartet in G Minor", 
@@ -444,7 +445,7 @@ VALUES
     @ClaudeDebussy, 
     1893, 
     (SELECT formID FROM Forms WHERE formName = "Quartet"), 
-    (SELECT keyName FROM KeySignatures WHERE keyName = "G minor")
+    (SELECT keyID FROM KeySignatures WHERE keyName = "G minor")
 ),
 (
     "Piano Concerto in G major", 
@@ -453,7 +454,7 @@ VALUES
     @MauriceRavel, 
     1931, 
     (SELECT formID FROM Forms WHERE formName = "Concerto"), 
-    (SELECT keyName FROM KeySignatures WHERE keyName = "G major")
+    (SELECT keyID FROM KeySignatures WHERE keyName = "G major")
 ),
 (
     "Ballade in F sharp Major", 
@@ -462,7 +463,7 @@ VALUES
     @GabrielFaure, 
     1879, 
     (SELECT formID FROM Forms WHERE formName = "Ballade"), 
-    (SELECT keyName FROM KeySignatures WHERE keyName = "F sharp major")
+    (SELECT keyID FROM KeySignatures WHERE keyName = "F sharp major")
 );
 
 SET @CompScheherezade = (SELECT compositionID FROM Compositions 
@@ -856,7 +857,7 @@ SET @InsWhip = (SELECT instrumentID FROM Instruments WHERE instrumentName = 'Whi
 INSERT INTO CompositionPlayers (
     compositionID, 
     instrumentID, 
-    instrumentKey, 
+    keyID, 
     chairNum, 
     isSection
 )
@@ -880,7 +881,7 @@ VALUES
     (@CompBallade, @InsPiano, NULL, 1, FALSE);
 
 -- Piano Concerto in G
-INSERT INTO CompositionPlayers (compositionID, instrumentID, instrumentKey, chairNum, isSection)
+INSERT INTO CompositionPlayers (compositionID, instrumentID, keyID, chairNum, isSection)
 VALUES
     -- Solo Piano
     (@CompGConcerto, @InsPiano, NULL, 1, FALSE),
@@ -889,14 +890,14 @@ VALUES
     (@CompGConcerto, @InsConcertFlute, NULL, 1, FALSE),
     (@CompGConcerto, @InsOboe, NULL, 1, FALSE),
     (@CompGConcerto, @InsEnglishHorn, NULL, 1, FALSE),
-    (@CompGConcerto, @InsClarinet, 'E flat', 1, FALSE),
-    (@CompGConcerto, @InsClarinet, 'B flat', 2, FALSE),
+    (@CompGConcerto, @InsClarinet, (SELECT keyID FROM KeySignatures WHERE keyName = 'E flat'), 1, FALSE),
+    (@CompGConcerto, @InsClarinet, (SELECT keyID FROM KeySignatures WHERE keyName = 'B flat'), 2, FALSE),
     (@CompGConcerto, @InsBassoon, NULL, 1, FALSE),
     (@CompGConcerto, @InsBassoon, NULL, 2, FALSE),
     -- Brass
-    (@CompGConcerto, @InsFrenchHorn, 'F', 1, FALSE),
-    (@CompGConcerto, @InsFrenchHorn, 'F', 2, FALSE),
-    (@CompGConcerto, @InsTrumpet, 'C', 1, FALSE),
+    (@CompGConcerto, @InsFrenchHorn, (SELECT keyID FROM KeySignatures WHERE keyName = 'F'), 1, FALSE),
+    (@CompGConcerto, @InsFrenchHorn, (SELECT keyID FROM KeySignatures WHERE keyName = 'F'), 2, FALSE),
+    (@CompGConcerto, @InsTrumpet, (SELECT keyID FROM KeySignatures WHERE keyName = 'C'), 1, FALSE),
     (@CompGConcerto, @InsTrombone, NULL, 1, FALSE),
     -- Percussion
     (@CompGConcerto, @InsTimpani, NULL, 0, FALSE),
@@ -917,7 +918,7 @@ VALUES
 
 
 -- Left Hand Concerto
-INSERT INTO CompositionPlayers (compositionID, instrumentID, instrumentKey, chairNum, isSection)
+INSERT INTO CompositionPlayers (compositionID, instrumentID, keyID, chairNum, isSection)
 VALUES 
     -- Woodwinds
     (@CompLeftHand, @InsPiccolo, NULL, 1, FALSE),
@@ -926,21 +927,21 @@ VALUES
     (@CompLeftHand, @InsOboe, NULL, 1, FALSE),
     (@CompLeftHand, @InsOboe, NULL, 2, FALSE),
     (@CompLeftHand, @InsEnglishHorn, NULL, 1, FALSE),
-    (@CompLeftHand, @InsClarinet, 'E flat', 1, FALSE),
-    (@CompLeftHand, @InsClarinet, 'A', 1, FALSE),
-    (@CompLeftHand, @InsClarinet, 'A', 2, FALSE),
-    (@CompLeftHand, @InsBassClarinet, 'A', 1, FALSE),
+    (@CompLeftHand, @InsClarinet, (SELECT keyID FROM KeySignatures WHERE keyName = 'E flat'), 1, FALSE),
+    (@CompLeftHand, @InsClarinet, (SELECT keyID FROM KeySignatures WHERE keyName = 'A'), 1, FALSE),
+    (@CompLeftHand, @InsClarinet, (SELECT keyID FROM KeySignatures WHERE keyName = 'A'), 2, FALSE),
+    (@CompLeftHand, @InsBassClarinet, (SELECT keyID FROM KeySignatures WHERE keyName = 'A'), 1, FALSE),
     (@CompLeftHand, @InsBassoon, NULL, 1, FALSE),
     (@CompLeftHand, @InsBassoon, NULL, 2, FALSE),
     (@CompLeftHand, @InsContrabassoon, NULL, 1, FALSE),
     -- Brass
-    (@CompLeftHand, @InsFrenchHorn, 'F', 1, FALSE),
-    (@CompLeftHand, @InsFrenchHorn, 'F', 2, FALSE),
-    (@CompLeftHand, @InsFrenchHorn, 'F', 3, FALSE),
-    (@CompLeftHand, @InsFrenchHorn, 'F', 4, FALSE),
-    (@CompLeftHand, @InsTrumpet, 'C', 1, FALSE),
-    (@CompLeftHand, @InsTrumpet, 'C', 2, FALSE),
-    (@CompLeftHand, @InsTrumpet, 'C', 3, FALSE),
+    (@CompLeftHand, @InsFrenchHorn, (SELECT keyID FROM KeySignatures WHERE keyName = 'F'), 1, FALSE),
+    (@CompLeftHand, @InsFrenchHorn, (SELECT keyID FROM KeySignatures WHERE keyName = 'F'), 2, FALSE),
+    (@CompLeftHand, @InsFrenchHorn, (SELECT keyID FROM KeySignatures WHERE keyName = 'F'), 3, FALSE),
+    (@CompLeftHand, @InsFrenchHorn, (SELECT keyID FROM KeySignatures WHERE keyName = 'F'), 4, FALSE),
+    (@CompLeftHand, @InsTrumpet, (SELECT keyID FROM KeySignatures WHERE keyName = 'C'), 1, FALSE),
+    (@CompLeftHand, @InsTrumpet, (SELECT keyID FROM KeySignatures WHERE keyName = 'C'), 2, FALSE),
+    (@CompLeftHand, @InsTrumpet, (SELECT keyID FROM KeySignatures WHERE keyName = 'C'), 3, FALSE),
     (@CompLeftHand, @InsTrombone, NULL, 1, FALSE),
     (@CompLeftHand, @InsTrombone, NULL, 2, FALSE),
     (@CompLeftHand, @InsTrombone, NULL, 3, FALSE),
@@ -964,7 +965,7 @@ VALUES
     (@CompLeftHand, @InsPiano, NULL, 1, FALSE);
 
 -- Scheherezade
-INSERT INTO CompositionPlayers (compositionID, instrumentID, instrumentKey, chairNum, isSection)
+INSERT INTO CompositionPlayers (compositionID, instrumentID, keyID, chairNum, isSection)
 VALUES 
     -- Woodwinds
     (@CompScheherezade, @InsConcertFlute, NULL, 1, FALSE),
@@ -972,17 +973,17 @@ VALUES
     (@CompScheherezade, @InsPiccoloFlute, NULL, 1, FALSE),
     (@CompScheherezade, @InsOboe, NULL, 1, FALSE),
     (@CompScheherezade, @InsOboe, NULL, 2, FALSE),
-    (@CompScheherezade, @InsClarinet, 'A', 1, FALSE),
-    (@CompScheherezade, @InsClarinet, 'A', 2, FALSE),
+    (@CompScheherezade, @InsClarinet, (SELECT keyID FROM KeySignatures WHERE keyName = 'A'), 1, FALSE),
+    (@CompScheherezade, @InsClarinet, (SELECT keyID FROM KeySignatures WHERE keyName = 'A'), 2, FALSE),
     (@CompScheherezade, @InsBassoon, NULL, 1, FALSE),
     (@CompScheherezade, @InsBassoon, NULL, 2, FALSE),
     -- Brass
-    (@CompScheherezade, @InsFrenchHorn, 'F', 1, FALSE),
-    (@CompScheherezade, @InsFrenchHorn, 'F', 2, FALSE),
-    (@CompScheherezade, @InsFrenchHorn, 'F', 3, FALSE),
-    (@CompScheherezade, @InsFrenchHorn, 'F', 4, FALSE),
-    (@CompScheherezade, @InsTrumpet, 'A', 1, FALSE),
-    (@CompScheherezade, @InsTrumpet, 'A', 2, FALSE),
+    (@CompScheherezade, @InsFrenchHorn, (SELECT keyID FROM KeySignatures WHERE keyName = 'F'), 1, FALSE),
+    (@CompScheherezade, @InsFrenchHorn, (SELECT keyID FROM KeySignatures WHERE keyName = 'F'), 2, FALSE),
+    (@CompScheherezade, @InsFrenchHorn, (SELECT keyID FROM KeySignatures WHERE keyName = 'F'), 3, FALSE),
+    (@CompScheherezade, @InsFrenchHorn, (SELECT keyID FROM KeySignatures WHERE keyName = 'F'), 4, FALSE),
+    (@CompScheherezade, @InsTrumpet, (SELECT keyID FROM KeySignatures WHERE keyName = 'A'), 1, FALSE),
+    (@CompScheherezade, @InsTrumpet, (SELECT keyID FROM KeySignatures WHERE keyName = 'A'), 2, FALSE),
     (@CompScheherezade, @InsTrombone, NULL, 1, FALSE),
     (@CompScheherezade, @InsTrombone, NULL, 2, FALSE),
     (@CompScheherezade, @InsTrombone, NULL, 3, FALSE),
@@ -1033,15 +1034,15 @@ SET @ScheherezadeTrumpet2 = (SELECT playerID FROM CompositionPlayers
                              AND instrumentID = @InsTrumpet
                              AND chairNum = 2);                                            
 
-INSERT INTO DoubledInstruments (playerID, instrumentID, instrumentKey)
+INSERT INTO DoubledInstruments (playerID, instrumentID, keyID)
 VALUES
-    (@GConcertoClarinet2, @InsClarinet, 'A'),
+    (@GConcertoClarinet2, @InsClarinet, (SELECT keyID FROM KeySignatures WHERE keyName = 'A')),
     (@ScheherezadeFlute2, @InsPiccoloFlute, NULL),
     (@ScheherezadeOboe2, @InsEnglishHorn, NULL),
-    (@ScheherezadeClarinet1, @InsClarinet, 'B flat'),
-    (@ScheherezadeClarinet2, @InsClarinet, 'B flat'),
-    (@ScheherezadeTrumpet1, @InsTrumpet, 'B flat'),
-    (@ScheherezadeTrumpet2, @InsTrumpet, 'B flat');
+    (@ScheherezadeClarinet1, @InsClarinet, (SELECT keyID FROM KeySignatures WHERE keyName = 'B flat')),
+    (@ScheherezadeClarinet2, @InsClarinet, (SELECT keyID FROM KeySignatures WHERE keyName = 'B flat')),
+    (@ScheherezadeTrumpet1, @InsTrumpet, (SELECT keyID FROM KeySignatures WHERE keyName = 'B flat')),
+    (@ScheherezadeTrumpet2, @InsTrumpet, (SELECT keyID FROM KeySignatures WHERE keyName = 'B flat'));
 
 -- Final Housekeeping
 SET FOREIGN_KEY_CHECKS = 1;
