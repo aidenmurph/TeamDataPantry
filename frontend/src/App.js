@@ -6,8 +6,6 @@ import { Routes, Route } from 'react-router-dom';
 // Import Components, styles, mdiea
 import Footer from './components/Footer.mjs';
 import Navigation from './components/Navigation.mjs';
-import './App.css';
-import './output.css';
 
 // Import main navigation pages
 import HomePage from './pages/HomePage';
@@ -37,43 +35,30 @@ function App() {
 
   return (
     <>
-      <html data-theme="coffee">
-        {/* <header>
-          <h1 className="site-title">
-            <img src="violinicon.png" alt="violin icon" width="64px" height="64px" style={{position: 'static'}} />
-            <Link to="#">Classical Compositions Database</Link>
-          </h1>
-          <h3> A project by Jacob Barber, Aiden Murphy, and Matthew Menold</h3>
-        </header> */}
-
         <Navigation />
+        <main className='h-screen'>
+          <Routes>
+            {/* Main Navigation Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/composers" element={<ComposersPage setComposerToEdit={setComposerToEdit} />} />
+            <Route path="/catalogues" element={<CataloguesPage setCatalogueToEdit={setCatalogueToEdit} />} />
+            <Route path="/compositions" element={<CompositionsPage setCompositionToEdit={setCompositionToEdit} />} />
+            <Route path="/forms" element={<FormsPage />} />
+            <Route path="/instruments" element={<InstrumentsPage />} />
 
-        <main>
-          <section>
-            <Routes>
-              {/* Main Navigation Routes */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/composers" element={<ComposersPage setComposerToEdit={setComposerToEdit} />} />
-              <Route path="/catalogues" element={<CataloguesPage setCatalogueToEdit={setCatalogueToEdit} />} />
-              <Route path="/compositions" element={<CompositionsPage setCompositionToEdit={setCompositionToEdit} />} />
-              <Route path="/forms" element={<FormsPage />} />
-              <Route path="/instruments" element={<InstrumentsPage />} />
+            {/* Detailed Display Routes */}
+            <Route path="/composition/:compositionID" element={<DisplayCompositionPage setCompositionToEdit={setCompositionToEdit} />} />
 
-              {/* Detailed Display Routes */}
-              <Route path="/composition/:compositionID" element={<DisplayCompositionPage setCompositionToEdit={setCompositionToEdit} />} />
-
-              {/* Collection Editing Routes */}
-              <Route path="/add-composer" element={<AddComposerPage />} />
-              <Route path="/edit-composer" element={<EditComposerPage composerToEdit={composerToEdit} />} />
-              <Route path="/add-catalogue" element={<AddCataloguePage />} />
-              <Route path="/edit-catalogue" element={<EditCataloguePage catalogueToEdit={catalogueToEdit} />} />
-              <Route path="/add-composition" element={<AddCompositionPage />} />
-              <Route path="/edit-composition" element={<EditCompositionPage compositionToEdit={compositionToEdit} />} />
-            </Routes>
-          </section>
+            {/* Collection Editing Routes */}
+            <Route path="/add-composer" element={<AddComposerPage />} />
+            <Route path="/edit-composer" element={<EditComposerPage composerToEdit={composerToEdit} />} />
+            <Route path="/add-catalogue" element={<AddCataloguePage />} />
+            <Route path="/edit-catalogue" element={<EditCataloguePage catalogueToEdit={catalogueToEdit} />} />
+            <Route path="/add-composition" element={<AddCompositionPage />} />
+            <Route path="/edit-composition" element={<EditCompositionPage compositionToEdit={compositionToEdit} />} />
+          </Routes>
         </main>
         <Footer />
-      </html>
     </>
   );
 }
