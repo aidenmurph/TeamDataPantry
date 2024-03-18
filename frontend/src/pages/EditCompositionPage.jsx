@@ -1,24 +1,29 @@
 // Import dependencies
-import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useParams } from "react-router-dom";
 import { server_url } from '../config';
 import { CompositionForm } from '../components/forms/CompositionForm.mjs';
 import * as service from '../modules/compositionService.mjs';
+import * as fetchers from '../modules/fetchService.mjs'
 
-export const EditCompositionPage = ({ compositionToEdit }) => {
+export const EditCompositionPage = () => {
+  // State variable for composition to update
+  const { compositionID } = useParams();
+  const [composition, setComposition] = useState({});
+
   // State variables for database entities
-  const [englishTitle, setEnglishTitle] = useState(compositionToEdit.titleEnglish ? compositionToEdit.titleEnglish : '');
-  const [nativeTitle, setNativeTitle] = useState(compositionToEdit.titleNative ? compositionToEdit.titleNative : '');
-  const [subtitle, setSubtitle] = useState(compositionToEdit.subtitle ? compositionToEdit.subtitle : '');
-  const [composerID, setComposerID] = useState(compositionToEdit.composerID);
-  const [dedication, setDedication] = useState(compositionToEdit.dedication ? compositionToEdit.dedication : '');
-  const [compositionYear, setCompositionYear] = useState(compositionToEdit.compositionYear);
-  const [formID, setFormID] = useState(compositionToEdit.form.id);
-  const [keySignature, setKeySignature] = useState(compositionToEdit.keySignature.name ? compositionToEdit.keySignature.name : 'SELECT');
-  const [opusNums, setOpusNums] = useState(compositionToEdit.opusNums);
-  const [catalogueNums, setCatalogueNums] = useState(compositionToEdit.catalogueNums);
-  const [featuredInstrumentation, setFeaturedInstrumentation] = useState(compositionToEdit.featuredInstrumentation);
-  const [movements, setMovements] = useState(compositionToEdit.movements.length > 1 ? compositionToEdit.movements : []);
+  const [englishTitle, setEnglishTitle] = useState('');
+  const [nativeTitle, setNativeTitle] = useState('');
+  const [subtitle, setSubtitle] = useState('');
+  const [composerID, setComposerID] = useState('');
+  const [dedication, setDedication] = useState('');
+  const [compositionYear, setCompositionYear] = useState('');
+  const [formID, setFormID] = useState('');
+  const [keySignature, setKeySignature] = useState('SELECT');
+  const [opusNums, setOpusNums] = useState([]);
+  const [catalogueNums, setCatalogueNums] = useState({});
+  const [featuredInstrumentation, setFeaturedInstrumentation] = useState([]);
+  const [movements, setMovements] = useState([]);
 
   // Flag for success of all database inserts
   const [editSuccess, setEditSuccess] = useState(true);
@@ -26,11 +31,39 @@ export const EditCompositionPage = ({ compositionToEdit }) => {
   // Assign redirect function
   const redirect = useNavigate();
 
+  // RETRIEVE the information for this composition
+  const loadComposition = useCallback(() => {
+    fetchers.fetchComposition(compositionID, setComposition);
+  }, [compositionID]);
+
+  // LOAD the composition data
+  useEffect(() => {
+    loadComposition();
+  }, [loadComposition]);
+
+  // Populate the form with the composition data
+  useEffect(() => {
+    if(Object.keys(composition).length !== 0) {
+      if(composition.titleEnglish) { setEnglishTitle(composition.titleEnglish); }
+      if(composition.titleNative) { setNativeTitle(composition.titleNative); }
+      if(composition.subtitle) { setSubtitle(composition.subtitle); }
+      setComposerID(composition.composerID);
+      if(composition.dedication) { setDedication(composition.dedication); }
+      setCompositionYear(composition.compositionYear);
+      setFormID(composition.form.id);
+      if(composition.keySignature) { setKeySignature(composition.keySignature); }
+      setOpusNums(composition.opusNums);
+      setCatalogueNums(composition.catalogueNums);
+      setFeaturedInstrumentation(composition.featuredInstrumentation);
+      if(composition.movements.length > 1) { setMovements(composition.movements); }
+    }
+  }, [composition]);
+
   // Form Functions ********************************************
 
   // UPDATE the composition in the database with the modified data
   const editComposition = async () => {
-    const compositionResponse = await fetch(`${server_url}/api/compositions/${compositionToEdit.compositionID}`, {
+    const compositionResponse = await fetch(`${server_url}/api/compositions/${compositionID}`, {
       method: 'PUT',
       body: JSON.stringify({
         englishTitle: englishTitle,
@@ -49,63 +82,63 @@ export const EditCompositionPage = ({ compositionToEdit }) => {
     } 
     else {
       setEditSuccess(false);
-      console.log(`Unable to add composition. Request returned status code ${compositionResponse.status}`);
+      console.log(`Unable to edit composition. Request returned status code ${compositionResponse.status}`);
     }
 
     // INSERT Opus Number(s), if any
     if (opusNums.length > 0) {
-      const response = await fetch(`${server_url}/api/opus-nums/for-composition-${compositionToEdit.compositionID}`, { method: 'DELETE'});
+      const response = await fetch(`${server_url}/api/opus-nums/for-composition-${compositionID}`, { method: 'DELETE'});
       if (response.ok) {
-        service.addOpusNums(compositionToEdit.compositionID, opusNums);
+        service.addOpusNums(compositionID, opusNums);
       } else {
         setEditSuccess(false);
-        console.error(`Unable to delete opus num(s) from composition with ID ${compositionToEdit.compositionID}, status code = ${response.status}`)
+        console.error(`Unable to delete opus num(s) from composition with ID ${compositionID}, status code = ${response.status}`)
       }
     }
 
     // INSERT Catalogue Number(s), if any
     if (catalogueNums.length > 0) {
-      const response = await fetch(`${server_url}/api/catalogue-nums/for-composition-${compositionToEdit.compositionID}`, { method: 'DELETE'});
+      const response = await fetch(`${server_url}/api/catalogue-nums/for-composition-${compositionID}`, { method: 'DELETE'});
       if (response.ok) {
-        service.addCatalogueNums(compositionToEdit.compositionID, catalogueNums);
+        service.addCatalogueNums(compositionID, catalogueNums);
       } else {
         setEditSuccess(false);
-        console.error(`Unable to delete catalogue num(s) from composition with ID ${compositionToEdit.compositionID}, status code = ${response.status}`)
+        console.error(`Unable to delete catalogue num(s) from composition with ID ${compositionID}, status code = ${response.status}`)
       }
     }
 
     // INSERT Featured Instrumentation
     if (featuredInstrumentation.length > 0) {
-      const response = await fetch(`${server_url}/api/featured-instruments/for-composition-${compositionToEdit.compositionID}`, { method: 'DELETE'});
+      const response = await fetch(`${server_url}/api/featured-instruments/for-composition-${compositionID}`, { method: 'DELETE'});
       if (response.ok) {
-        await service.addFeaturedInstrumentation(compositionToEdit.compositionID, featuredInstrumentation);
+        await service.addFeaturedInstrumentation(compositionID, featuredInstrumentation);
       } else {
         setEditSuccess(false);
-        console.error(`Unable to delete featured instrument(s) from composition with ID ${compositionToEdit.compositionID}, status code = ${response.status}`)
+        console.error(`Unable to delete featured instrument(s) from composition with ID ${compositionID}, status code = ${response.status}`)
       }
     }
 
     // INSERT Movement(s)
     if (movements.length > 0) {
-      const response = await fetch(`${server_url}/api/movements/for-composition-${compositionToEdit.compositionID}`, { method: 'DELETE'});
+      const response = await fetch(`${server_url}/api/movements/for-composition-${compositionID}`, { method: 'DELETE'});
       if (response.ok) {
-        await service.addMovements(compositionToEdit.compositionID, movements);
+        await service.addMovements(compositionID, movements);
       } else {
         setEditSuccess(false);
-        console.error(`Unable to delete movement(s) from composition with ID ${compositionToEdit.compositionID}, status code = ${response.status}`)
+        console.error(`Unable to delete movement(s) from composition with ID ${compositionID}, status code = ${response.status}`)
       }
     }
     
     if (editSuccess === true) {
-      redirect(`/composition/${compositionToEdit.compositionID}`);
+      redirect(`/composition/${compositionID}`);
     }
   };
 
   return (
     <>
       <article>
-        <h2>Editing {compositionToEdit.titleEnglish ? compositionToEdit.titleEnglish : compositionToEdit.titleEnglish}</h2>
-        <p>Make your edits to {compositionToEdit.titleEnglish ? compositionToEdit.titleEnglish : compositionToEdit.titleEnglish} and click "Submit" to update the entry in the database.</p>
+        <h2>Editing {composition.titleEnglish ? composition.titleEnglish : composition.titleNative ? composition.titleNative : ''}</h2>
+        <p>Make your edits to {composition.titleEnglish ? composition.titleEnglish : composition.titleNative ? composition.titleNative : ''} and click "Submit" to update the entry in the database.</p>
         <CompositionForm 
           englishTitle={englishTitle} setEnglishTitle={setEnglishTitle}
           nativeTitle={nativeTitle} setNativeTitle={setNativeTitle}

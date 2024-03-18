@@ -6,7 +6,7 @@ import InstrumentationDisplay from '../components/display/InstrumentationDisplay
 import * as fetchers from '../modules/fetchService.mjs'
 import { convertFlatSharp } from '../modules/utilities.mjs';
 
-function DisplayCompositionPage({ setCompositionToEdit }) {
+function DisplayCompositionPage() {
   // State variables for displaying composition
   const { compositionID } = useParams();
   const [composition, setComposition] = useState([]);
@@ -30,7 +30,7 @@ function DisplayCompositionPage({ setCompositionToEdit }) {
     }
   }, [familyList, compositionID]);
 
-  // LOAD all the compositions
+  // LOAD the composition data
   useEffect(() => {
     loadComposition();
   }, [loadComposition]);
@@ -62,8 +62,7 @@ function DisplayCompositionPage({ setCompositionToEdit }) {
       <article>
         <CompositionInfoPanel
           composition={composition} 
-          movements={composition.movements ? composition.movements : ''} 
-          setCompositionToEdit={setCompositionToEdit} />
+          movements={composition.movements ? composition.movements : ''} />
 
         <section id="info">
           <h3>Overview</h3>

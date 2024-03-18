@@ -6,7 +6,7 @@ import CompositionList from '../components/display/CompositionList.mjs';
 import { sortList } from '../modules/utilities.mjs';
 import FilterCompositionSelector from '../components/display/FilterCompositionsSelector.mjs';
 
-function CompositionsPage({ setCompositionToEdit }) {
+function CompositionsPage() {
   
   // Use the useNavigate module for redirection
   const redirect = useNavigate();
@@ -34,9 +34,8 @@ function CompositionsPage({ setCompositionToEdit }) {
   }, [loadCompositions, filterList]);
 
   // UPDATE a single composition
-  const handleEditComposition = async (composition) => {;
-    setCompositionToEdit(composition);
-    redirect(`/edit-composition/`);
+  const handleEditComposition = async (compositionID) => {;
+    redirect(`/edit-composition/${compositionID}`);
   }
 
   // DELETE a single composition
