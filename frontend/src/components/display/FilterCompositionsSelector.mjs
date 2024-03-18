@@ -29,7 +29,7 @@ function FilterCompositionSelector({ setFilterList }) {
       filterList.formID = formID;
     }
     if (keySignature !== 'SELECT') {
-      filterList.keyName = keySignature.name;
+      filterList.keyID = keySignature === 'NONE' ? 'NONE' : keySignature.id;
     }
     if (instrument !== 'SELECT' && Object.keys(instrument).length !== 0) {
       filterList.instrumentID = instrument.id;
