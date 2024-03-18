@@ -1,7 +1,7 @@
 // Import dependencies
 import React, { useState, useEffect, useCallback } from 'react';
 import * as fetchers from '../../modules/fetchService.mjs'
-import { QueuedCatalogueNum } from './QueuedCatalogueNum.mjs';
+import { QueuedCatalogueNum } from './queued-elements/QueuedCatalogueNum.mjs';
 
 // Form component for building an opus number queue to add to a composition
 function AddCatalogueNumsForm ({ composerID, catalogueNums, setCatalogueNums }) {

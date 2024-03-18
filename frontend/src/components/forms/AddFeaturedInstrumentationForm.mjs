@@ -1,6 +1,6 @@
 // Import dependencies
 import React, { useState } from 'react';
-import { QueuedFeaturedInstrument } from './QueuedFeaturedInstrument.mjs';
+import { QueuedFeaturedInstrument } from './queued-elements/QueuedFeaturedInstrument.mjs';
 import { SelectInstrument } from './inputs/SelectInstrument.mjs';
 
 // Form component for building an opus number queue to add to a composition
