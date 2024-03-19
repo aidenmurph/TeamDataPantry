@@ -5,8 +5,8 @@ import { convertFlatSharp } from '../../../modules/utilities.mjs';
 
 function SelectKeySignature ({ id, value, setValue }) {
   // State variables for dropdown menus
-  const [keyType, setKeyType] = useState(value === 'SELECT' ? 'Major' : value.type);
   const [keySignatureOptions, setKeySignatureOptions] = useState([]);
+  const [keyType, setKeyType] = useState(value === 'SELECT' ? 'Major' : value.type);
   const [keySignatureIndex, setKeySignatureIndex] = useState('SELECT')
 
   // RETRIEVE the entire list of key signatures for use in the dropdown
@@ -29,6 +29,7 @@ function SelectKeySignature ({ id, value, setValue }) {
       setKeySignatureIndex('SELECT')
     }
     else if (keySignatureOptions.length > 0) {
+      setKeyType(value.type);
       setKeySignatureIndex(value.id - 1);
     }
   }, [value, keySignatureOptions]);
