@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ComposerList from '../components/display/ComposerList.mjs';
 import { server_url } from '../config';
@@ -7,12 +7,15 @@ import { sortList } from '../modules/utilities.mjs';
 
 function ComposersPage({ setComposerToEdit }) {
 
-  // Use the useNavigate module for redirection
-  const redirect = useNavigate();
-
   // Define state variables for displaying composers
   const [composers, setComposers] = useState([]);
   const [activeSort, setActiveSort] = useState({});
+
+  // Track the length of the composers array to maintain sort after updates
+  const composersLengthRef = useRef(composers.length)
+
+  // Use the useNavigate module for redirection
+  const redirect = useNavigate();
 
   // RETRIEVE the entire list of composers
   const loadComposers = useCallback(() => {
@@ -53,10 +56,13 @@ function ComposersPage({ setComposerToEdit }) {
   
   // Maintain the active sort when the composer list is modified (i.e. through deletion)
   useEffect(() => {
-    if (activeSort.attribute && composers.length > 0) {
-      setComposers(sortList(composers, activeSort.attribute, activeSort.ascending));
+      if (composersLengthRef.current !== composers.length) {
+        if (activeSort.attribute && composers.length > 0) {
+          setComposers(sortList(composers, activeSort.attribute, activeSort.ascending));
+      }
+      composersLengthRef.current = composers.length;
     }
-  }, [composers.length]);
+  }, [composers, activeSort]);
 
   // DISPLAY the composers
   return (

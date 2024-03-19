@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CatalogueList from '../components/display/CatalogueList.mjs';
 import { server_url } from '../config';
@@ -6,13 +6,16 @@ import * as fetchers from '../modules/fetchService.mjs'
 import { sortList } from '../modules/utilities.mjs';
 
 function CataloguesPage({ setCatalogueToEdit }) {
-  
-  // Use the useNavigate module for redirection
-  const redirect = useNavigate();
 
   // Define state variables for displaying catalogues
   const [catalogues, setCatalogues] = useState([]);
   const [activeSort, setActiveSort] = useState({});
+  
+  // Track the length of the catalogues array to maintain sort after updates
+  const cataloguesLengthRef = useRef(catalogues.length)
+
+  // Use the useNavigate module for redirection
+  const redirect = useNavigate();
 
   // RETRIEVE the entire list of catalogues
   const loadCatalogues = useCallback(() => {
@@ -53,10 +56,13 @@ function CataloguesPage({ setCatalogueToEdit }) {
 
   // Maintain the active sort when the catalogue list is modified (i.e. through deletion)
   useEffect(() => {
-    if (activeSort.attribute && catalogues.length > 0) {
-      setCatalogues(sortList(catalogues, activeSort.attribute, activeSort.ascending));
+    if(cataloguesLengthRef.current !== catalogues.length) {
+      if (activeSort.attribute && catalogues.length > 0) {
+        setCatalogues(sortList(catalogues, activeSort.attribute, activeSort.ascending));
+      }
+      cataloguesLengthRef.current = catalogues.length;
     }
-  }, [catalogues.length]);
+  }, [catalogues, activeSort]);
 
   return (
     <>

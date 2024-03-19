@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import FormList from '../components/display/FormList.mjs';
 import { server_url } from '../config';
 import * as fetchers from '../modules/fetchService.mjs'
@@ -11,6 +11,9 @@ function FormsPage() {
   const [activeSort, setActiveSort] = useState({
     attribute: "formName",
     ascending: true});
+
+  // Track the length of the catalogues array to maintain sort after updates
+  const formsLengthRef = useRef(forms.length)
 
   // RETRIEVE the entire list of forms
   const loadForms = useCallback(() => {
@@ -46,10 +49,13 @@ function FormsPage() {
  
   // Maintain the active sort when the form list is modified (i.e. through deletion)
   useEffect(() => {
-    if (activeSort.attribute && forms.length > 0) {
-      setForms(sortList(forms, activeSort.attribute, activeSort.ascending));
+    if (formsLengthRef.current !== forms.length) {
+      if (activeSort.attribute && forms.length > 0) {
+        setForms(sortList(forms, activeSort.attribute, activeSort.ascending));
+      }
+      formsLengthRef.current = forms.length;
     }
-  }, [forms.length]);
+  }, [forms, activeSort]);
 
   return (
     <>
