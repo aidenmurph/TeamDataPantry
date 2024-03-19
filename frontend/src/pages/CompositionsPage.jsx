@@ -8,9 +8,6 @@ import FilterCompositionSelector from '../components/display/FilterCompositionsS
 
 function CompositionsPage() {
   
-  // Use the useNavigate module for redirection
-  const redirect = useNavigate();
-
   // Define state variables for displaying compositions
   const [compositions, setCompositions] = useState([]);
   const [activeSort, setActiveSort] = useState({});
@@ -18,6 +15,9 @@ function CompositionsPage() {
   
   // Track the length of the compositions array to maintain sort after updates
   const compositionsLengthRef = useRef(compositions.length)
+
+  // Use the useNavigate module for redirection
+  const redirect = useNavigate();
 
   // RETRIEVE the entire list of compositions
   const loadCompositions = useCallback(() => {
@@ -67,7 +67,7 @@ function CompositionsPage() {
       }
       compositionsLengthRef.current = compositions.length;
     }
-  }, [compositions, activeSort.attribute, activeSort.ascending]);
+  }, [compositions, activeSort]);
 
   return (
     <>

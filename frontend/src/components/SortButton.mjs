@@ -40,7 +40,7 @@ function SortButton({ attribute, activeSort, onSort, iconType = 'default' }) {
     if (activeSort !== attribute) {
       setSortStatus('none');
     }
-  }, [activeSort]);
+  }, [activeSort, attribute]);
 
   // Toggle button display and trigger sort
   const handleClick = () => {
