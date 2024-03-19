@@ -37,7 +37,7 @@ function CompositionInfoPanel({ composition, movements }) {
         <tbody>
 
           {/* Opus Number(s) */}
-          {composition.opusNum ? 
+          {composition.opusNums ? 
             <tr>
               <td><strong>Opus</strong></td>
               <td>{composition.opusNums.join(', ')}</td>
