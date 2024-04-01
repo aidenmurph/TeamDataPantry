@@ -32,18 +32,34 @@ Generally, the numbering describes the dependency chain of entities, in that low
   
 **KeySignatures**: Category Table. The key of a given composition
   * Attributes:
+    * keyID: int, not NULL 
     * keyName: varchar(25), not NULL
+    * keyType: varchar(11)
+      * CHECK: keyType = “Major”, “Minor”, or “Instrument”
   * Primary Key: keyName
   * Relationship:
     * 1:M with Compositions (If designated, a composition is generally referred to by a single key signature, but many compositions can be in the same key)
+    * 1:M with CompositionPlayers & DoubledInstruments (If designated, an instrument held by a player can have a single key signature, but a key signature can be associated with many instruments)
+   
+**InstrumentFamilies**: Category Table. A family of musical instruments, such as Brass or Strings. Used for grouping instruments to aid in display and selection. 
+  * Attributes:
+    * familyID: int, not NULL, auto_increment
+    * familyName: varchar(25), not NULL
+  * Primary Key: familyID
+  * Relationship:
+    * M:1 with Instruments. Each instrument family can contain many instruments, but an instrument can only be contained in one family.
 
 **Instruments**: Category Table. A musical instrument, such as a piano or violin, or an instrument ensemble, such as an orchestra or string quartet
   * Attributes:
-    * instrumentName: varchar(50), UNIQUE not NULL
     * instrumentID: int, not NULL, auto_increment
+    * instrumentName: varchar(50), UNIQUE not NULL
+    * familyID: int, not NULL
+      * FK: familyID from InstrumentFamilies
+    * scorePosition: smallint, default 9 (A hidden value used for sorting instruments within a given family based on how they typically appear in a score, this is not user editable, and instruments added via UI will default to a low position)
   * Primary Key: instrumentName
   * Relationships: 
-      * M:M with Compositions (Intersection Table - CompositionInstruments. An instrument can appear in the instrumentation for many compositions, and a compositions instrumentation can feature multiple instruments)
+      * M:M with Compositions (Intersection Table - FeaturedInstrumentation. An instrument can appear in the instrumentation for many compositions, and a compositions instrumentation can feature multiple instruments)
+      * 1:M with CompositionPlayers (Intersection Table - An instrument can be associated with players in the instrumentation for many compositions)
 
 ### Composers
 **Composers**: A composer of one or more compositions stored in the database
@@ -62,24 +78,29 @@ Generally, the numbering describes the dependency chain of entities, in that low
 ### Compositions
 **Compositions**: A single composition of one or more movements created by a composer
   * Attributes:
-    * name: varchar(255), not NULL
     * compositionID: int, auto_increment, not NULL
     * composerID: int, not NULL, FK
       * FK: composerID from Composers
+    * titleEnglish: varchar(255)
+    * titleNative: varchar(255)
+    * subtitle: varchar(255), optional
+    * dedication: varchar(100), optional
     * compositionYear: unsigned small int, not NULL
     * formID: int, not NULL, FK
       * FK: formIDfrom Forms
-    * musicalKey: varchar(25), not NULL, FK
-      * FK: keyName from KeySIgnatures
+    * keyID: int, not NULL, FK
+      * FK: keyID from KeySIgnatures
+    * infoText: longtext (A description, history, or other information for displaying on the composition’s page)
   * Primary Key: compositionID
   * Relationships: 
     * 1:1 with Composers (A composition can be composed by one and only one Composer)
     * 1:M with Movements (A composition can have one or more movements)
     * 1:1 with Forms (A composition can have only one form)
-    * M:M with Instruments (Intersection Table - CompositionInstruments. A composition’s instrumentation can have one or more associated instruments, and an instrument can be part of many compositions’ instrumentation)
+    * M:M with Instruments (Intersection Table - FeaturedInstrumentation. A composition’s instrumentation can have one or more associated instruments, and an instrument can be part of many compositions’ instrumentation)
     * M:M with Catalogues (Via the 1:M CatalogueNums relation. A composition can appear in zero or more Catalogues, and thus may have many catalogue numbers)
     * 1:M with OpusNums (A composition can have zero or more opus numbers)
     * 1:1 with KeySignatures (A composition can be designated with one and only one key)
+    * 1:M with CompositionPlayers (A composition’s instrumentation can have 1 or more players)
 
 **Movements**: A single movement in a larger composition. Compositions that are not further subdivided are considered to have a single movement with a NULL title. 
   * Attributes:
@@ -126,7 +147,7 @@ Generally, the numbering describes the dependency chain of entities, in that low
     * M:1 with Catalogues (There can be many catalogue numbers associated with a single catalogue)
     * 1:1 with Composition (A catalogue number can refer to only one composition)
   
-**CompositionInstruments**: An instrument (or group of instruments) included in the instrumentation for a single composition. Used for querying pieces by instrument
+**FeaturedInstrumentation**: An instrument (or group of instruments) included in the instrumentation for a single composition. Used for querying pieces by instrument
   * Attributes:
     * instrumentID: int, not NULL, FK
       * FK: instrumentID from Instruments
@@ -136,3 +157,39 @@ Generally, the numbering describes the dependency chain of entities, in that low
   * Relationships: 
     * M:1 with Instruments (Intersection Table)
     * M:1 with Compositions (Intersection Table)
+
+**CompositionPlayers**: An entity representing a single player in the instrumentation ensemble for a given composition. Each player must hold one instrument, with additional instruments added as DoubledInstruments.
+  *  Attributes:
+     *  playerID: int, not NULL
+     *  compositionID: int, not NULL, FK
+        *  FK: compositionID from Compositions
+     *  instrumentID: int, not NULL, FK
+        *  FK: instrumentID from Instruments
+        *  CHECK: instrument is not in the “Ensemble” family (use TRIGGER)
+     *  keyID: int, optional, FK
+        *  FK: keyID from KeySignatures
+        *  CHECK: keyType is “Instrument” (use TRIGGER)
+     *  chairNum: unsigned smallint, not NULL
+        *  CHECK: numInstruments >= 0
+     *  isSection: bool, not NULL
+  *  Primary Key: instrumentID, compositionID
+  *  Relationships:
+     *  1:1 with Instruments (A player can hold one and only one instrument)
+     *  M:1 with Compositions (A player can be associated with one composition’s instrumentation, but that composition can have many players)
+     *  1:M with DoubledInstruments (A player can double on zero or more instruments)
+
+**DoubledInstruments**: An instrument in the instrumentation of a composition which is doubled by a player who primarily plays a different instrument in the instrumentaiton
+  *  Attributes:
+     *  playerID: int, not NULL, FK
+        *  FK: playerID from CompositionPlayers
+     *  instrumentID: int, not NULL, FK
+        *  FK: instrumentID from Instruments
+     *  keyID: varchar(25), optional, FK
+        *  FK: keyName from KeySignatures
+        *  CHECK: keyType is “Instrument” (use TRIGGER)
+  *  Primary Key: instrumentID, compositionID
+  *  Relationships:
+     *  M:1 with Compositions (Intersection Table)
+     *  1:1 with Instruments (Intersection Table)
+     *  1:1 with KeySignatures (Intersection Table)
+
